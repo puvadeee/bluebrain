@@ -20,12 +20,12 @@ Download and install the v2.1.2 of the RFduino library:
 * http://www.rfdigital.com/wp-content/uploads/2014/03/RFduino_2.1.2.zip
 
 It *MUST* be  v2.1.2 because of some customisations we've made. 
-You also must be using ARduino IDE 1.5.7 or higher for the RFduino library to work.
+You also must be using Arduino IDE 1.5.7 or higher for the RFduino library to work.
 
 Unzip the RFduino zip under:  [ArduinoIDE_Install_PATH]/Java/hardware/arduino/
 
 
-b) Custom Arduino Gazelle libraries
+b) RFduino SDK patch.
 
 Download this patch to the RFduino SDK:
 
@@ -33,13 +33,15 @@ Download this patch to the RFduino SDK:
 
 The folders in this zip need to replace sub-folders under the RFduino folder that was installed into the Arduino IDE in the previous step.
 
-* RFduinoGZLL.zip			unzip under:  	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries
-* libRFduinoGZLL.zip		unzip under:	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/source
+* RFduinoGZLL			under:  	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries
+* libRFduinoGZLL		under:	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/source
 
-It's preferable to move or just delete the existing folders rather than renaming them in-place:
+It's preferable to move, or just delete, the existing folders rather than renaming them in-place:
 
 * [ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries/RFduinoGZLL
 * [ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries/libRFduinoGZLL
+
+Without the patch you can not have more than one bot in the room when using the physical joypad (address clashes in non-BLE mode)
 
 
 ##3. iOS App
