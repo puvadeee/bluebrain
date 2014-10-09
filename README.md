@@ -22,14 +22,16 @@ Download and install the v2.1.2 of the RFduino library:
 It *MUST* be  v2.1.2 because of some customisations we've made. 
 You also must be using Arduino IDE 1.5.7 or higher for the RFduino library to work.
 
-Unzip the RFduino zip under:  [ArduinoIDE_Install_PATH]/Java/hardware/arduino/
+Unzip the RFduino zip under:  
+mac: [ArduinoIDE_Install_PATH]/Java/hardware/arduino/
+win:	[ArduinoIDE_Install_PATH]/hardware/arduino/
 
 
 b) RFduino SDK patch.
 
 Download this patch to the RFduino SDK:
 
-* https://github.com/Cannybots/cannybots-beta/raw/master/avr/patches/RFduino/RFduino_2.1.2.zip
+* https://github.com/Cannybots/cannybots-beta/raw/master/avr/patches/RFduino/RFduino_2.1.2_patch.zip
 
 The folders in this zip need to replace sub-folders under the RFduino folder that was installed into the Arduino IDE in the previous step.
 
