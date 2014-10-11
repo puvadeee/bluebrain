@@ -24,26 +24,33 @@ You also must be using Arduino IDE 1.5.7 or higher for the RFduino library to wo
 
 Unzip the RFduino zip under:  
 mac: [ArduinoIDE_Install_PATH]/Java/hardware/arduino/
-win:	[ArduinoIDE_Install_PATH]/hardware/arduino/
+win: [ArduinoIDE_Install_PATH]/hardware/arduino/
 
 
 b) RFduino SDK patch.
 
+Without this patch you can not have more than one bot in the room when using the physical joypad because of an address clash in non-BLE mode
+You can perform this patch to an existing installation or download a pre-patched version [here](https://www.dropbox.com/s/yilauqvzbv1arfp/RFduino_2.1.2.zip?dl=0)
 Download this patch to the RFduino SDK:
 
 * https://github.com/Cannybots/cannybots-beta/raw/master/avr/patches/RFduino/RFduino_2.1.2_patch.zip
 
-The folders in this zip need to replace sub-folders under the RFduino folder that was installed into the Arduino IDE in the previous step.
-
-* RFduinoGZLL			under:  	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries
-* libRFduinoGZLL		under:	[ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/source
-
+The folders in the zip need to replace sub-folders under the RFduino folder that was installed into the Arduino IDE in the previous step.
 It's preferable to move, or just delete, the existing folders rather than renaming them in-place:
 
-* [ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries/RFduinoGZLL
-* [ArduinoIDE_Install_PATH]/Java/hardware/arduino/RFduino/libraries/libRFduinoGZLL
+* .../RFduino/libraries/RFduinoGZLL
+* .../RFduino/source/libRFduinoGZLL
 
-Without the patch you can not have more than one bot in the room when using the physical joypad (address clashes in non-BLE mode)
+copy these files from the 'libRFduinoGZLL' folder:
+
+libRFduinoGZLL.h
+libRFduinoGZLL.a
+
+to: .../hardware/arduino/RFduino/variants/RFduino/
+
+overwriting whats there already.
+
+
 
 
 ##3. iOS App
@@ -51,3 +58,12 @@ Without the patch you can not have more than one bot in the room when using the 
 In Safari on on your iOS device goto http://cannybots.github.io/cannybots-beta/
 
 You will have needed to provide us with your Device ID for this to install and run.
+
+
+##4. Using the programmer
+
+isntall the altest drivers form the www.ftdichip.com website.
+
+
+
+
