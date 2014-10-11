@@ -7,18 +7,18 @@
 #define RADIO_TOGGLE
 //#define RADIO_NONE
 
-
+// don't change these
 #define GZLL_MAX_MSG_SIZE 32
 char  gzllDebugBuf[GZLL_MAX_MSG_SIZE] = {0};
 char* gzllDebug=NULL;
 
-
+// don't change these
+#define BLE_MAX_MSG_SIZE 20
 #define BLE_UUID                   "7e400001-b5a3-f393-e0a9-e50e24dcca9e"
 #define BLE_ADVERTISEMENT_DATA_MAX 16
+
+// might want to alter these
 #define BLE_TX_POWER_LEVEL         0
-
-#define BLE_MAX_MSG_SIZE 20
-
 #define TOGGLE_MILLIS                   1500
 #define TOGGLE_GZLL_CONNECTION_TIMEOUT   250
 
@@ -90,7 +90,9 @@ void radio_loop() {
 
 
 void setup_gzll() {
+#ifdef GZLL_HOST_ADDRESS  
   RFduinoGZLL.hostBaseAddress = GZLL_HOST_ADDRESS;
+#endif  
   RFduinoGZLL.begin(HOST);
 }
 
@@ -118,7 +120,11 @@ void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len) {
 char bleName[BLE_ADVERTISEMENT_DATA_MAX] = {0};
 
 void setup_ble() {
+#ifndef BOT_NAME  
   snprintf(bleName, BLE_ADVERTISEMENT_DATA_MAX, "CB_%x%x", getDeviceIdHigh, getDeviceIdLow());
+#else
+  snprintf(bleName, BLE_ADVERTISEMENT_DATA_MAX, BOT_NAME);
+#endif  
   RFduinoBLE.txPowerLevel      = BLE_TX_POWER_LEVEL;
   RFduinoBLE.customUUID        = BLE_UUID;
   RFduinoBLE.deviceName        = bleName;
@@ -148,15 +154,31 @@ void RFduinoBLE_onDisconnect() {
   client_disconnected();
 }
 
+void radio_debug(char* msg) {
+    if (!gzllDebug && gzllConnected) {
+     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE-1, msg);
+     gzllDebug = gzllDebugBuf;
+    } 
+    
+    if (bleConnected) {
+      RFduinoBLE.send(msg, min(BLE_MAX_MSG_SIZE, strlen(msg)));
+    }
+}
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE/GZLL shared message processing
 
+// Change this if you want todo something custom, don't for get to change the joypad sketch
+// an dany Python code.
+
+// You may just want to add your own data onto the end of the existing 3 bytes if you still
+// wan't to be able to use the smartphone app(s)
+
 // We're expecting messages of 3 bytes in the form:  XYB
-// Where;
-// X = unsigned byte for xAxis:          0 .. 255 mapped to -254 .. 254
-// Y = unsigned byte for yAxis:          0 .. 255 mapped to -254 .. 254
+// Where:
+// X = unsigned byte for xAxis:          0 .. 255 mapped to -255 .. 255
+// Y = unsigned byte for yAxis:          0 .. 255 mapped to -255 .. 255
 // B = unsigned byte for button pressed: 0 = no, 1 = yes
 
 void process_message(char *data, int len) {
@@ -165,25 +187,15 @@ void process_message(char *data, int len) {
     joypad_update(
       map(data[0], 0, 255, -255, 255),   // x axis
       map(data[1], 0, 255, -255, 255),   // y axis
-      data[2]                            // button
+      data[2]                            // button(s) - 8 bits can support up to 8 buttons
     );
   }
 }
 
-// tidyup helper for when GZLL connection timesout or BLE client disconnects
+// tidyup helper for when GZLL connection times out or BLE client disconnects
 void client_disconnected() {
   joypad_update(0, 0, 0);
 }
 
 
-void radio_debug(char* msg) {
-    if (!gzllDebug && gzllConnected) {
-     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE-1, msg);
-     gzllDebug = gzllDebugBuf;
-    } 
-    
-    if (bleConnected) {
-      RFduinoBLE.send(msg, min(BLE_MAX_MSG_SIZE, strlen(msg)-1));
-    }
-}
 

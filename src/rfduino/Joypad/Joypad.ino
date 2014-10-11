@@ -10,7 +10,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Joypad sketch value
+//#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Bot sketch value
 
 
 #include <RFduinoGZLL.h>
@@ -32,7 +32,9 @@ void setup()
 {
   Serial.begin(9600);
   pinMode(BUTTON_PIN, INPUT);
-   RFduinoGZLL.hostBaseAddress = GZLL_HOST_ADDRESS;
+#ifdef GZLL_HOST_ADDRESS  
+  RFduinoGZLL.hostBaseAddress = GZLL_HOST_ADDRESS;
+#endif  
   RFduinoGZLL.begin(role);
 }
 

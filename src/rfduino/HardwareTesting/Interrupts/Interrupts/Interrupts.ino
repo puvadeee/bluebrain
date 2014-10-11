@@ -1,4 +1,6 @@
 
+// Add a 10k restor betwwen the interrupt pins and ground.
+
 #define COUNTER1_PIN 5
 #define COUNTER2_PIN 6
 

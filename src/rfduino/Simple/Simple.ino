@@ -7,10 +7,12 @@
 // License: http://opensource.org/licenses/MIT
 //
 // Version:   1.0  -  04.10.2014  -  Inital Version  (wayne@cannybots.com)
-//
+// Version:   1.1  -  11.10.2014  -  Customisable bot name advertised over BLE (wayne@cannybots.com)
+//                                   Do not set a custom GZLL_HOST_ADDRESS by default
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Joypad sketch value
+#define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
+//#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Joypad sketch value
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
@@ -44,6 +46,8 @@ void setup() {
 void loop() {
   radio_loop();    
   motorSpeed(yAxisValue, xAxisValue);
+  radio_debug("hello!");
+  delay(500);
 }
 
 void motorSpeed(int _speedA, int _speedB) {
