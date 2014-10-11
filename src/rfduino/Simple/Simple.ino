@@ -46,8 +46,7 @@ void setup() {
 void loop() {
   radio_loop();    
   motorSpeed(yAxisValue, xAxisValue);
-  radio_debug("hello!");
-  delay(500);
+  //radio_debug("hello!");
 }
 
 void motorSpeed(int _speedA, int _speedB) {
