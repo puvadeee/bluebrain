@@ -1,0 +1,3 @@
+cp -r service/* /etc/service/
+svc -du /etc/service/*
+
