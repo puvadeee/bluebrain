@@ -134,9 +134,16 @@ class BLE:
 	def __init__(self,name='BLEThread'):
 		pass
 
+	def findNearest(self):
+		return self.findAll()[0]
+
 	def findAll(self):
 		deviceName = 'cannybot1'
 		bleuart1= BLE_UART(mac='FF:C3:F0:EC:C3:D9', name=deviceName)
 		return [bleuart1]
 		
 
+
+
+
+ 
