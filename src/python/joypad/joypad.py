@@ -1,13 +1,11 @@
 #!/usr/bin/python
 
-import os
 import pygame
-import time
-import random
-from time import time
 
-from cannybots import Display, BLE
-from cannybots.utils import map
+from cannybots.radio import BLE
+from cannybots.video import Display
+from cannybots.utils import arduino_map
+from cannybots.clients.joypad  import SimpleJoypadClient
 
 class Joypad:
     """ Joypad """
@@ -17,18 +15,25 @@ class Joypad:
         self.x  = 120
         self.y  = 120
         self.b  = 0
-        self.running=True
+        self.running = True  
+        self.display = Display()
+        self.screen  = self.display.screen
         
-        self.display     = Display()
-        self.view        = self.display.screen
+        self.loadImages()
+        self.connectBot()
+    
+    
+    def loadImages(self):
         self.logo        = pygame.image.load("images/cannybots_logo_small.png").convert_alpha()
         self.joystick    = pygame.image.load("images/joystick.png").convert()
         self.knob        = pygame.image.load("images/knob.png").convert_alpha()
         self.button      = pygame.image.load("images/button.png").convert_alpha()
-
-        self.ble = BLE() 
-        self.myBotDevice = self.ble.findNearest()   
-
+    
+    
+    def connectBot(self):
+        self.ble   = BLE() 
+        self.myBot = self.ble.findNearest()   
+        self.joypadClient = SimpleJoypadClient(self.myBot)
 
     def handleEvents(self):
         event = pygame.event.poll()
@@ -49,11 +54,11 @@ class Joypad:
                 self.updateAxisState((120,120))
 
     def draw(self):
-        self.view.fill((255,255,255))
-        self.view.blit(self.joystick,(0,0))
-        self.view.blit(self.button,(240,64))
-        self.view.blit(self.logo, (320-120, 240-32))
-        self.view.blit(self.knob, (self.x-50, self.y-50))
+        self.screen.fill((255,255,255))
+        self.screen.blit(self.joystick,(0,0))
+        self.screen.blit(self.button,(240,64))
+        self.screen.blit(self.logo, (320-120, 240-32))
+        self.screen.blit(self.knob, (self.x-50, self.y-50))
         pygame.display.update()
 
 
@@ -61,19 +66,13 @@ class Joypad:
         if newX>240:
             newX=240
         self.x = newX
-        self.y = newY     
-        self.send()  
-        
-        
-    def send(self):
-        x = map(self.x-120, -120, 120, 0,255)
-        y = map(self.y-120, -120, 120, 0,255)
-        msg = format(x,'02X') + format(y,'02X') + format(self.b, '02X') 
-        self.myBotDevice.sendHexString(msg)
-    
+        self.y = newY 
+        x = arduino_map(self.x-120, -120, 120, -255,255)
+        y = arduino_map(self.y-120, -120, 120, -255,255)    
+        self.joypadClient.updateJoypad(x, y, self.b)  
+   
     
     def run(self):
-        self.updateAxisState((self.x,self.y))
         while self.running:
             self.handleEvents()
             self.draw()
