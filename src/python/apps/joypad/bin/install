@@ -1,0 +1,4 @@
+cp -r bin/service/* /etc/service/
+cp -r . /opt/cannybots/runtime/services/
+svc -du /etc/service/*
+
