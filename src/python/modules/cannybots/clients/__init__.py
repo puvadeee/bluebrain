@@ -1,1 +1,1 @@
-from cannybots.clients.joypad import SimpleJoypadClient
+#from cannybots.clients.joypad import SimpleJoypadClient

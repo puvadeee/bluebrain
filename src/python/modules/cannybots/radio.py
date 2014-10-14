@@ -56,7 +56,7 @@ class BLE_UART:
 
 	def startGattTool(self):
 		os.system("killall gatttool")
-		cmd='/usr/bin/gatttool -b ' + self.mac +'  -t random -I'
+		cmd='gatttool -b ' + self.mac +'  -t random -I'
 		self.child = pexpect.spawn(cmd)
 		i = self.child.expect ([pexpect.TIMEOUT, '\[LE\]>'])
 		if i == 0:

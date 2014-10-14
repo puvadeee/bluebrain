@@ -1,0 +1,9 @@
+export PYTHONPATH=`pwd`/modules
+export SDL_VIDEODRIVER=fbcon
+export SDL_FBDEV=/dev/fb1 
+export SDL_MOUSEDEV=/dev/input/touchscreen
+export SDL_MOUSEDRV=TSLIB
+killall gatttool
+hciconfig hci0 up
+cd apps/joypad
+python joypad.py
