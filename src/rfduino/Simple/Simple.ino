@@ -9,6 +9,7 @@
 // Version:   1.0  -  04.10.2014  -  Inital Version  (wayne@cannybots.com)
 // Version:   1.1  -  11.10.2014  -  Customisable bot name advertised over BLE (wayne@cannybots.com)
 //                                   Do not set a custom GZLL_HOST_ADDRESS by default
+// Version:   1.2  -  15.10.2014  -  Make use of joypad z axis (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
@@ -61,7 +62,7 @@ void motorSpeed(int _speedA, int _speedB) {
 }
 
 
-void joypad_update(int x, int y, int b) {
+void joypad_update(int x, int y, int z, int b) {
   // If the axis readings are small, in the 'deadzone', set them to 0
   if ( abs(x) < JOYPAD_AXIS_DEADZONE)  x = 0;
   if ( abs(y) < JOYPAD_AXIS_DEADZONE)  y = 0;

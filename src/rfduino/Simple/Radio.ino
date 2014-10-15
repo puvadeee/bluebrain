@@ -182,11 +182,12 @@ void radio_debug(char* msg) {
 // B = unsigned byte for button pressed: 0 = no, 1 = yes
 
 void process_message(char *data, int len) {
-  if (len >= 3) {
+  if (len >= 4) {
     // map x&y values from 0..255 to -255..255
     joypad_update(
       map(data[0], 0, 255, -255, 255),   // x axis
       map(data[1], 0, 255, -255, 255),   // y axis
+      map(data[3], 0, 255, -255, 255),   // y axis
       data[2]                            // button(s) - 8 bits can support up to 8 buttons
     );
   }
@@ -194,7 +195,7 @@ void process_message(char *data, int len) {
 
 // tidyup helper for when GZLL connection times out or BLE client disconnects
 void client_disconnected() {
-  joypad_update(0, 0, 0);
+  joypad_update(0, 0, 0, 0);
 }
 
 
