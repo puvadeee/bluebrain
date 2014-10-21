@@ -10,13 +10,16 @@
 // Version:   1.1  -  11.10.2014  -  Customisable bot name advertised over BLE (wayne@cannybots.com)
 //                                   Do not set a custom GZLL_HOST_ADDRESS by default
 // Version:   1.2  -  15.10.2014  -  Make use of joypad z axis (wayne@cannybots.com)
+// Version:   1.3  -  21.10.2014  -  Added LineFollowing (mampetta@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
-#define GZLL_HOST_ADDRESS 0x12ABCD07           // this needs to match the Joypad sketch value
+//#define GZLL_HOST_ADDRESS 0x12ABCD07           // this needs to match the Joypad sketch value
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
+void radio_debug(char *fmt, ... );
+
 
 // PIN ASSIGNEMENT
 // total of 7 pins available of which any 4 can be defined as PWM
@@ -51,10 +54,10 @@ int IRval2 = 0;
 int IRval3 = 0;
 
 // PID working parameters
-int Kp = PID_P;            
+int Kp = PID_P;
 int Ki = PID_I;
 int Kd = PID_D;
-int P_error = 0; 
+int P_error = 0;
 int I_sum = 0;
 int I_error = 0;
 int D_error = 0;
@@ -97,69 +100,67 @@ void setup() {
 }
 
 void loop() {
-  
+
   time_Now = millis(); //record time at start of loop
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
-  
   if (IRval2 >= IR_WHITE_THRESHOLD)
-    {
-    isLineFollowingMode = true;   
+  {
+    isLineFollowingMode = true;
     calculatePID();
-    if (yAxisValue <= 0)
-    yAxisValue = 0;
-    speedA = yAxisValue + correction;
-    speedB = -(yAxisValue - correction);
-    }
-  else   
-    {
+    if (zAxisValue <= 0)
+      zAxisValue = 0;
+    speedA = zAxisValue + correction;
+    speedB = -(zAxisValue - correction);
+  }
+  else
+  {
     isLineFollowingMode = false;
-    if(yAxisValue >= 0);
-    yAxisValue = 0;
-    speedA = (yAxisValue - xAxisValue)/2;
-    speedB = (-yAxisValue - xAxisValue)/2;
-    }
+    if (yAxisValue >= 0)
+      yAxisValue = 0;
+    speedA = (yAxisValue - xAxisValue) / 2;
+    speedB = (-yAxisValue - xAxisValue) / 2;
+  }
 
   motorSpeed(speedA, speedB);
-  // put timinig delay here.. run a equalising loop here
 
 }
 
 
-// READ & PROCESS IR VALUES 
+// READ & PROCESS IR VALUES
 void readIRSensors() {
   IRval1 = analogRead(IR1_PIN) + IR1_BIAS; //left looking from behind
   if (IRval1 >= 1000)
-  IRval1 = 1000;
-  
+    IRval1 = 1000;
+
   IRval2 = analogRead(IR2_PIN) + IR2_BIAS; //centre
   if (IRval2 >= 1000)
-  IRval2 = 1000;
-  
-  IRval3 = analogRead(IR3_PIN) + IR3_BIAS; //right  
+    IRval2 = 1000;
+
+  IRval3 = analogRead(IR3_PIN) + IR3_BIAS; //right
   if (IRval3 >= 1000)
-  IRval3 = 1000;
+    IRval3 = 1000;
 
 }
 
 // CALCULATE PID
 void calculatePID() {
-  
+
   // Calculate PID on a regular time basis
   if ((time_Now - pidLastTime) < PID_SAMPLE_TIME ) {
     // return if called too soon
     return;
   }
   pidLastTime = time_Now;
-  
+
   // process IR readings via PID
   Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
   error_last = error; // store previous error value before new one is caluclated
   error = IRval1 - IRval3;
-  P_error = error * Kp /100.0; // calculate proportional term
-  I_sum = constrain ((I_sum + error),-1000,1000); // integral term
-  I_error = I_sum*Ki/100.0;
-  D_error = (error - error_last) * Kd /100.0;           // calculate differential term
+  P_error = error * Kp / 100.0; // calculate proportional term
+  I_sum = constrain ((I_sum + error), -1000, 1000); // integral term
+  I_error = I_sum * Ki / 100.0;
+  D_error = (error - error_last) * Kd / 100.0;          // calculate differential term
   correction = P_error + D_error + I_error;
 }
 
@@ -184,11 +185,13 @@ void joypad_update(int x, int y, int z, int b) {
   if ( abs(x) < JOYPAD_AXIS_DEADZONE)  x = 0;
   if ( abs(y) < JOYPAD_AXIS_DEADZONE)  y = 0;
   if ( abs(z) < JOYPAD_AXIS_DEADZONE)  z = 0;
-  
+
   xAxisValue = x;
-  yAxisValue = -y;
-  zAxisValue = z; 
+  yAxisValue = y;
+  zAxisValue = -z;
   buttonPressed = b;
+
+  //radio_debug("%d,%d,%d,%d = %d,%d,%d,%d", x,y,z,b, xAxisValue,yAxisValue,zAxisValue,buttonPressed);
 }
 
 

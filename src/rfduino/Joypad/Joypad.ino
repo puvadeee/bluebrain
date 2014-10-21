@@ -12,7 +12,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 //#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Bot sketch value
-
+//#define LOCAL_DEBUG
+#define REMOTE_DEBUG
 
 #include <RFduinoGZLL.h>
 
@@ -23,7 +24,7 @@
 #define MSG_LEN 4
 
 #define GZLL_MAX_MSG_SIZE 32
-char  gzllDebugBuf[GZLL_MAX_MSG_SIZE] = {0};
+char  gzllDebugBuf[GZLL_MAX_MSG_SIZE+1] = {0};
 char* dbgMsg = NULL;
 
 
@@ -47,23 +48,27 @@ void loop()
   uint8_t yAxis = 255-(analogRead(Y_AXIS_PIN)/4) ;
   uint8_t zAxis = 255-(analogRead(Z_AXIS_PIN)/4) ;
   
-  snprintf(msg, MSG_LEN, "%c%c%c%c", xAxis, yAxis, buttonPressed, zAxis );
+  snprintf(msg, MSG_LEN+1, "%c%c%c%c", xAxis, yAxis, buttonPressed, zAxis );
   
   RFduinoGZLL.sendToHost((const char*)msg, MSG_LEN);      // don't bother sending the NULL byte at the end
+#ifdef LOCAL_DEBUG
   //Serial.write((uint8_t*)msg, MSG_LEN);
-  /*
   Serial.print(xAxis);
   Serial.print("\t");  
   Serial.print(yAxis);
   Serial.print("\t");  
+  Serial.print(zAxis);
+  Serial.print("\t");  
   Serial.println(buttonPressed);
-  */
-  delay(5);
-  
+#endif
+
+  delay(50);
+#ifdef REMOTE_DEBUG
   if (dbgMsg) {
       Serial.println(dbgMsg);
       dbgMsg=NULL;   
   }    
+#endif 
 }
 
 void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len)
@@ -71,7 +76,8 @@ void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len)
   if (len > 0)
   {
     if (!dbgMsg) {
-      memcpy( gzllDebugBuf, data, len);   
+      memcpy( gzllDebugBuf, data, min(sizeof(gzllDebugBuf)-1,len));
+      gzllDebugBuf[min(sizeof(gzllDebugBuf)-1,len)]=0;
       dbgMsg=gzllDebugBuf;      
     }
   }

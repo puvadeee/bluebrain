@@ -1,5 +1,6 @@
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
+#include <stdarg.h>
 
 // Choose one of:
 //#define  RADIO_ONLY_GZLL
@@ -9,7 +10,7 @@
 
 // don't change these
 #define GZLL_MAX_MSG_SIZE 32
-char  gzllDebugBuf[GZLL_MAX_MSG_SIZE] = {0};
+char  gzllDebugBuf[GZLL_MAX_MSG_SIZE+1] = {0};
 char* gzllDebug=NULL;
 
 // don't change these
@@ -21,6 +22,8 @@ char* gzllDebug=NULL;
 #define BLE_TX_POWER_LEVEL         0
 #define TOGGLE_MILLIS                   1500
 #define TOGGLE_GZLL_CONNECTION_TIMEOUT   250
+
+
 
 void radio_setup() {
 
@@ -154,9 +157,9 @@ void RFduinoBLE_onDisconnect() {
   client_disconnected();
 }
 
-void radio_debug(char* msg) {
+void _radio_debug(char* msg) {
     if (!gzllDebug && gzllConnected) {
-     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE-1, msg);
+     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE, msg);
      gzllDebug = gzllDebugBuf;
     } 
     
@@ -165,6 +168,14 @@ void radio_debug(char* msg) {
     }
 }
 
+void radio_debug(char *fmt, ... ){
+        char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
+        va_list args;
+        va_start (args, fmt );
+        vsnprintf(buf, GZLL_MAX_MSG_SIZE+1, fmt, args);
+        va_end (args);
+        _radio_debug(buf);
+}
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE/GZLL shared message processing

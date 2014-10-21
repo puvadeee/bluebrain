@@ -62,7 +62,7 @@ void motorSpeed(int _speedA, int _speedB) {
 }
 
 
-void joypad_update(int x, int y, int z, int b) {
+void joypad_update(int x, int y, int z,int b) {
   // If the axis readings are small, in the 'deadzone', set them to 0
   if ( abs(x) < JOYPAD_AXIS_DEADZONE)  x = 0;
   if ( abs(y) < JOYPAD_AXIS_DEADZONE)  y = 0;
