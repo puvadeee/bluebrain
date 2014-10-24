@@ -14,7 +14,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
-//#define GZLL_HOST_ADDRESS 0x12ABCD07           // this needs to match the Joypad sketch value
+#define GZLL_HOST_ADDRESS 0x12ABCD07           // this needs to match the Joypad sketch value
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
@@ -104,24 +104,25 @@ void loop() {
   time_Now = millis(); //record time at start of loop
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
+  
+
   if (IRval2 >= IR_WHITE_THRESHOLD)
   {
-    isLineFollowingMode = true;
-    calculatePID();
-    if (zAxisValue <= 0)
-      zAxisValue = 0;
-    speedA = zAxisValue + correction;
-    speedB = -(zAxisValue - correction);
+  isLineFollowingMode = true;
+  calculatePID();
+  if (zAxisValue <= 0)
+  zAxisValue = 0;
   }
   else
   {
-    isLineFollowingMode = false;
-    if (yAxisValue >= 0)
-      yAxisValue = 0;
-    speedA = (yAxisValue - xAxisValue) / 2;
-    speedB = (-yAxisValue - xAxisValue) / 2;
+  isLineFollowingMode = false;
+  zAxisValue = 0;
+  correction = 0;
   }
-
+  
+  speedA = (zAxisValue + correction)+(yAxisValue/4 - xAxisValue/4);
+  speedB = (zAxisValue -correction)+(yAxisValue/4 + xAxisValue/4);
+  
   motorSpeed(speedA, speedB);
 
 }
