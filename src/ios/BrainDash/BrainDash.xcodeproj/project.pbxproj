@@ -1,0 +1,622 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 46;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		B013368019FA7B98003F4B57 /* ConnectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B013367F19FA7B98003F4B57 /* ConnectionViewController.m */; };
+		B09D589D19F7EE640023BA29 /* CBUUID+StringExtraction.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589619F7EE640023BA29 /* CBUUID+StringExtraction.m */; };
+		B09D589E19F7EE640023BA29 /* NSData+hex.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589819F7EE640023BA29 /* NSData+hex.m */; };
+		B09D589F19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589A19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m */; };
+		B09D58A019F7EE640023BA29 /* NSString+hex.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589C19F7EE640023BA29 /* NSString+hex.m */; };
+		B09D58AD19F7F29B0023BA29 /* button.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58A419F7F29B0023BA29 /* button.png */; };
+		B09D58AE19F7F29B0023BA29 /* joystick.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58A519F7F29B0023BA29 /* joystick.png */; };
+		B09D58AF19F7F29B0023BA29 /* knob.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58A619F7F29B0023BA29 /* knob.png */; };
+		B09D58B019F7F29B0023BA29 /* Control Panel.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58A819F7F29B0023BA29 /* Control Panel.png */; };
+		B09D58B119F7F29B0023BA29 /* Game Pad.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58A919F7F29B0023BA29 /* Game Pad.png */; };
+		B09D58B219F7F29B0023BA29 /* Gears.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58AA19F7F29B0023BA29 /* Gears.png */; };
+		B09D58B319F7F29B0023BA29 /* Cannybots_Logo_2000x446.png in Resources */ = {isa = PBXBuildFile; fileRef = B09D58AC19F7F29B0023BA29 /* Cannybots_Logo_2000x446.png */; };
+		B09FA50C19FB982700CE8466 /* Utilities.m in Sources */ = {isa = PBXBuildFile; fileRef = B09FA50B19FB982700CE8466 /* Utilities.m */; };
+		B09FA51B19FB98FD00CE8466 /* CustomCellBackground.m in Sources */ = {isa = PBXBuildFile; fileRef = B09FA51119FB98FD00CE8466 /* CustomCellBackground.m */; };
+		B09FA51C19FB98FD00CE8466 /* RFduino.m in Sources */ = {isa = PBXBuildFile; fileRef = B09FA51319FB98FD00CE8466 /* RFduino.m */; };
+		B09FA51D19FB98FD00CE8466 /* RfduinoManager.m in Sources */ = {isa = PBXBuildFile; fileRef = B09FA51619FB98FD00CE8466 /* RfduinoManager.m */; };
+		B09FA51E19FB98FD00CE8466 /* ScanViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B09FA51919FB98FD00CE8466 /* ScanViewController.m */; };
+		B0CFC9E019F95966008210C5 /* Images.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = B0CFC9DF19F95966008210C5 /* Images.xcassets */; };
+		B0D61BD919F7E5D100DC4CDA /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BD819F7E5D100DC4CDA /* main.m */; };
+		B0D61BDC19F7E5D100DC4CDA /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BDB19F7E5D100DC4CDA /* AppDelegate.m */; };
+		B0D61BDF19F7E5D100DC4CDA /* JoypadViewContrroller.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BDE19F7E5D100DC4CDA /* JoypadViewContrroller.m */; };
+		B0D61BE219F7E5D100DC4CDA /* SettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BE119F7E5D100DC4CDA /* SettingsViewController.m */; };
+		B0D61BE519F7E5D100DC4CDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0D61BE319F7E5D100DC4CDA /* Main.storyboard */; };
+		B0D61BEA19F7E5D100DC4CDA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0D61BE819F7E5D100DC4CDA /* LaunchScreen.xib */; };
+		B0D61BF619F7E5D100DC4CDA /* BrainDashTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BF519F7E5D100DC4CDA /* BrainDashTests.m */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		B0D61BF019F7E5D100DC4CDA /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = B0D61BCB19F7E5D100DC4CDA /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = B0D61BD219F7E5D100DC4CDA;
+			remoteInfo = BrainDash;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		B013367E19FA7B98003F4B57 /* ConnectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionViewController.h; sourceTree = "<group>"; };
+		B013367F19FA7B98003F4B57 /* ConnectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionViewController.m; sourceTree = "<group>"; };
+		B09D589519F7EE640023BA29 /* CBUUID+StringExtraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBUUID+StringExtraction.h"; sourceTree = "<group>"; };
+		B09D589619F7EE640023BA29 /* CBUUID+StringExtraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBUUID+StringExtraction.m"; sourceTree = "<group>"; };
+		B09D589719F7EE640023BA29 /* NSData+hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+hex.h"; sourceTree = "<group>"; };
+		B09D589819F7EE640023BA29 /* NSData+hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSData+hex.m"; sourceTree = "<group>"; };
+		B09D589919F7EE640023BA29 /* NSObject+performBlockAfterDelay.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSObject+performBlockAfterDelay.h"; sourceTree = "<group>"; };
+		B09D589A19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSObject+performBlockAfterDelay.m"; sourceTree = "<group>"; };
+		B09D589B19F7EE640023BA29 /* NSString+hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSString+hex.h"; sourceTree = "<group>"; };
+		B09D589C19F7EE640023BA29 /* NSString+hex.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "NSString+hex.m"; sourceTree = "<group>"; };
+		B09D58A419F7F29B0023BA29 /* button.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = button.png; sourceTree = "<group>"; };
+		B09D58A519F7F29B0023BA29 /* joystick.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = joystick.png; sourceTree = "<group>"; };
+		B09D58A619F7F29B0023BA29 /* knob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = knob.png; sourceTree = "<group>"; };
+		B09D58A819F7F29B0023BA29 /* Control Panel.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Control Panel.png"; sourceTree = "<group>"; };
+		B09D58A919F7F29B0023BA29 /* Game Pad.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = "Game Pad.png"; sourceTree = "<group>"; };
+		B09D58AA19F7F29B0023BA29 /* Gears.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Gears.png; sourceTree = "<group>"; };
+		B09D58AC19F7F29B0023BA29 /* Cannybots_Logo_2000x446.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Cannybots_Logo_2000x446.png; sourceTree = "<group>"; };
+		B09FA50A19FB97E900CE8466 /* Utilities.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Utilities.h; sourceTree = "<group>"; };
+		B09FA50B19FB982700CE8466 /* Utilities.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = Utilities.m; sourceTree = "<group>"; };
+		B09FA51019FB98FD00CE8466 /* CustomCellBackground.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = CustomCellBackground.h; sourceTree = "<group>"; };
+		B09FA51119FB98FD00CE8466 /* CustomCellBackground.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = CustomCellBackground.m; sourceTree = "<group>"; };
+		B09FA51219FB98FD00CE8466 /* RFduino.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFduino.h; sourceTree = "<group>"; };
+		B09FA51319FB98FD00CE8466 /* RFduino.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RFduino.m; sourceTree = "<group>"; };
+		B09FA51419FB98FD00CE8466 /* RFduinoDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFduinoDelegate.h; sourceTree = "<group>"; };
+		B09FA51519FB98FD00CE8466 /* RfduinoManager.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RfduinoManager.h; sourceTree = "<group>"; };
+		B09FA51619FB98FD00CE8466 /* RfduinoManager.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = RfduinoManager.m; sourceTree = "<group>"; };
+		B09FA51719FB98FD00CE8466 /* RFduinoManagerDelegate.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = RFduinoManagerDelegate.h; sourceTree = "<group>"; };
+		B09FA51819FB98FD00CE8466 /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
+		B09FA51919FB98FD00CE8466 /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
+		B0CFC9DF19F95966008210C5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
+		B0D61BD319F7E5D100DC4CDA /* BrainDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrainDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D61BD719F7E5D100DC4CDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0D61BD819F7E5D100DC4CDA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		B0D61BDA19F7E5D100DC4CDA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
+		B0D61BDB19F7E5D100DC4CDA /* AppDelegate.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AppDelegate.m; sourceTree = "<group>"; };
+		B0D61BDD19F7E5D100DC4CDA /* JoypadViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = JoypadViewController.h; sourceTree = "<group>"; };
+		B0D61BDE19F7E5D100DC4CDA /* JoypadViewContrroller.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = JoypadViewContrroller.m; sourceTree = "<group>"; };
+		B0D61BE019F7E5D100DC4CDA /* SettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = SettingsViewController.h; sourceTree = "<group>"; };
+		B0D61BE119F7E5D100DC4CDA /* SettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = SettingsViewController.m; sourceTree = "<group>"; };
+		B0D61BE419F7E5D100DC4CDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
+		B0D61BE919F7E5D100DC4CDA /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.xib; name = Base; path = Base.lproj/LaunchScreen.xib; sourceTree = "<group>"; };
+		B0D61BEF19F7E5D100DC4CDA /* BrainDashTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrainDashTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D61BF419F7E5D100DC4CDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		B0D61BF519F7E5D100DC4CDA /* BrainDashTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrainDashTests.m; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		B0D61BD019F7E5D100DC4CDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0D61BEC19F7E5D100DC4CDA /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		B09D588D19F7EE100023BA29 /* BLE */ = {
+			isa = PBXGroup;
+			children = (
+				B09FA50D19FB98FD00CE8466 /* rfduino */,
+			);
+			path = BLE;
+			sourceTree = "<group>";
+		};
+		B09D589419F7EE640023BA29 /* Categories */ = {
+			isa = PBXGroup;
+			children = (
+				B09D589519F7EE640023BA29 /* CBUUID+StringExtraction.h */,
+				B09D589619F7EE640023BA29 /* CBUUID+StringExtraction.m */,
+				B09D589719F7EE640023BA29 /* NSData+hex.h */,
+				B09D589819F7EE640023BA29 /* NSData+hex.m */,
+				B09D589919F7EE640023BA29 /* NSObject+performBlockAfterDelay.h */,
+				B09D589A19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m */,
+				B09D589B19F7EE640023BA29 /* NSString+hex.h */,
+				B09D589C19F7EE640023BA29 /* NSString+hex.m */,
+			);
+			path = Categories;
+			sourceTree = "<group>";
+		};
+		B09D58A119F7F29B0023BA29 /* graphics */ = {
+			isa = PBXGroup;
+			children = (
+				B09D58A219F7F29B0023BA29 /* icons */,
+				B09D58AB19F7F29B0023BA29 /* logos */,
+			);
+			path = graphics;
+			sourceTree = "<group>";
+		};
+		B09D58A219F7F29B0023BA29 /* icons */ = {
+			isa = PBXGroup;
+			children = (
+				B09D58A319F7F29B0023BA29 /* joystick */,
+				B09D58A719F7F29B0023BA29 /* tabbar */,
+			);
+			path = icons;
+			sourceTree = "<group>";
+		};
+		B09D58A319F7F29B0023BA29 /* joystick */ = {
+			isa = PBXGroup;
+			children = (
+				B09D58A419F7F29B0023BA29 /* button.png */,
+				B09D58A519F7F29B0023BA29 /* joystick.png */,
+				B09D58A619F7F29B0023BA29 /* knob.png */,
+			);
+			path = joystick;
+			sourceTree = "<group>";
+		};
+		B09D58A719F7F29B0023BA29 /* tabbar */ = {
+			isa = PBXGroup;
+			children = (
+				B09D58A819F7F29B0023BA29 /* Control Panel.png */,
+				B09D58A919F7F29B0023BA29 /* Game Pad.png */,
+				B09D58AA19F7F29B0023BA29 /* Gears.png */,
+			);
+			path = tabbar;
+			sourceTree = "<group>";
+		};
+		B09D58AB19F7F29B0023BA29 /* logos */ = {
+			isa = PBXGroup;
+			children = (
+				B09D58AC19F7F29B0023BA29 /* Cannybots_Logo_2000x446.png */,
+			);
+			path = logos;
+			sourceTree = "<group>";
+		};
+		B09FA50D19FB98FD00CE8466 /* rfduino */ = {
+			isa = PBXGroup;
+			children = (
+				B09FA51019FB98FD00CE8466 /* CustomCellBackground.h */,
+				B09FA51119FB98FD00CE8466 /* CustomCellBackground.m */,
+				B09FA51219FB98FD00CE8466 /* RFduino.h */,
+				B09FA51319FB98FD00CE8466 /* RFduino.m */,
+				B09FA51419FB98FD00CE8466 /* RFduinoDelegate.h */,
+				B09FA51519FB98FD00CE8466 /* RfduinoManager.h */,
+				B09FA51619FB98FD00CE8466 /* RfduinoManager.m */,
+				B09FA51719FB98FD00CE8466 /* RFduinoManagerDelegate.h */,
+				B09FA51819FB98FD00CE8466 /* ScanViewController.h */,
+				B09FA51919FB98FD00CE8466 /* ScanViewController.m */,
+			);
+			path = rfduino;
+			sourceTree = "<group>";
+		};
+		B09FA51F19FB9FD200CE8466 /* ViewControllers */ = {
+			isa = PBXGroup;
+			children = (
+				B0D61BDD19F7E5D100DC4CDA /* JoypadViewController.h */,
+				B0D61BDE19F7E5D100DC4CDA /* JoypadViewContrroller.m */,
+				B0D61BE019F7E5D100DC4CDA /* SettingsViewController.h */,
+				B0D61BE119F7E5D100DC4CDA /* SettingsViewController.m */,
+				B013367E19FA7B98003F4B57 /* ConnectionViewController.h */,
+				B013367F19FA7B98003F4B57 /* ConnectionViewController.m */,
+			);
+			name = ViewControllers;
+			sourceTree = "<group>";
+		};
+		B0D61BCA19F7E5D100DC4CDA = {
+			isa = PBXGroup;
+			children = (
+				B0D61BD519F7E5D100DC4CDA /* BrainDash */,
+				B0D61BF219F7E5D100DC4CDA /* BrainDashTests */,
+				B0D61BD419F7E5D100DC4CDA /* Products */,
+			);
+			sourceTree = "<group>";
+		};
+		B0D61BD419F7E5D100DC4CDA /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				B0D61BD319F7E5D100DC4CDA /* BrainDash.app */,
+				B0D61BEF19F7E5D100DC4CDA /* BrainDashTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		B0D61BD519F7E5D100DC4CDA /* BrainDash */ = {
+			isa = PBXGroup;
+			children = (
+				B09FA51F19FB9FD200CE8466 /* ViewControllers */,
+				B09D58A119F7F29B0023BA29 /* graphics */,
+				B09D589419F7EE640023BA29 /* Categories */,
+				B09D588D19F7EE100023BA29 /* BLE */,
+				B0D61BE319F7E5D100DC4CDA /* Main.storyboard */,
+				B0D61BE819F7E5D100DC4CDA /* LaunchScreen.xib */,
+				B0CFC9DF19F95966008210C5 /* Images.xcassets */,
+				B0D61BD619F7E5D100DC4CDA /* Supporting Files */,
+			);
+			path = BrainDash;
+			sourceTree = "<group>";
+		};
+		B0D61BD619F7E5D100DC4CDA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B09FA50A19FB97E900CE8466 /* Utilities.h */,
+				B09FA50B19FB982700CE8466 /* Utilities.m */,
+				B0D61BDA19F7E5D100DC4CDA /* AppDelegate.h */,
+				B0D61BDB19F7E5D100DC4CDA /* AppDelegate.m */,
+				B0D61BD719F7E5D100DC4CDA /* Info.plist */,
+				B0D61BD819F7E5D100DC4CDA /* main.m */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+		B0D61BF219F7E5D100DC4CDA /* BrainDashTests */ = {
+			isa = PBXGroup;
+			children = (
+				B0D61BF519F7E5D100DC4CDA /* BrainDashTests.m */,
+				B0D61BF319F7E5D100DC4CDA /* Supporting Files */,
+			);
+			path = BrainDashTests;
+			sourceTree = "<group>";
+		};
+		B0D61BF319F7E5D100DC4CDA /* Supporting Files */ = {
+			isa = PBXGroup;
+			children = (
+				B0D61BF419F7E5D100DC4CDA /* Info.plist */,
+			);
+			name = "Supporting Files";
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXNativeTarget section */
+		B0D61BD219F7E5D100DC4CDA /* BrainDash */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDash" */;
+			buildPhases = (
+				B0D61BCF19F7E5D100DC4CDA /* Sources */,
+				B0D61BD019F7E5D100DC4CDA /* Frameworks */,
+				B0D61BD119F7E5D100DC4CDA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = BrainDash;
+			productName = BrainDash;
+			productReference = B0D61BD319F7E5D100DC4CDA /* BrainDash.app */;
+			productType = "com.apple.product-type.application";
+		};
+		B0D61BEE19F7E5D100DC4CDA /* BrainDashTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = B0D61BFC19F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDashTests" */;
+			buildPhases = (
+				B0D61BEB19F7E5D100DC4CDA /* Sources */,
+				B0D61BEC19F7E5D100DC4CDA /* Frameworks */,
+				B0D61BED19F7E5D100DC4CDA /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				B0D61BF119F7E5D100DC4CDA /* PBXTargetDependency */,
+			);
+			name = BrainDashTests;
+			productName = BrainDashTests;
+			productReference = B0D61BEF19F7E5D100DC4CDA /* BrainDashTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		B0D61BCB19F7E5D100DC4CDA /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastUpgradeCheck = 0610;
+				ORGANIZATIONNAME = Cannybots;
+				TargetAttributes = {
+					B0D61BD219F7E5D100DC4CDA = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 326N5R45V8;
+					};
+					B0D61BEE19F7E5D100DC4CDA = {
+						CreatedOnToolsVersion = 6.1;
+						DevelopmentTeam = 326N5R45V8;
+						TestTargetID = B0D61BD219F7E5D100DC4CDA;
+					};
+				};
+			};
+			buildConfigurationList = B0D61BCE19F7E5D100DC4CDA /* Build configuration list for PBXProject "BrainDash" */;
+			compatibilityVersion = "Xcode 3.2";
+			developmentRegion = English;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = B0D61BCA19F7E5D100DC4CDA;
+			productRefGroup = B0D61BD419F7E5D100DC4CDA /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				B0D61BD219F7E5D100DC4CDA /* BrainDash */,
+				B0D61BEE19F7E5D100DC4CDA /* BrainDashTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		B0D61BD119F7E5D100DC4CDA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B09D58B019F7F29B0023BA29 /* Control Panel.png in Resources */,
+				B0CFC9E019F95966008210C5 /* Images.xcassets in Resources */,
+				B09D58AE19F7F29B0023BA29 /* joystick.png in Resources */,
+				B0D61BE519F7E5D100DC4CDA /* Main.storyboard in Resources */,
+				B09D58AD19F7F29B0023BA29 /* button.png in Resources */,
+				B0D61BEA19F7E5D100DC4CDA /* LaunchScreen.xib in Resources */,
+				B09D58B319F7F29B0023BA29 /* Cannybots_Logo_2000x446.png in Resources */,
+				B09D58B119F7F29B0023BA29 /* Game Pad.png in Resources */,
+				B09D58AF19F7F29B0023BA29 /* knob.png in Resources */,
+				B09D58B219F7F29B0023BA29 /* Gears.png in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0D61BED19F7E5D100DC4CDA /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		B0D61BCF19F7E5D100DC4CDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B09FA51B19FB98FD00CE8466 /* CustomCellBackground.m in Sources */,
+				B09FA51E19FB98FD00CE8466 /* ScanViewController.m in Sources */,
+				B09FA51D19FB98FD00CE8466 /* RfduinoManager.m in Sources */,
+				B09FA51C19FB98FD00CE8466 /* RFduino.m in Sources */,
+				B0D61BE219F7E5D100DC4CDA /* SettingsViewController.m in Sources */,
+				B0D61BDC19F7E5D100DC4CDA /* AppDelegate.m in Sources */,
+				B09D589E19F7EE640023BA29 /* NSData+hex.m in Sources */,
+				B0D61BDF19F7E5D100DC4CDA /* JoypadViewContrroller.m in Sources */,
+				B09D589D19F7EE640023BA29 /* CBUUID+StringExtraction.m in Sources */,
+				B09FA50C19FB982700CE8466 /* Utilities.m in Sources */,
+				B013368019FA7B98003F4B57 /* ConnectionViewController.m in Sources */,
+				B09D589F19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m in Sources */,
+				B09D58A019F7EE640023BA29 /* NSString+hex.m in Sources */,
+				B0D61BD919F7E5D100DC4CDA /* main.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		B0D61BEB19F7E5D100DC4CDA /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				B0D61BF619F7E5D100DC4CDA /* BrainDashTests.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		B0D61BF119F7E5D100DC4CDA /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = B0D61BD219F7E5D100DC4CDA /* BrainDash */;
+			targetProxy = B0D61BF019F7E5D100DC4CDA /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin PBXVariantGroup section */
+		B0D61BE319F7E5D100DC4CDA /* Main.storyboard */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0D61BE419F7E5D100DC4CDA /* Base */,
+			);
+			name = Main.storyboard;
+			sourceTree = "<group>";
+		};
+		B0D61BE819F7E5D100DC4CDA /* LaunchScreen.xib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				B0D61BE919F7E5D100DC4CDA /* Base */,
+			);
+			name = LaunchScreen.xib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		B0D61BF719F7E5D100DC4CDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				COPY_PHASE_STRIP = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B0D61BF819F7E5D100DC4CDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++0x";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				CODE_SIGN_IDENTITY = "iPhone Distribution";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Distribution";
+				COPY_PHASE_STRIP = YES;
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu99;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				SDKROOT = iphoneos;
+				TARGETED_DEVICE_FAMILY = 1;
+				VALIDATE_PRODUCT = YES;
+			};
+			name = Release;
+		};
+		B0D61BFA19F7E5D100DC4CDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = BrainDash/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Debug;
+		};
+		B0D61BFB19F7E5D100DC4CDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
+				ASSETCATALOG_COMPILER_LAUNCHIMAGE_NAME = LaunchImage;
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				INFOPLIST_FILE = BrainDash/Info.plist;
+				IPHONEOS_DEPLOYMENT_TARGET = 7.0;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TARGETED_DEVICE_FAMILY = 1;
+			};
+			name = Release;
+		};
+		B0D61BFD19F7E5D100DC4CDA /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = BrainDashTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrainDash.app/BrainDash";
+			};
+			name = Debug;
+		};
+		B0D61BFE19F7E5D100DC4CDA /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				BUNDLE_LOADER = "$(TEST_HOST)";
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
+				FRAMEWORK_SEARCH_PATHS = (
+					"$(SDKROOT)/Developer/Library/Frameworks",
+					"$(inherited)",
+				);
+				INFOPLIST_FILE = BrainDashTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrainDash.app/BrainDash";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		B0D61BCE19F7E5D100DC4CDA /* Build configuration list for PBXProject "BrainDash" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0D61BF719F7E5D100DC4CDA /* Debug */,
+				B0D61BF819F7E5D100DC4CDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDash" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0D61BFA19F7E5D100DC4CDA /* Debug */,
+				B0D61BFB19F7E5D100DC4CDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		B0D61BFC19F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDashTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				B0D61BFD19F7E5D100DC4CDA /* Debug */,
+				B0D61BFE19F7E5D100DC4CDA /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = B0D61BCB19F7E5D100DC4CDA /* Project object */;
+}
