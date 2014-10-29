@@ -1,5 +1,5 @@
 import socket
-#import time
+import time
 
 UDP_IP = "127.0.0.1"
 UDP_PORT = 3141
@@ -10,5 +10,6 @@ sock.bind((UDP_IP, UDP_PORT))
 
 while True:
     data, addr = sock.recvfrom(1024) # buffer size is 1024 bytes
-    print "received message:", data
-    #time.time(0.1)
+    if data:
+		print "received message:", data
+		time.sleep(0.1)
