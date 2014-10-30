@@ -9,7 +9,7 @@
 # Version:   1.0  -  11.10.2014  -  Inital Version  (wayne@cannybots.com)
 #
 
-
+BTADDR='CD:24:DF:0A:CD:B6'
 import os
 import time
 import array
@@ -96,10 +96,10 @@ class BLE_UART:
 		self.tx.name = name
 		self.tx.start()
 		
-		self.rx = Thread(target=self.rx_worker)
-		self.rx.daemon = True
-		self.rx.name = name
-		self.rx.start()
+		#self.rx = Thread(target=self.rx_worker)
+		#self.rx.daemon = True
+		#self.rx.name = name
+		#self.rx.start()
 		
 		
 	def addListener(self,func):
@@ -139,7 +139,7 @@ class BLE:
 
 	def findAll(self):
 		deviceName = 'cannybot1'
-		bleuart1= BLE_UART(mac='FF:C3:F0:EC:C3:D9', name=deviceName)
+		bleuart1= BLE_UART(mac=BTADDR, name=deviceName)
 		return [bleuart1]
 		
 

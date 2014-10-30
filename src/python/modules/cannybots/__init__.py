@@ -1,2 +1,2 @@
-#from cannybots.BLE import *
+import cannybots.radio
 from cannybots import utils
