@@ -200,7 +200,7 @@ void blink_loop() {
   static unsigned long lastBlinkTime = 0;
   static bool ledsOn = false;
 
-  radio_debug("a=%d,b=%d,l=%d", speedA, speedB, ledsOn);
+  //radio_debug("a=%d,b=%d,l=%d", speedA, speedB, ledsOn);
   if ( ( abs(speedA) > 0) || (abs(speedB) > 0)) {
     return;
   }
