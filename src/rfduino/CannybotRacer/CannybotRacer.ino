@@ -77,9 +77,9 @@ bool forceManualMode     = false;
 int justOut = 0; // to break the speed if the bot just came out of line
 
 // Timers in milli-seconds (1/1000 of a second)
-unsigned long time_Now = millis();                    // the time at the start of the loop()
-unsigned long pidLastTime = millis();                // when the PID was calculated last
-unsigned long joypadLastTime = millis();             // the time the bot last received a joypad command
+unsigned long time_Now        = millis();                    // the time at the start of the loop()
+unsigned long pidLastTime     = millis();                // when the PID was calculated last
+unsigned long joypadLastTime  = millis();             // the time the bot last received a joypad command
 unsigned long offLineLastTime = millis();            // last time the bot came off the line
 unsigned long offTheLineTime = 0;                    // how long has the bot been off the line, total since last leaving the line
 
@@ -104,27 +104,27 @@ void loop() {
   time_Now = millis(); //record time at start of loop
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
-  
+
 
   if (IRval2 >= IR_WHITE_THRESHOLD)
   {
-  isLineFollowingMode = true;
-  calculatePID();
-  if (zAxisValue <= 0)
-  zAxisValue = 0;
+    isLineFollowingMode = true;
+    calculatePID();
+    if (zAxisValue <= 0)
+      zAxisValue = 0;
   }
   else
   {
-  isLineFollowingMode = false;
-  zAxisValue = 0;
-  correction = 0;
+    isLineFollowingMode = false;
+    zAxisValue = 0;
+    correction = 0;
   }
-  
-  speedA = (zAxisValue + correction)+(yAxisValue/4 - xAxisValue/4);
-  speedB = (zAxisValue -correction)+(yAxisValue/4 + xAxisValue/4);
-  
-  motorSpeed(speedA, speedB);
 
+  speedA = (zAxisValue + correction) + (yAxisValue / 4 - xAxisValue / 4);
+  speedB = (zAxisValue - correction) + (yAxisValue / 4 + xAxisValue / 4);
+
+  motorSpeed(speedA, speedB);
+  blink_loop();
 }
 
 
@@ -172,10 +172,10 @@ void motorSpeed(int _speedA, int _speedB) {
   _speedA = constrain(_speedA, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
   _speedB = constrain(_speedB, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
 
-  digitalWrite(MOTOR_A1_PIN, _speedA >= 0 ? HIGH : LOW) ;
+  digitalWrite(MOTOR_A1_PIN, _speedA > 0 ? HIGH : LOW) ;
   analogWrite (MOTOR_A2_PIN, abs(_speedA));
 
-  digitalWrite(MOTOR_B1_PIN, _speedB >= 0 ? HIGH : LOW);
+  digitalWrite(MOTOR_B1_PIN, _speedB > 0 ? HIGH : LOW);
   analogWrite (MOTOR_B2_PIN, abs(_speedB));
 }
 
@@ -196,3 +196,18 @@ void joypad_update(int x, int y, int z, int b) {
 }
 
 
+void blink_loop() {
+  static unsigned long lastBlinkTime = 0;
+  static bool ledsOn = false;
+
+  //radio_debug("a=%d,b=%d,l=%d", speedA, speedB, ledsOn);
+  if ( ( abs(speedA) > 0) || (abs(speedB) > 0)) {
+    return;
+  }
+  if (  (millis() - lastBlinkTime) > 500) {
+    lastBlinkTime = millis();
+    digitalWrite(MOTOR_A1_PIN, ledsOn ? HIGH : LOW) ;
+    digitalWrite(MOTOR_B1_PIN, ledsOn ? HIGH : LOW) ;
+    ledsOn = !ledsOn;
+  }
+}

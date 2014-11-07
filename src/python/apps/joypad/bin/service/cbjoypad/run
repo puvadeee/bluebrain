@@ -3,6 +3,8 @@ export SDL_VIDEODRIVER=fbcon
 export SDL_FBDEV=/dev/fb1 
 export SDL_MOUSEDEV=/dev/input/touchscreen
 export SDL_MOUSEDRV=TSLIB
+export PATH=/usr/local/bin:$PATH
+export PYTHONPATH=/opt/cannybots/runtime/modules
 cd /opt/cannybots/runtime/services/joypad
 killall gatttool
 hciconfig hci0 up
