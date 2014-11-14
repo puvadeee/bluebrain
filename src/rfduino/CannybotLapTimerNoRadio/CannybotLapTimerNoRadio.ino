@@ -1,17 +1,29 @@
-#define BOT_NAME "LapTimer"                   // custom name (16 chars max)
-#define GZLL_HOST_ADDRESS 0x12ABCD99           // this needs to match the Joypad sketch value
 
-#include <RFduinoGZLL.h>
-#include <RFduinoBLE.h>
 #include <Wire.h>
-#include "Adafruit_GFX.h"w
+#include "Adafruit_GFX.h"
 #include "Adafruit_LEDBackpack.h"
 
 // Sensor
 
+
+// Board	int.0	int.1	int.2	int.3	int.4	int.5
+// Uno, Ethernet	2	3	 	 	 	 
+// Mega2560	2	3	21	20	19	18
+// Leonardo	3	2	0	1	7
+                                                                                                                                                                                                                                                                                                                                                                                   
+// see http://arduino.cc/en/Reference/attachInterrupt
+#ifndef ARDUINO_AVR_LEONARDO 
 #define SENSOR_SIG_PIN 2
-#define SENSOR_VCC_PIN 4
 #define SENSOR_GND_PIN 3
+#define SENSOR_VCC_PIN 4
+#define INT_NUM 0
+#else
+#define SENSOR_SIG_PIN 7
+#define SENSOR_GND_PIN 8
+#define SENSOR_VCC_PIN 9
+#define INT_NUM 4
+#endif
+
 
 // LED matrix
 
@@ -70,27 +82,27 @@ void trigger_setup() {
   digitalWrite(SENSOR_VCC_PIN, HIGH);
   digitalWrite(SENSOR_GND_PIN, LOW);
 
-  pinMode(SENSOR_SIG_PIN, INPUT);
-  attachPinInterrupt(SENSOR_SIG_PIN, myPinCallback1, HIGH);
+  //pinMode(SENSOR_SIG_PIN, INPUT);
+  attachInterrupt(INT_NUM,myPinCallback1, FALLING);
 
 }
 
 
-int myPinCallback1(uint32_t ulPin) {
+void myPinCallback1() {
   static unsigned long lastCalled = millis();
   unsigned long now = millis();
   if ( (now - lastCalled) < 1000) 
-    return 0;
+    return;
   lastCalled=now;
   
   lapTimePrevious = lapTimeCurrent;
   lapTimeStart = now;
   laps++;
   if (1==laps) {
-    return 0;
+    return;
   }
   showTime = true;
-  return 0;
+  return;
 }
 
 
@@ -136,13 +148,11 @@ void banner_start_lap() {
 
 /////////////////////////////////////////
 void setup() {
-  Serial.begin(9600);
+  //Serial.begin(9600 n);
   led_setup();
   trigger_setup();
-  radio_setup();
 }
 void loop() {
-  radio_loop(); //read radio input
   lapTimeCurrent = millis() - lapTimeStart;
 
   if (showTime) {

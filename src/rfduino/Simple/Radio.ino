@@ -182,7 +182,7 @@ void radio_debug(char* msg) {
 // B = unsigned byte for button pressed: 0 = no, 1 = yes
 
 void process_message(char *data, int len) {
-  if (len >= 4) {
+  if (data && len >= 4) {
     // map x&y values from 0..255 to -255..255
     joypad_update(
       map(data[0], 0, 255, -255, 255),   // x axis
