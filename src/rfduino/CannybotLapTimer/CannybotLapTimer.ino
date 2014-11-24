@@ -4,7 +4,7 @@
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
 #include <Wire.h>
-#include "Adafruit_GFX.h"w
+#include "Adafruit_GFX.h"
 #include "Adafruit_LEDBackpack.h"
 
 // Sensor
