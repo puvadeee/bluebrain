@@ -75,7 +75,7 @@
 		B09FA51819FB98FD00CE8466 /* ScanViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ScanViewController.h; sourceTree = "<group>"; };
 		B09FA51919FB98FD00CE8466 /* ScanViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ScanViewController.m; sourceTree = "<group>"; };
 		B0CFC9DF19F95966008210C5 /* Images.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Images.xcassets; sourceTree = "<group>"; };
-		B0D61BD319F7E5D100DC4CDA /* BrainDash.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = BrainDash.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		B0D61BD319F7E5D100DC4CDA /* Cannybots.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Cannybots.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D61BD719F7E5D100DC4CDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0D61BD819F7E5D100DC4CDA /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		B0D61BDA19F7E5D100DC4CDA /* AppDelegate.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AppDelegate.h; sourceTree = "<group>"; };
@@ -220,7 +220,7 @@
 		B0D61BD419F7E5D100DC4CDA /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				B0D61BD319F7E5D100DC4CDA /* BrainDash.app */,
+				B0D61BD319F7E5D100DC4CDA /* Cannybots.app */,
 				B0D61BEF19F7E5D100DC4CDA /* BrainDashTests.xctest */,
 			);
 			name = Products;
@@ -274,9 +274,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		B0D61BD219F7E5D100DC4CDA /* BrainDash */ = {
+		B0D61BD219F7E5D100DC4CDA /* Cannybots */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDash" */;
+			buildConfigurationList = B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "Cannybots" */;
 			buildPhases = (
 				B0D61BCF19F7E5D100DC4CDA /* Sources */,
 				B0D61BD019F7E5D100DC4CDA /* Frameworks */,
@@ -286,9 +286,9 @@
 			);
 			dependencies = (
 			);
-			name = BrainDash;
+			name = Cannybots;
 			productName = BrainDash;
-			productReference = B0D61BD319F7E5D100DC4CDA /* BrainDash.app */;
+			productReference = B0D61BD319F7E5D100DC4CDA /* Cannybots.app */;
 			productType = "com.apple.product-type.application";
 		};
 		B0D61BEE19F7E5D100DC4CDA /* BrainDashTests */ = {
@@ -342,7 +342,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				B0D61BD219F7E5D100DC4CDA /* BrainDash */,
+				B0D61BD219F7E5D100DC4CDA /* Cannybots */,
 				B0D61BEE19F7E5D100DC4CDA /* BrainDashTests */,
 			);
 		};
@@ -410,7 +410,7 @@
 /* Begin PBXTargetDependency section */
 		B0D61BF119F7E5D100DC4CDA /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = B0D61BD219F7E5D100DC4CDA /* BrainDash */;
+			target = B0D61BD219F7E5D100DC4CDA /* Cannybots */;
 			targetProxy = B0D61BF019F7E5D100DC4CDA /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -598,7 +598,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "BrainDash" */ = {
+		B0D61BF919F7E5D100DC4CDA /* Build configuration list for PBXNativeTarget "Cannybots" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				B0D61BFA19F7E5D100DC4CDA /* Debug */,
