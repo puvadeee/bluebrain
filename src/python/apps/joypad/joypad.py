@@ -41,14 +41,14 @@ class Joypad:
         self.myBot = self.ble.findNearest()   
         self.joypadClient = SimpleJoypadClient(self.myBot)
 
-    def updateJoypad(self, (newX,newY)):
+    def updateJoypad(self, (newX,newY), force):
         if newX>240:
             newX=240
             
         self.x = newX
         self.y = newY 			
 
-        if (time.time() - self.lastUpdateTime) > 0.1:
+        if force or (time.time() - self.lastUpdateTime) > 0.1:
 			x = arduino_map(self.x-120, -120, 120, -255,255)
 			y = arduino_map(self.y-120, -120, 120, -255,255)    
 			self.joypadClient.updateJoypad(x, y, self.b) 
@@ -64,9 +64,9 @@ class Joypad:
 			elif event.type == pygame.MOUSEMOTION:   
 				(b1,b2,b3) = pygame.mouse.get_pressed()
 				if b1:
-					self.updateJoypad(event.pos)
+					self.updateJoypad(event.pos, False)
 			elif event.type == pygame.MOUSEBUTTONUP:
-					self.updateJoypad((120,120))
+					self.updateJoypad((120,120), True)
 
     def draw(self):
         self.screen.fill((255,255,255))

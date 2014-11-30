@@ -189,6 +189,10 @@ class BLE_UART:
 			die(self.child, 'gatttool timed out. detail:')
 		elif i == 1:
 			die(self.child, 'command failed, detail:')
+#disconnection error:
+#ERROR: command failed, detail:
+# char-write-cmd 0x0011 89810080
+#Command failed:
 
 
 	def onDisconnect(self, delegate):
