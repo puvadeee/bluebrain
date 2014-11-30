@@ -2,7 +2,7 @@
 
 import os
 basedir = os.path.dirname(__file__)
-
+import time
 import pygame
 
 from cannybots.radio import BLE
@@ -18,12 +18,14 @@ class Joypad:
         self.x  = 120
         self.y  = 120
         self.b  = 0
+        self.lastUpdateTime = time.time()
         self.running = True  
         self.display = Display()
         self.screen  = self.display.screen
         
         self.loadImages()
         self.connectBot()
+        self.clock = pygame.time.Clock()
     
     
     def loadImages(self):
@@ -41,26 +43,29 @@ class Joypad:
     def updateJoypad(self, (newX,newY)):
         if newX>240:
             newX=240
+            
         self.x = newX
-        self.y = newY 
-        x = arduino_map(self.x-120, -120, 120, -255,255)
-        y = arduino_map(self.y-120, -120, 120, -255,255)    
-        self.joypadClient.updateJoypad(x, y, self.b)  
+        self.y = newY 			
+
+        if (time.time() - self.lastUpdateTime) > 0.1:
+			x = arduino_map(self.x-120, -120, 120, -255,255)
+			y = arduino_map(self.y-120, -120, 120, -255,255)    
+			self.joypadClient.updateJoypad(x, y, self.b) 
+			self.lastUpdateTime = time.time()
 
     def handleEvents(self):
-        event = pygame.event.poll()
-        
-        if event.type == pygame.QUIT:
-            self.running = 0
-        elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_ESCAPE:
-                self.running=False
-        elif event.type == pygame.MOUSEMOTION:            
-            (b1,b2,b3) = pygame.mouse.get_pressed()
-            if b1:
-                self.updateJoypad(event.pos)
-        elif event.type == pygame.MOUSEBUTTONUP:
-                self.updateJoypad((120,120))
+        for event in pygame.event.get():
+			if event.type == pygame.QUIT:
+				self.running = 0
+			elif event.type == pygame.KEYDOWN:
+				if event.key == pygame.K_ESCAPE:
+					self.running=False
+			elif event.type == pygame.MOUSEMOTION:   
+				(b1,b2,b3) = pygame.mouse.get_pressed()
+				if b1:
+					self.updateJoypad(event.pos)
+			elif event.type == pygame.MOUSEBUTTONUP:
+					self.updateJoypad((120,120))
 
     def draw(self):
         self.screen.fill((255,255,255))
@@ -75,6 +80,7 @@ class Joypad:
         while self.running:
             self.handleEvents()
             self.draw()
+            self.clock.tick(60)
         pygame.quit()    
             
 if __name__ == "__main__":
