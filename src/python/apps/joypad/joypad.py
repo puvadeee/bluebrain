@@ -1,5 +1,8 @@
 #!/usr/bin/python
 
+import os
+basedir = os.path.dirname(__file__)
+
 import pygame
 
 from cannybots.radio import BLE
@@ -24,10 +27,10 @@ class Joypad:
     
     
     def loadImages(self):
-        self.logo        = pygame.image.load("images/cannybots_logo_small.png").convert_alpha()
-        self.joystick    = pygame.image.load("images/joystick.png").convert()
-        self.knob        = pygame.image.load("images/knob.png").convert_alpha()
-        self.button      = pygame.image.load("images/button.png").convert_alpha()
+        self.logo        = pygame.image.load(basedir+"/images/cannybots_logo_small.png").convert_alpha()
+        self.joystick    = pygame.image.load(basedir+"/images/joystick.png").convert()
+        self.knob        = pygame.image.load(basedir+"/images/knob.png").convert_alpha()
+        self.button      = pygame.image.load(basedir+"/images/button.png").convert_alpha()
     
     
     def connectBot(self):

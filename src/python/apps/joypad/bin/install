@@ -1,3 +1,4 @@
+apt-get install daemontools daemontools-run
 svc -d /etc/service/*
 cp -r bin/service/* /etc/service/
 mkdir -p /opt/cannybots/runtime/services/
