@@ -12,6 +12,15 @@ export PATH=/usr/local/bin:$PATH
 export PYTHONPATH=/opt/cannybots/runtime/modules
 cd /opt/cannybots/runtime/services/joypad
 killall gatttool
+killall hcitool
+sleep 1
+killall gatttool
+killall hcitool
+hciconfig hci0 down
 hciconfig hci0 up
+hciconfig hci1 down
+hciconfig hci1 up
+
 exec python joypad.py
+
 
