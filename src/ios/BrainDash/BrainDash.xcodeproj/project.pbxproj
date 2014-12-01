@@ -564,7 +564,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrainDash.app/BrainDash";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/Cannybots.app/Cannybots";
 			};
 			name = Debug;
 		};
@@ -582,7 +582,7 @@
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks @loader_path/Frameworks";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				PROVISIONING_PROFILE = "";
-				TEST_HOST = "$(BUILT_PRODUCTS_DIR)/BrainDash.app/BrainDash";
+				TEST_HOST = "$(BUILT_PRODUCTS_DIR)Cannybots.app/Cannybots";
 			};
 			name = Release;
 		};
