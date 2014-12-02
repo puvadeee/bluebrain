@@ -187,6 +187,15 @@ void radio_debug(char *fmt, ... ){
         _radio_debug(buf);
 }
 
+void joypad_display(char *fmt, ... ){
+        char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
+        va_list args;
+        va_start (args, fmt );
+        vsnprintf(buf, GZLL_MAX_MSG_SIZE+1, fmt, args);
+        va_end (args);
+        _radio_debug(buf);
+}
+
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE/GZLL shared message processing
 
@@ -212,7 +221,7 @@ void process_message(char *data, int len) {
       data[2]                            // button(s) - 8 bits can support up to 8 buttons
     );
   } else if (len >= 5) {
-    settings_update(map(data[0], 0, 255, 0,1023));
+    settings_update(map(data[4], 0, 255, 0,1023));
   }
 }
 

@@ -20,7 +20,7 @@
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
-void joypad_display(char *fmt, ... );
+void radio_debug(char *fmt, ... );
 
 
 // PIN ASSIGNEMENT
@@ -129,10 +129,10 @@ void loop() {
   speedB = (zAxisValue - correction) + (yAxisValue / 4 + xAxisValue / 4);
   motorSpeed(speedA, speedB);
 
-  static unsigned long lastJoypadDisplayUpdateSend = 0;
-  if (time_Now - lastJoypadDisplayUpdateSend >1000 ) {
-    joypad_display("Lap:%d.%d\nWT:%d", int(time_Now/1000), time_Now % 1000, IRwhiteThreshold);
-    lastJoypadDisplayUpdateSend = time_Now;
+  static unsigned long lastSend = 0;
+  if (time_Now - lastSend >1000 ) {
+    radio_debug("%d", IRwhiteThreshold);
+    lastSend = time_Now;
   }
 }
 
