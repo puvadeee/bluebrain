@@ -1,3 +1,9 @@
+#/usr/bin/scratch
+#
+# Cannybots Scratch integration
+# By Wayne Keenan 02/12/2014
+# www.cannybots.com 
+
 from scratra import *
 
 from time import sleep
@@ -26,7 +32,7 @@ def whenend(scratch):
 @broadcast('CB_FORWARD')
 def forward(scratch):
   print 'move forward'
-  joypadClient.updateJoypad(motorASpeed,motorASpeed,0)
+  joypadClient.updateJoypad(motorASpeed,motorBSpeed,0)
 
   scratch.broadcast("CB_HELLO!")
 
