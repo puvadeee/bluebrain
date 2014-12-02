@@ -1,4 +1,4 @@
-#/usr/bin/scratch
+#!/usr/bin/python
 #
 # Cannybots Scratch integration
 # By Wayne Keenan 02/12/2014
