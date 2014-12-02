@@ -3,9 +3,9 @@
 #include <stdarg.h>
 
 // Choose one of:
-//#define  RADIO_ONLY_GZLL
-//#define  RADIO_ONLY_BLE
-#define RADIO_TOGGLE
+//#define  RADIO_ONLY_GZLL 
+//#define  RADIO_ONLY_BLE 
+#define RADIO_TOGGLE 
 //#define RADIO_NONE
 
 // don't change these
@@ -44,14 +44,19 @@ void radio_setup() {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Radio toggling
 
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) 
 volatile bool startGZLL = true;
-volatile bool bleConnected = false;
 volatile unsigned long nextRadioToggleTime = millis();
 #endif
 
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
+volatile bool bleConnected = false;
+#endif
+
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)
 volatile bool gzllConnected = false;
 volatile unsigned long gzllConnectionTimeout = millis();
+#endif
 
 volatile unsigned long timeNow = millis();                 // the time at the start of the loop(), use for the 'radio' part
 
@@ -91,6 +96,7 @@ void radio_loop() {
 ////////////////////////////////////////////////////////////////////////////////////////
 // GZLL
 
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)
 
 void setup_gzll() {
 #ifdef GZLL_HOST_ADDRESS  
@@ -116,7 +122,7 @@ void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len) {
     gzllDebug=NULL;   
   } 
 }
-
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE
 
@@ -158,14 +164,18 @@ void RFduinoBLE_onDisconnect() {
 }
 
 void _radio_debug(char* msg) {
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)  
     if (!gzllDebug && gzllConnected) {
      snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE, msg);
      gzllDebug = gzllDebugBuf;
-    } 
-    
+    }
+#endif
+
+#if defined(RADIO_ONLY_BLE) || defined(RADIO_TOGGLE)
     if (bleConnected) {
       RFduinoBLE.send(msg, min(BLE_MAX_MSG_SIZE, strlen(msg)));
     }
+#endif    
 }
 
 void radio_debug(char *fmt, ... ){
@@ -193,7 +203,7 @@ void radio_debug(char *fmt, ... ){
 // B = unsigned byte for button pressed: 0 = no, 1 = yes
 
 void process_message(char *data, int len) {
-  if (len >= 4) {
+  if (len == 4) {
     // map x&y values from 0..255 to -255..255
     joypad_update(
       map(data[0], 0, 255, -255, 255),   // x axis
@@ -201,13 +211,20 @@ void process_message(char *data, int len) {
       map(data[3], 0, 255, -255, 255),   // y axis
       data[2]                            // button(s) - 8 bits can support up to 8 buttons
     );
+  } else if (len >= 5) {
+    settings_update(map(data[0], 0, 255, 0,1023));
   }
 }
 
 // tidyup helper for when GZLL connection times out or BLE client disconnects
 void client_disconnected() {
+#ifndef IGNORE_JOYPAD_DISCONNECT  
   joypad_update(0, 0, 0, 0);
+#endif  
 }
 
+void joypad_display(char* msg) {
+   radio_debug(msg); 
+}
 
 

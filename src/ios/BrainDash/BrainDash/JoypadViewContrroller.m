@@ -31,6 +31,10 @@
     [super viewDidLoad];
     _mManager = [[CMMotionManager alloc] init];
     _referenceAttitude = nil;
+    //[self.throttleSlider removeConstraints:self.throttleSlider.constraints];
+    //[self.throttleSlider setTranslatesAutoresizingMaskIntoConstraints:YES];
+    
+    self.throttleSlider.transform=CGAffineTransformRotate(self.throttleSlider.transform,270.0/180*M_PI);
 
 }
 
@@ -40,16 +44,19 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    [self startJoypadUpdates];
-    [self startUpdateAccelerometer];
     [self loadDefaults];
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [rfduino setDelegate:self];
+    if (self.useTilt)
+        [self startUpdateAccelerometer];
+    [self startJoypadUpdates];
+    
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
     [super viewWillDisappear:animated];
-    [self stopCoreMotionUpdate];
+    if (self.useTilt)
+        [self stopCoreMotionUpdate];
     [self stopJoypadUpdates];
 }
 
@@ -62,6 +69,9 @@
     if (userDefaults) {
         self.xAxisIsInverted   = [userDefaults boolForKey:@"XINV"];
         self.yAxisIsInverted   = [userDefaults boolForKey:@"YINV"];
+        self.zAxisIsInverted   = [userDefaults boolForKey:@"ZINV"];
+        self.useTilt           = [userDefaults boolForKey:@"USETILT"];
+        
         int zSense = (int) [userDefaults integerForKey:@"ZSENSE"];
         self.minZ = -(180-zSense);
         self.maxZ = 180-zSense;
@@ -112,7 +122,6 @@
         buttonState[butId] = isPressed;
     }
     
-    [self resetReferenceFrameToCurrent];
 }
 
 - (IBAction)buttonReleased:(UIButton*)sender
@@ -125,6 +134,9 @@
     }
 }
 
+- (IBAction)resetButtonPressed:(UIButton *)sender {
+    [self resetReferenceFrameToCurrent];
+}
 
 // Core Motion
 
@@ -140,6 +152,9 @@
         _mManager = [[CMMotionManager alloc] init];
     }
     return _mManager;
+}
+- (IBAction)throttleSliderValueChanged:(UISlider *)sender {
+    [self updateRoll:sender.value];
 }
 
 // @see:  http://wwwbruegge.in.tum.de/lehrstuhl_1/home/98-teaching/tutorials/505-sgd-ws13-tutorial-core-motion
@@ -248,6 +263,8 @@
     char msg[5] = {0};
     snprintf(msg, sizeof(msg), "%c%c%c%c", x, y, b, z);
     NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
+    NSLog(@"SendData: %@", data);
+
     [rfduino send:data];
 }
 
@@ -255,7 +272,8 @@
 {
     NSString *hexString = [data hexRepresentationWithSpaces:YES];
     NSLog(@"RecievedData: %@", hexString);
-}
+    self.message.text = [NSString stringWithUTF8String:[data bytes]];
 // TODO:     [rfduino disconnect];
+}
 
 @end

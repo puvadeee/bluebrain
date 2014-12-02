@@ -24,10 +24,13 @@
 @property (nonatomic, assign) bool xAxisIsInverted;
 @property (nonatomic, assign) bool yAxisIsInverted;
 @property (nonatomic, assign) bool zAxisIsInverted;
+@property (nonatomic, assign) bool useTilt;
 
 
 @property (strong, nonatomic) RFduino *rfduino;
 
+@property (weak, nonatomic) IBOutlet UISlider *throttleSlider;
+@property (weak, nonatomic) IBOutlet UILabel *message;
 
 @end
 

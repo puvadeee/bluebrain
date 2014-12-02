@@ -16,6 +16,7 @@
 @property (weak, nonatomic) IBOutlet UISlider *xSense;
 @property (weak, nonatomic) IBOutlet UISlider *ySense;
 @property (weak, nonatomic) IBOutlet UISlider *zSense;
+@property (weak, nonatomic) IBOutlet UISwitch *useTilt;
 - (IBAction)valChanged:(id)sender;
 
 @end

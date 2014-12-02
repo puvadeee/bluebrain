@@ -11,11 +11,12 @@
 //                                   Do not set a custom GZLL_HOST_ADDRESS by default
 // Version:   1.2  -  15.10.2014  -  Make use of joypad z axis (wayne@cannybots.com)
 // Version:   1.3  -  21.10.2014  -  Added LineFollowing (mampetta@cannybots.com)
+// Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
 #define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
-#define GZLL_HOST_ADDRESS 0x12ACB010
-// this needs to match the Joypad sketch value
+#define GZLL_HOST_ADDRESS 0x12ACB010           // this needs to match the Joypad sketch value
+
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
@@ -38,7 +39,8 @@ void radio_debug(char *fmt, ... );
 // DEFINITIONS & ITIALISATION
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 #define JOYPAD_AXIS_DEADZONE 20 //this is to eleminate jitter in 0 position
-#define IR_WHITE_THRESHOLD 700 //to determinie on line or not 
+#define IR_WHITE_THRESHOLD_DEFAULT 700 //to determinie on line or not 
+
 //IR sensor bias
 #define IR1_BIAS 0
 #define IR2_BIAS 0
@@ -48,6 +50,9 @@ void radio_debug(char *fmt, ... );
 #define PID_I 0
 #define PID_D 1
 #define PID_SAMPLE_TIME 5 //determine how fast the loop is executed
+
+//
+int IRwhiteThreshhold = IR_WHITE_THRESHOLD_DEFAULT;
 
 //set IR initial reading to zero
 int IRval1 = 0;
@@ -105,25 +110,23 @@ void loop() {
   time_Now = millis(); //record time at start of loop
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
-  
-  //zAxisValue = zAxisValue; //bring zAxis range to 0-255
 
-  if (IRval2 >= IR_WHITE_THRESHOLD)
+  if (IRval2 >= IRwhiteThreshhold)
   {
-  isLineFollowingMode = true;
-  calculatePID();
-  if (zAxisValue <= 0)
-  zAxisValue = 0;
+    isLineFollowingMode = true;
+    calculatePID();
+    if (zAxisValue <= 0)
+      zAxisValue = 0;
   }
   else
   {
-  isLineFollowingMode = false;
-  zAxisValue = 0;
-  correction = 0;
+    isLineFollowingMode = false;
+    zAxisValue = 0;
+    correction = 0;
   }
-  
-  speedA = (zAxisValue + correction)+(yAxisValue/4 - xAxisValue/4); 
-  speedB = (zAxisValue -correction)+(yAxisValue/4 + xAxisValue/4);
+
+  speedA = (zAxisValue + correction) + (yAxisValue / 4 - xAxisValue / 4);
+  speedB = (zAxisValue - correction) + (yAxisValue / 4 + xAxisValue / 4);
   motorSpeed(speedA, speedB);
 
 }
@@ -196,4 +199,6 @@ void joypad_update(int x, int y, int z, int b) {
   //radio_debug("%d,%d,%d,%d = %d,%d,%d,%d", x,y,z,b, xAxisValue,yAxisValue,zAxisValue,buttonPressed);
 }
 
-
+void settings_update(uint16_t whiteThreshold)  {
+  IRwhiteThreshhold = whiteThreshold;
+}

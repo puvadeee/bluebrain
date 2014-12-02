@@ -11,14 +11,14 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-//#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Bot sketch value
+#define GZLL_HOST_ADDRESS 0x12ACB001           // this needs to match the Bot sketch value
 //#define LOCAL_DEBUG
 #define REMOTE_DEBUG
 
 #include <RFduinoGZLL.h>
 
-#define X_AXIS_PIN 2    // joypad x
-#define Y_AXIS_PIN 3    // joypad y
+#define X_AXIS_PIN 3    // joypad x
+#define Y_AXIS_PIN 2    // joypad y
 #define Z_AXIS_PIN 5    // wheel throttle
 #define BUTTON_PIN 4    // joypad button 
 #define MSG_LEN 4

@@ -75,7 +75,7 @@ void detachServos() {
 
 void loop() {
   radio_loop(); //read radio input
-
+  
   if (buttonPressed & 1) {
     servos[0].write(map(xAxisValue, -255, 255, 0, MAX));
   }

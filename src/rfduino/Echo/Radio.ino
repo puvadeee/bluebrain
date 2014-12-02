@@ -1,5 +1,5 @@
-//#include <RFduinoGZLL.h>
-//#include <RFduinoBLE.h>
+#include <RFduinoGZLL.h>
+#include <RFduinoBLE.h>
 
 // Choose one of:
 //#define  RADIO_ONLY_GZLL
