@@ -1,5 +1,0 @@
-export PYTHONPATH=`pwd`/modules
-killall gatttool
-hciconfig hci0 up
-cd apps/joypad
-python joypad.py

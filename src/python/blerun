@@ -1,0 +1,11 @@
+#!/bin/sh
+export PYTHONPATH=`pwd`/modules
+killall gatttool
+sleep 1
+killall gatttool
+killall hcitool
+hciconfig hci0 down
+hciconfig hci0 up
+hciconfig hci1 down
+hciconfig hci1 up
+python $*
