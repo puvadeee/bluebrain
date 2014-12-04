@@ -2,6 +2,8 @@
 
 botName = "PingEchoBot"
 
+zMultiplier = 1
+
 import sys
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
@@ -43,12 +45,12 @@ class Joypad:
     def connectBot(self):
         self.ble   = BLE() 
         #self.myBot = self.ble.findNearest()   
-        self.myBot = self.ble.findByName('CannyBot1')   
+        self.myBot = self.ble.findByName(botName)   
         self.joypadClient = SimpleJoypadClient(self.myBot)
 
     def updateJoypad(self, (newX,newY), force):   
-        if newX>320-64:
-			self.z=newY-32 
+        if (newX>320-64) and newY<240-32 and newY>32:
+            self.z=newY-32 
    
         if newX<240:
             self.x = newX
@@ -61,8 +63,8 @@ class Joypad:
         if force or (time.time() - self.lastUpdateTime) > 0.1:
 			x = arduino_map(self.x-120, -120, 120, -255,255)
 			y = arduino_map(self.y-120, -120, 120, -255,255)    
-			z = arduino_map(self.z, 0, 240-32, 255, 0)    
-			self.joypadClient.updateJoypadWithZ(x, y, -z,self.b) 
+			z = arduino_map(self.z, 0, 240-32, 0, 255)    
+			self.joypadClient.updateJoypadWithZ(x, y, z*zMultiplier,self.b) 
 			self.lastUpdateTime = time.time()
 
     def handleEvents(self):
