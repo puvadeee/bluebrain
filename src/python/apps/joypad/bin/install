@@ -3,6 +3,7 @@ svc -d /etc/service/*
 cp -r bin/service/* /etc/service/
 mkdir -p /opt/cannybots/runtime/services/
 cp -r ../joypad /opt/cannybots/runtime/services/
+rm -fr /opt/cannybots/runtime/modules
 cp -r ../../modules /opt/cannybots/runtime/
-svc -du /etc/service/*
-
+svc -d /etc/service/cbjoypad
+svc -u /etc/service/cbjoypad

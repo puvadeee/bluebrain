@@ -9,7 +9,7 @@
 # Version:   1.0  -  11.10.2014  -  Inital Version  (wayne@cannybots.com)
 #
 
-
+import sys
 import os
 import time
 import array
@@ -49,6 +49,7 @@ def die(child, errstr):
 	print 'ERROR: '+errstr
 	print child.before, child.after
 	child.terminate()
+	sys.exit(errstr)
 
 class BLE_Manager:
 	def startHCITool(self):
@@ -184,10 +185,12 @@ class BLE_UART:
 
 	def _send(self, msg):
 		self.child.sendline (msg)
-		i = self.child.expect ([pexpect.TIMEOUT,'Command failed:','\[LE\]>'])
+		i = self.child.expect ([pexpect.TIMEOUT,'command failed','\[LE\]>'])
 		if i == 0:
 			die(self.child, 'gatttool timed out. detail:')
 		elif i == 1:
+			print "Wake up, time to die"
+			self.keepRunning = False
 			die(self.child, 'command failed, detail:')
 #disconnection error:
 #ERROR: command failed, detail:
@@ -225,10 +228,11 @@ class BLE:
 		while not deviceAddress:
 			devices = self.devicesInRange()
 			for mac in devices.keys():
+				print mac + " " + str(devices[mac])
 				try:
 					if devices[mac]['name'] == name:
 						deviceAddress  = mac
-				except:
+				except Exception:
 					logging.exception('findByName')
 			time.sleep(1)
 		

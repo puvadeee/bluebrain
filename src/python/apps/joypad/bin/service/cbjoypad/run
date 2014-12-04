@@ -1,6 +1,6 @@
 #!/bin/bash
 case `uname -m` in
-  arm*) echo "SOLARIS" 
+  arm*) echo "Pi" 
 export SDL_VIDEODRIVER=fbcon
 export SDL_FBDEV=/dev/fb1 
 export SDL_MOUSEDEV=/dev/input/touchscreen

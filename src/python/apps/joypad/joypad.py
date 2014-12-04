@@ -1,5 +1,20 @@
 #!/usr/bin/python
 
+import sys
+
+def tracefunc(frame, event, arg, indent=[0]):
+      if event == "call":
+          indent[0] += 2
+          print "-" * indent[0] + "> call function", frame.f_code.co_name
+      elif event == "return":
+          print "<" + "-" * indent[0], "exit function", frame.f_code.co_name
+          indent[0] -= 2
+      return tracefunc
+
+import sys
+#sys.settrace(tracefunc)
+
+
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 #basedir = os.path.dirname(__file__)
@@ -18,6 +33,7 @@ class Joypad:
         """ init """
         self.x  = 120
         self.y  = 120
+        self.z  = 240-64
         self.b  = 0
         self.lastUpdateTime = time.time()
         self.running = True  
@@ -31,27 +47,34 @@ class Joypad:
     
     def loadImages(self):
         self.logo        = pygame.image.load(basedir+"/images/cannybots_logo_small.png").convert_alpha()
-        self.joystick    = pygame.image.load(basedir+"/images/joystick.png").convert()
+        self.joystick    = pygame.image.load(basedir+"/images/joystick.png").convert_alpha()
         self.knob        = pygame.image.load(basedir+"/images/knob.png").convert_alpha()
         self.button      = pygame.image.load(basedir+"/images/button.png").convert_alpha()
     
     
     def connectBot(self):
         self.ble   = BLE() 
-        self.myBot = self.ble.findNearest()   
+        #self.myBot = self.ble.findNearest()   
+        self.myBot = self.ble.findByName('CannyBot1')   
         self.joypadClient = SimpleJoypadClient(self.myBot)
 
-    def updateJoypad(self, (newX,newY), force):
-        if newX>240:
-            newX=240
+    def updateJoypad(self, (newX,newY), force):   
+        if newX>320-64:
+			self.z=newY-32 
+   
+        if newX<240:
+            self.x = newX
+            self.y = newY 			
             
-        self.x = newX
-        self.y = newY 			
+        if force:
+			self.z=240-64;
+	
 
         if force or (time.time() - self.lastUpdateTime) > 0.1:
 			x = arduino_map(self.x-120, -120, 120, -255,255)
 			y = arduino_map(self.y-120, -120, 120, -255,255)    
-			self.joypadClient.updateJoypad(x, y, self.b) 
+			z = arduino_map(240-64-self.z, 0, 240-32, 0, 255)    
+			self.joypadClient.updateJoypadWithZ(x, y, -z,self.b) 
 			self.lastUpdateTime = time.time()
 
     def handleEvents(self):
@@ -70,9 +93,9 @@ class Joypad:
 
     def draw(self):
         self.screen.fill((255,255,255))
+        self.screen.blit(self.logo, (320-120, 0))
         self.screen.blit(self.joystick,(0,0))
-        self.screen.blit(self.button,(240,64))
-        self.screen.blit(self.logo, (320-120, 240-32))
+        self.screen.blit(self.button,(240,self.z))
         self.screen.blit(self.knob, (self.x-50, self.y-50))
         pygame.display.update()
    
