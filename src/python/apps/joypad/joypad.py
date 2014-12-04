@@ -1,20 +1,8 @@
 #!/usr/bin/python
 
-import sys
-
-def tracefunc(frame, event, arg, indent=[0]):
-      if event == "call":
-          indent[0] += 2
-          print "-" * indent[0] + "> call function", frame.f_code.co_name
-      elif event == "return":
-          print "<" + "-" * indent[0], "exit function", frame.f_code.co_name
-          indent[0] -= 2
-      return tracefunc
+botName = "PingEchoBot"
 
 import sys
-#sys.settrace(tracefunc)
-
-
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 #basedir = os.path.dirname(__file__)
@@ -73,7 +61,7 @@ class Joypad:
         if force or (time.time() - self.lastUpdateTime) > 0.1:
 			x = arduino_map(self.x-120, -120, 120, -255,255)
 			y = arduino_map(self.y-120, -120, 120, -255,255)    
-			z = arduino_map(240-64-self.z, 0, 240-32, 0, 255)    
+			z = arduino_map(self.z, 0, 240-32, 255, 0)    
 			self.joypadClient.updateJoypadWithZ(x, y, -z,self.b) 
 			self.lastUpdateTime = time.time()
 
