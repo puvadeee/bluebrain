@@ -1,6 +1,6 @@
 #!/usr/bin/python
 
-botName = "PingEchoBot"
+botName = "CannyBot1"
 
 zMultiplier = 1
 
@@ -60,10 +60,10 @@ class Joypad:
 			self.z=240-64;
 	
 
-        if force or (time.time() - self.lastUpdateTime) > 0.1:
+        if force or (time.time() - self.lastUpdateTime) > 0.05:
 			x = arduino_map(self.x-120, -120, 120, -255,255)
 			y = arduino_map(self.y-120, -120, 120, -255,255)    
-			z = arduino_map(self.z, 0, 240-32, 0, 255)    
+			z = arduino_map(240-64-self.z, 0, 240-32, 0, -255)    
 			self.joypadClient.updateJoypadWithZ(x, y, z*zMultiplier,self.b) 
 			self.lastUpdateTime = time.time()
 
