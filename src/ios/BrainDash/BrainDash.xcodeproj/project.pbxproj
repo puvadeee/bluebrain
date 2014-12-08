@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		B013368019FA7B98003F4B57 /* ConnectionViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B013367F19FA7B98003F4B57 /* ConnectionViewController.m */; };
+		B06539E81A3581BB00868F08 /* throttleKnob.png in Resources */ = {isa = PBXBuildFile; fileRef = B06539E71A3581BB00868F08 /* throttleKnob.png */; };
 		B09D589D19F7EE640023BA29 /* CBUUID+StringExtraction.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589619F7EE640023BA29 /* CBUUID+StringExtraction.m */; };
 		B09D589E19F7EE640023BA29 /* NSData+hex.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589819F7EE640023BA29 /* NSData+hex.m */; };
 		B09D589F19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m in Sources */ = {isa = PBXBuildFile; fileRef = B09D589A19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m */; };
@@ -47,6 +48,7 @@
 /* Begin PBXFileReference section */
 		B013367E19FA7B98003F4B57 /* ConnectionViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ConnectionViewController.h; sourceTree = "<group>"; };
 		B013367F19FA7B98003F4B57 /* ConnectionViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ConnectionViewController.m; sourceTree = "<group>"; };
+		B06539E71A3581BB00868F08 /* throttleKnob.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = throttleKnob.png; sourceTree = "<group>"; };
 		B09D589519F7EE640023BA29 /* CBUUID+StringExtraction.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "CBUUID+StringExtraction.h"; sourceTree = "<group>"; };
 		B09D589619F7EE640023BA29 /* CBUUID+StringExtraction.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = "CBUUID+StringExtraction.m"; sourceTree = "<group>"; };
 		B09D589719F7EE640023BA29 /* NSData+hex.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = "NSData+hex.h"; sourceTree = "<group>"; };
@@ -153,6 +155,7 @@
 		B09D58A319F7F29B0023BA29 /* joystick */ = {
 			isa = PBXGroup;
 			children = (
+				B06539E71A3581BB00868F08 /* throttleKnob.png */,
 				B09D58A419F7F29B0023BA29 /* button.png */,
 				B09D58A519F7F29B0023BA29 /* joystick.png */,
 				B09D58A619F7F29B0023BA29 /* knob.png */,
@@ -358,6 +361,7 @@
 				B09D58AE19F7F29B0023BA29 /* joystick.png in Resources */,
 				B0D61BE519F7E5D100DC4CDA /* Main.storyboard in Resources */,
 				B09D58AD19F7F29B0023BA29 /* button.png in Resources */,
+				B06539E81A3581BB00868F08 /* throttleKnob.png in Resources */,
 				B0D61BEA19F7E5D100DC4CDA /* LaunchScreen.xib in Resources */,
 				B09D58B319F7F29B0023BA29 /* Cannybots_Logo_2000x446.png in Resources */,
 				B09D58B119F7F29B0023BA29 /* Game Pad.png in Resources */,

@@ -10,11 +10,11 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BrainDash/SettingsViewController.h"
-            timestampString = "439205390.011416"
+            timestampString = "439324078.038641"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "23"
-            endingLineNumber = "23">
+            startingLineNumber = "24"
+            endingLineNumber = "24">
          </BreakpointContent>
       </BreakpointProxy>
       <BreakpointProxy
@@ -40,12 +40,28 @@
             ignoreCount = "0"
             continueAfterRunningActions = "No"
             filePath = "BrainDash/JoypadViewContrroller.m"
-            timestampString = "439205390.011416"
+            timestampString = "439714477.375703"
             startingColumnNumber = "9223372036854775807"
             endingColumnNumber = "9223372036854775807"
-            startingLineNumber = "55"
-            endingLineNumber = "55"
+            startingLineNumber = "66"
+            endingLineNumber = "66"
             landmarkName = "-viewWillDisappear:"
+            landmarkType = "5">
+         </BreakpointContent>
+      </BreakpointProxy>
+      <BreakpointProxy
+         BreakpointExtensionID = "Xcode.Breakpoint.FileBreakpoint">
+         <BreakpointContent
+            shouldBeEnabled = "No"
+            ignoreCount = "0"
+            continueAfterRunningActions = "No"
+            filePath = "BrainDash/JoypadViewContrroller.m"
+            timestampString = "439714477.375703"
+            startingColumnNumber = "9223372036854775807"
+            endingColumnNumber = "9223372036854775807"
+            startingLineNumber = "266"
+            endingLineNumber = "266"
+            landmarkName = "-startJoypadUpdates"
             landmarkType = "5">
          </BreakpointContent>
       </BreakpointProxy>

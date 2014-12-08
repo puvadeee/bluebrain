@@ -29,7 +29,7 @@
             [userDefaults setBool:false forKey:@"XINV"];
             [userDefaults setBool:false forKey:@"YINV"];
             [userDefaults setBool:true forKey:@"ZINV"];
-            [userDefaults setBool:true forKey:@"USETILT"];
+            [userDefaults setBool:false forKey:@"USETILT"];
             [userDefaults setInteger:128 forKey:@"XMAX"];
             [userDefaults setInteger:128 forKey:@"YMAX"];
             [userDefaults setInteger:90 forKey:@"ZSENSE"];

@@ -48,9 +48,6 @@
                             <imageView contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="joystick.png" translatesAutoresizingMaskIntoConstraints="NO" id="sYV-VB-FtE">
                                 <rect key="frame" x="16" y="39" width="200" height="200"/>
                                 <gestureRecognizers/>
-                                <connections>
-                                    <outletCollection property="gestureRecognizers" destination="rd9-iK-rxh" appends="YES" id="ejc-ei-sBE"/>
-                                </connections>
                             </imageView>
                             <imageView userInteractionEnabled="NO" contentMode="scaleToFill" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="knob.png" translatesAutoresizingMaskIntoConstraints="NO" id="GrY-nY-O1g">
                                 <rect key="frame" x="66" y="89" width="100" height="100"/>
@@ -65,6 +62,14 @@
                             <switch hidden="YES" opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="pXf-8o-7EN">
                                 <rect key="frame" x="507" y="8" width="51" height="31"/>
                             </switch>
+                            <view multipleTouchEnabled="YES" contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="ZBc-kh-Ouz" userLabel="baseViewForPanningGesture">
+                                <rect key="frame" x="5" y="0.0" width="246" height="285"/>
+                                <color key="backgroundColor" white="0.0" alpha="0.0" colorSpace="calibratedWhite"/>
+                                <gestureRecognizers/>
+                                <connections>
+                                    <outletCollection property="gestureRecognizers" destination="nmF-aJ-I5h" appends="YES" id="zXi-nd-Fa8"/>
+                                </connections>
+                            </view>
                             <button hidden="YES" opaque="NO" tag="2" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="GZt-kL-YnZ" userLabel="rightButton">
                                 <rect key="frame" x="349" y="89" width="100" height="100"/>
                                 <state key="normal" image="button.png">
@@ -75,12 +80,6 @@
                                     <action selector="buttonReleased:" destination="9pv-A4-QxB" eventType="touchUpInside" id="ewc-gv-X48"/>
                                 </connections>
                             </button>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="-179" maxValue="179" translatesAutoresizingMaskIntoConstraints="NO" id="ZnG-MD-orw">
-                                <rect key="frame" x="396" y="150" width="190" height="31"/>
-                                <connections>
-                                    <action selector="throttleSliderValueChanged:" destination="9pv-A4-QxB" eventType="valueChanged" id="oKC-1H-G1t"/>
-                                </connections>
-                            </slider>
                             <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oUM-YK-Lak" userLabel="topButton">
                                 <rect key="frame" x="287" y="89" width="100" height="100"/>
                                 <state key="normal" image="button.png">
@@ -91,19 +90,32 @@
                                     <action selector="buttonReleased:" destination="9pv-A4-QxB" eventType="touchUpInside" id="FiG-eQ-XuL"/>
                                 </connections>
                             </button>
-                            <button opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iiP-1e-eaj" userLabel="resetButton">
-                                <rect key="frame" x="314" y="209" width="47" height="41"/>
-                                <state key="normal" title="Reset"/>
-                                <connections>
-                                    <action selector="resetButtonPressed:" destination="9pv-A4-QxB" eventType="touchUpInside" id="lIY-of-Amj"/>
-                                </connections>
-                            </button>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="center" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="" lineBreakMode="tailTruncation" numberOfLines="3" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="35s-9H-ew3" userLabel="Message">
                                 <rect key="frame" x="218" y="17" width="183" height="38"/>
                                 <fontDescription key="fontDescription" type="boldSystem" pointSize="15"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
+                            <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iiP-1e-eaj" userLabel="resetButton">
+                                <rect key="frame" x="279" y="170" width="122" height="41"/>
+                                <state key="normal" title="Reset Throttle Tilt"/>
+                                <connections>
+                                    <action selector="resetButtonPressed:" destination="9pv-A4-QxB" eventType="touchUpInside" id="lIY-of-Amj"/>
+                                </connections>
+                            </button>
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="75" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="ZnG-MD-orw" userLabel="Throttle Slider">
+                                <rect key="frame" x="396" y="106" width="190" height="31"/>
+                                <connections>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="touchUpInside" id="2gk-Dy-oBv"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="touchUpOutside" id="4QH-bA-g8a"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="editingDidEnd" id="4eT-0C-Ki9"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="touchCancel" id="Pry-k3-ZOf"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="touchDragExit" id="Rfd-2a-T5I"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="editingDidEndOnExit" id="cnF-go-8I6"/>
+                                    <action selector="throttleReleased:" destination="9pv-A4-QxB" eventType="touchDragOutside" id="quv-5g-AvT"/>
+                                    <action selector="throttleSliderValueChanged:" destination="9pv-A4-QxB" eventType="valueChanged" id="oKC-1H-G1t"/>
+                                </connections>
+                            </slider>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
@@ -120,16 +132,17 @@
                     <nil key="simulatedStatusBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
-                        <outlet property="baseImageView" destination="sYV-VB-FtE" id="PM7-u7-aP0"/>
+                        <outlet property="baseImageView" destination="ZBc-kh-Ouz" id="5zK-1g-eYx"/>
                         <outlet property="knobImageView" destination="GrY-nY-O1g" id="XJD-GD-rdG"/>
                         <outlet property="message" destination="35s-9H-ew3" id="CYB-nU-bq5"/>
                         <outlet property="throttleSlider" destination="ZnG-MD-orw" id="8zp-pY-CEQ"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="W5J-7L-Pyd" sceneMemberID="firstResponder"/>
-                <panGestureRecognizer minimumNumberOfTouches="1" id="rd9-iK-rxh">
+                <panGestureRecognizer minimumNumberOfTouches="1" id="nmF-aJ-I5h">
                     <connections>
-                        <action selector="handlePan:" destination="9pv-A4-QxB" id="cqx-Fm-oBF"/>
+                        <action selector="handlePan:" destination="9pv-A4-QxB" id="raP-mS-Nls"/>
+                        <outlet property="delegate" destination="9pv-A4-QxB" id="gp8-fW-qG6"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
@@ -219,21 +232,12 @@
                                     <action selector="valChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="rOv-hk-aJj"/>
                                 </connections>
                             </slider>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" image="Cannybots_Logo_2000x446.png" translatesAutoresizingMaskIntoConstraints="NO" id="n5f-BK-T1t">
-                                <rect key="frame" x="420" y="0.0" width="180" height="55"/>
-                            </imageView>
-                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="180" minValue="0.0" maxValue="255" translatesAutoresizingMaskIntoConstraints="NO" id="UIT-EG-YFq" userLabel="White Threshold">
+                            <slider opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="700" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="UIT-EG-YFq" userLabel="White Threshold">
                                 <rect key="frame" x="323" y="103" width="215" height="31"/>
                                 <connections>
                                     <action selector="whiteThresholdSliderValueChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="7F2-1K-YPC"/>
                                 </connections>
                             </slider>
-                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Line Sensor Sensitivity" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="omJ-Dz-tf5">
-                                <rect key="frame" x="325" y="74" width="211" height="21"/>
-                                <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
-                                <nil key="highlightedColor"/>
-                            </label>
                             <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" on="YES" translatesAutoresizingMaskIntoConstraints="NO" id="jzg-eh-eeI" userLabel="Use TIlt">
                                 <rect key="frame" x="204" y="127" width="51" height="31"/>
                                 <connections>
@@ -243,6 +247,24 @@
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Reverse Left/Right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="z35-4A-BQK">
                                 <rect key="frame" x="16" y="17" width="143" height="21"/>
                                 <fontDescription key="fontDescription" type="system" pointSize="17"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <button hidden="YES" opaque="NO" contentMode="scaleToFill" fixedFrame="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gjU-fc-mNg">
+                                <rect key="frame" x="467" y="8" width="69" height="30"/>
+                                <state key="normal" title="Advanced">
+                                    <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
+                                </state>
+                            </button>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Line Sensor Sensitivity" textAlignment="center" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="omJ-Dz-tf5">
+                                <rect key="frame" x="325" y="74" width="158" height="21"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
+                                <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
+                                <nil key="highlightedColor"/>
+                            </label>
+                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="700" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="LdS-gT-Hax">
+                                <rect key="frame" x="486" y="68" width="50" height="33"/>
+                                <fontDescription key="fontDescription" type="system" pointSize="15"/>
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
@@ -257,6 +279,7 @@
                         <outlet property="invertY" destination="BZ4-n6-SdK" id="BdI-q7-Zs2"/>
                         <outlet property="invertZ" destination="5gJ-tS-0RL" id="szh-x7-OGx"/>
                         <outlet property="useTilt" destination="jzg-eh-eeI" id="rNg-vJ-rb7"/>
+                        <outlet property="whiteThresholdLable" destination="LdS-gT-Hax" id="7RB-uL-tRA"/>
                         <outlet property="xSense" destination="czS-Bc-BM3" id="RUg-co-dlk"/>
                         <outlet property="ySense" destination="lz8-ch-zjy" id="IT8-r3-ymR"/>
                         <outlet property="zSense" destination="R4e-7m-qiF" id="no5-Pb-YGe"/>

@@ -42,8 +42,19 @@
     [super didReceiveMemoryWarning];
 }
 
+- (void) viewWillAppear:(BOOL)animated {
+    [super viewWillAppear:animated];
+    UIImage *thumbImage = [UIImage imageNamed:@"throttleKnob"];
+    
+    [[UISlider appearance] setThumbImage:thumbImage
+                                forState:UIControlStateNormal];
+}
+
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
+
+    
     [self loadDefaults];
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [rfduino setDelegate:self];
@@ -54,6 +65,9 @@
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
+    
+    [[UISlider appearance] setThumbImage:nil
+                                forState:UIControlStateNormal];
     [super viewWillDisappear:animated];
     if (self.useTilt)
         [self stopCoreMotionUpdate];
@@ -115,24 +129,36 @@
 
 - (IBAction)buttonAction:(UIButton*)sender
 {
+    [self resetReferenceFrameToCurrent];
+    return;
+    /*
     long butId = sender.tag;
     bool isPressed = true;
     NSLog(@"Butt pressed:%ld, stade:%d", butId, isPressed);
     if (butId<BUTTONS_MAX) {
         buttonState[butId] = isPressed;
     }
+     */
     
 }
 
 - (IBAction)buttonReleased:(UIButton*)sender
 {
+    return;
+/*
     long butId = sender.tag;
     bool isPressed = false;
     NSLog(@"Butt pressed:%ld, stade:%d", butId, isPressed);
     if (butId<BUTTONS_MAX) {
         buttonState[butId] = isPressed;
     }
+ */
 }
+
+- (IBAction)throttleReleased:(UISlider *)sender {
+    sender.value=75;
+}
+
 
 - (IBAction)resetButtonPressed:(UIButton *)sender {
     [self resetReferenceFrameToCurrent];
@@ -154,7 +180,11 @@
     return _mManager;
 }
 - (IBAction)throttleSliderValueChanged:(UISlider *)sender {
-    [self updateRoll:sender.value];
+    //[self updateRoll:sender.value];
+    int throttleVal = sender.value;
+    if (throttleVal < 0) throttleVal = 0;
+    if (throttleVal > 255) throttleVal = 255;
+    zAxisValue = throttleVal;
 }
 
 // @see:  http://wwwbruegge.in.tum.de/lehrstuhl_1/home/98-teaching/tutorials/505-sgd-ws13-tutorial-core-motion
@@ -263,7 +293,7 @@
     char msg[5] = {0};
     snprintf(msg, sizeof(msg), "%c%c%c%c", x, y, b, z);
     NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
-    NSLog(@"SendData: %@", data);
+    //NSLog(@"SendData: %@", data);
 
     [rfduino send:data];
 }

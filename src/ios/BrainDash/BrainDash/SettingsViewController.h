@@ -18,6 +18,7 @@
 @property (weak, nonatomic) IBOutlet UISlider *zSense;
 @property (weak, nonatomic) IBOutlet UISwitch *useTilt;
 - (IBAction)valChanged:(id)sender;
+@property (weak, nonatomic) IBOutlet UILabel *whiteThresholdLable;
 
 @end
 

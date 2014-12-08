@@ -72,6 +72,7 @@
 }
 
 - (IBAction)whiteThresholdSliderValueChanged:(UISlider *)sender {
+    self.whiteThresholdLable.text=[NSString stringWithFormat:@"%.0f", sender.value];
     RFduino *rfduino;
     rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     if (rfduino) {
