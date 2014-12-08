@@ -5,6 +5,7 @@
 //  Created by Wayne Keenan on 22/10/2014.
 //  Copyright (c) 2014 Cannybots. All rights reserved.
 //
+// UISlider cusomisations based on: http://www.raywenderlich.com/21703/user-interface-customization-in-ios-6
 
 #import "JoypadViewController.h"
 #import "Utilities.h"
@@ -44,6 +45,17 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
+    
+    UIImage *minImage = [[UIImage imageNamed:@"slider_minimum.png"]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+    UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum.png"]
+                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+    
+    [[UISlider appearance] setMaximumTrackImage:maxImage
+                                       forState:UIControlStateNormal];
+    [[UISlider appearance] setMinimumTrackImage:minImage
+                                       forState:UIControlStateNormal];
+    
     UIImage *thumbImage = [UIImage imageNamed:@"throttleKnob"];
     
     [[UISlider appearance] setThumbImage:thumbImage
@@ -66,8 +78,11 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    [[UISlider appearance] setThumbImage:nil
-                                forState:UIControlStateNormal];
+    [[UISlider appearance] setMaximumTrackImage:nil
+                                       forState:UIControlStateNormal];
+    [[UISlider appearance] setMinimumTrackImage:nil
+                                       forState:UIControlStateNormal];
+    [[UISlider appearance] setThumbImage:nil forState:UIControlStateNormal];
     [super viewWillDisappear:animated];
     if (self.useTilt)
         [self stopCoreMotionUpdate];
