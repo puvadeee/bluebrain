@@ -16,6 +16,7 @@
     NSTimer* timer;
     int xAxisValue,yAxisValue,zAxisValue;
     bool buttonState[BUTTONS_MAX];
+    UIImage* currentUISliderMinImage, *currentUISliderMaxImage, *currentUISliderThumbImage;
 }
 @end
 
@@ -35,6 +36,10 @@
     //[self.throttleSlider removeConstraints:self.throttleSlider.constraints];
     //[self.throttleSlider setTranslatesAutoresizingMaskIntoConstraints:YES];
     
+    currentUISliderThumbImage = [[UISlider appearance ]currentThumbImage];
+    currentUISliderMinImage   = [[UISlider appearance ]currentMinimumTrackImage];
+    currentUISliderMaxImage   = [[UISlider  appearance ] currentMaximumTrackImage];
+    
     self.throttleSlider.transform=CGAffineTransformRotate(self.throttleSlider.transform,270.0/180*M_PI);
 
 }
@@ -46,20 +51,15 @@
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
     
-    UIImage *minImage = [[UIImage imageNamed:@"slider_minimum.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
-    UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum.png"]
-                         resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
-    
-    [[UISlider appearance] setMaximumTrackImage:maxImage
-                                       forState:UIControlStateNormal];
-    [[UISlider appearance] setMinimumTrackImage:minImage
-                                       forState:UIControlStateNormal];
-    
+
+
+    UIImage *minImage = [[UIImage imageNamed:@"slider_minimum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+    UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
     UIImage *thumbImage = [UIImage imageNamed:@"throttleKnob"];
-    
-    [[UISlider appearance] setThumbImage:thumbImage
-                                forState:UIControlStateNormal];
+
+    //[[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
+    [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
+    [[UISlider appearance] setThumbImage:thumbImage forState:UIControlStateNormal];
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -78,11 +78,10 @@
 
 - (void) viewWillDisappear:(BOOL)animated {
     
-    [[UISlider appearance] setMaximumTrackImage:nil
-                                       forState:UIControlStateNormal];
-    [[UISlider appearance] setMinimumTrackImage:nil
-                                       forState:UIControlStateNormal];
-    [[UISlider appearance] setThumbImage:nil forState:UIControlStateNormal];
+    //[[UISlider appearance] setMaximumTrackImage:currentUISliderMaxImage forState:UIControlStateNormal];
+    [[UISlider appearance] setMinimumTrackImage:currentUISliderMaxImage forState:UIControlStateNormal];
+    [[UISlider appearance] setThumbImage:currentUISliderThumbImage forState:UIControlStateNormal];
+    
     [super viewWillDisappear:animated];
     if (self.useTilt)
         [self stopCoreMotionUpdate];
