@@ -9,6 +9,7 @@
 #import "SettingsViewController.h"
 #import "RFduino.h"
 #import "RFduinoManager.h"
+#import "Utilities.h"
 
 
 @interface SettingsViewController ()
@@ -76,8 +77,9 @@
     RFduino *rfduino;
     rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     if (rfduino) {
+        uint8_t whiteVal = map(sender.value, 0, 1000, 0,255);
         char msg[6] = {0};
-        snprintf(msg, sizeof(msg), "%c%c%c%c%c", 0x7F, 0x7F, 0, 0x7F, (uint8_t)sender.value);
+        snprintf(msg, sizeof(msg), "%c%c%c%c%c", 0x7F, 0x7F, 0, 0x7F, whiteVal);
         NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
         NSLog(@"SendData: %@", data);
     

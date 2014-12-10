@@ -12,6 +12,9 @@
 #import "RFduinoManager.h"
 #define BUTTONS_MAX 8
 
+#define ZAXIS_DEFAULT -80
+#define ZAXIS_ZERO    -179
+
 @interface JoypadViewController () {
     NSTimer* timer;
     int xAxisValue,yAxisValue,zAxisValue;
@@ -41,7 +44,8 @@
     currentUISliderMaxImage   = [[UISlider  appearance ] currentMaximumTrackImage];
     
     self.throttleSlider.transform=CGAffineTransformRotate(self.throttleSlider.transform,270.0/180*M_PI);
-
+    self.throttleSlider.value = ZAXIS_DEFAULT;
+    zAxisValue=ZAXIS_DEFAULT;
 }
 
 - (void)didReceiveMemoryWarning {
@@ -50,8 +54,6 @@
 
 - (void) viewWillAppear:(BOOL)animated {
     [super viewWillAppear:animated];
-    
-
 
     UIImage *minImage = [[UIImage imageNamed:@"slider_minimum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
     UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
@@ -60,29 +62,30 @@
     //[[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
     [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
     [[UISlider appearance] setThumbImage:thumbImage forState:UIControlStateNormal];
+    
 }
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
-    
-
     
     [self loadDefaults];
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [rfduino setDelegate:self];
     if (self.useTilt)
         [self startUpdateAccelerometer];
+    zAxisValue=ZAXIS_DEFAULT;
+
     [self startJoypadUpdates];
     
 }
 
 - (void) viewWillDisappear:(BOOL)animated {
+    [super viewWillDisappear:animated];
     
     //[[UISlider appearance] setMaximumTrackImage:currentUISliderMaxImage forState:UIControlStateNormal];
     [[UISlider appearance] setMinimumTrackImage:currentUISliderMaxImage forState:UIControlStateNormal];
     [[UISlider appearance] setThumbImage:currentUISliderThumbImage forState:UIControlStateNormal];
     
-    [super viewWillDisappear:animated];
     if (self.useTilt)
         [self stopCoreMotionUpdate];
     [self stopJoypadUpdates];
@@ -170,9 +173,17 @@
 }
 
 - (IBAction)throttleReleased:(UISlider *)sender {
-    sender.value=75;
-}
+    sender.value= ZAXIS_DEFAULT;
+    zAxisValue =  ZAXIS_DEFAULT;
 
+}
+- (IBAction)throttleSliderValueChanged:(UISlider *)sender {
+    //[self updateRoll:sender.value];
+    int throttleVal = sender.value;
+    //if (throttleVal < 0) throttleVal = 0;
+    //if (throttleVal > 255) throttleVal = 255;
+    zAxisValue = throttleVal;
+}
 
 - (IBAction)resetButtonPressed:(UIButton *)sender {
     [self resetReferenceFrameToCurrent];
@@ -193,13 +204,7 @@
     }
     return _mManager;
 }
-- (IBAction)throttleSliderValueChanged:(UISlider *)sender {
-    //[self updateRoll:sender.value];
-    int throttleVal = sender.value;
-    if (throttleVal < 0) throttleVal = 0;
-    if (throttleVal > 255) throttleVal = 255;
-    zAxisValue = throttleVal;
-}
+
 
 // @see:  http://wwwbruegge.in.tum.de/lehrstuhl_1/home/98-teaching/tutorials/505-sgd-ws13-tutorial-core-motion
 // @see: http://blog.denivip.ru/index.php/2013/07/the-art-of-core-motion-in-ios/?lang=en
@@ -250,6 +255,9 @@
 
 - (void) updateRoll:(float)roll {
     
+    if (roll >=0) {
+        return;
+    }
     // Pitch: A pitch is a rotation around a lateral (X) axis that passes through the device from side to side
     // pitch is rotation about the gfx x axis when in portrait mode
     
@@ -288,14 +296,17 @@
     if (timer)
         [timer invalidate];
     timer=nil;
-    [self sendJoypadUpdate:127 y:127 z:127  b:0];
+    //xAxisValue = 0;
+    //yAxisValue = 0;
+    //zAxisValue = ZAXIS_ZERO;
+    //[self sendJoypadUpdate];
 
 }
 
 - (void) sendJoypadUpdate {
     uint8_t xAxisByte  = map(xAxisValue, -255, 255, 0,255);
     uint8_t yAxisByte  = map(yAxisValue, -255, 255, 0,255);
-    uint8_t zAxisByte  = map(zAxisValue, -180, 180, 0,255);
+    uint8_t zAxisByte  = map(-zAxisValue, -180, 180, 0,255);
     uint32_t buttons    = 0;
     for (int i = 0; i<BUTTONS_MAX; i++) {
         buttons = buttons |  ( buttonState[i] << i);
@@ -308,7 +319,8 @@
     snprintf(msg, sizeof(msg), "%c%c%c%c", x, y, b, z);
     NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
     //NSLog(@"SendData: %@", data);
-
+    NSLog(@"SendData: %d\t%d\t%d\t%d", x, y, z, b);
+    
     [rfduino send:data];
 }
 
