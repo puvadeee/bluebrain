@@ -4,8 +4,8 @@
 
 // Choose one of:
 //#define  RADIO_ONLY_GZLL 
-//#define  RADIO_ONLY_BLE 
-#define RADIO_TOGGLE 
+#define  RADIO_ONLY_BLE 
+//#define RADIO_TOGGLE 
 //#define RADIO_NONE
 
 // don't change these
@@ -16,6 +16,10 @@ char* gzllDebug=NULL;
 // don't change these
 #define BLE_MAX_MSG_SIZE 20
 #define BLE_UUID                   "7e400001-b5a3-f393-e0a9-e50e24dcca9e"
+//#define BLE_UUID                   "7e402220-b5a3-f393-e0a9-e50e24dcca9e"
+//#define BLE_UUID                   "00002220-0000-1000-8000-00805f9b34fb"  // doest end up as '2220'
+
+
 #define BLE_ADVERTISEMENT_DATA_MAX 16
 
 // might want to alter these
@@ -135,9 +139,11 @@ void setup_ble() {
   snprintf(bleName, BLE_ADVERTISEMENT_DATA_MAX, BOT_NAME);
 #endif  
   RFduinoBLE.txPowerLevel      = BLE_TX_POWER_LEVEL;
+#ifdef BLE_UUID  
   RFduinoBLE.customUUID        = BLE_UUID;
+#endif  
   RFduinoBLE.deviceName        = bleName;
-  RFduinoBLE.advertisementData = bleName;
+  RFduinoBLE.advertisementData = "CB01\x00";
   RFduinoBLE.begin();
   //RFduinoBLE_update_conn_interval(20, 20);
 }
@@ -205,11 +211,14 @@ void joypad_display(char *fmt, ... ){
 // You may just want to add your own data onto the end of the existing 3 bytes if you still
 // wan't to be able to use the smartphone app(s)
 
-// We're expecting messages of 3 bytes in the form:  XYB
+// We're expecting messages of 4 bytes in the form:  XYB
 // Where:
 // X = unsigned byte for xAxis:          0 .. 255 mapped to -255 .. 255
 // Y = unsigned byte for yAxis:          0 .. 255 mapped to -255 .. 255
 // B = unsigned byte for button pressed: 0 = no, 1 = yes
+// Z = unsigned byte for zAxis:          0 .. 255 mapped to -255 .. 255
+// optinally:
+// a 5th byte for setting WHITE_THRESHHOLD  :          0 .. 255 mapped to 0 .. 1023
 
 void process_message(char *data, int len) {
   if (len == 4) {

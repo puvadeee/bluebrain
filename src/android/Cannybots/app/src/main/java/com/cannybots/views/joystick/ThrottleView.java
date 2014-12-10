@@ -1,0 +1,174 @@
+package com.cannybots.views.joystick;
+// from: https://code.google.com/p/mobile-anarchy-widgets/wiki/JoystickView
+
+
+import android.content.Context;
+import android.graphics.Canvas;
+import android.graphics.Color;
+import android.graphics.Paint;
+import android.graphics.RectF;
+import android.os.Handler;
+import android.util.AttributeSet;
+import android.util.Log;
+import android.view.MotionEvent;
+
+public class ThrottleView extends JoystickView {
+
+    // =========================================
+    // Private Members
+    // =========================================
+
+    private final String TAG = "ThrottleView";
+
+
+    // =========================================
+    // Constructors
+    // =========================================
+
+    public ThrottleView(Context context) {
+        super (context);
+        initThrottleView();
+    }
+
+    public ThrottleView(Context context, AttributeSet attrs) {
+        super (context, attrs);
+        initThrottleView();
+    }
+
+    public ThrottleView(Context context, AttributeSet attrs,
+                        int defStyle) {
+        super (context, attrs, defStyle);
+        initThrottleView();
+    }
+
+    // =========================================
+    // Initialization
+    // =========================================
+
+    private void initThrottleView() {
+        setFocusable(true);
+
+        circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        circlePaint.setColor(Color.DKGRAY);
+        circlePaint.setStrokeWidth(1);
+        circlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        handlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        handlePaint.setColor(Color.RED);
+        handlePaint.setStrokeWidth(1);
+        handlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+        innerPadding = 10;
+        sensitivity = 255;
+    }
+
+    // =========================================
+    // Public Methods
+    // =========================================
+
+    public void setOnJostickMovedListener(JoystickMovedListener listener) {
+        this .listener = listener;
+    }
+
+    // =========================================
+    // Drawing Functionality
+    // =========================================
+
+    @Override
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+
+        int measuredWidth = measure(widthMeasureSpec);
+        int measuredHeight = measure(heightMeasureSpec);
+
+        handleRadius = (int) (measuredWidth * 0.25);
+        handleInnerBoundaries = handleRadius;
+
+        setMeasuredDimension(measuredWidth, measuredHeight);
+    }
+
+    private int measure(int measureSpec) {
+        int result = 0;
+        // Decode the measurement specifications.
+        int specMode = MeasureSpec.getMode(measureSpec);
+        int specSize = MeasureSpec.getSize(measureSpec);
+        if (specMode == MeasureSpec.UNSPECIFIED) {
+            // Return a default size of 200 if no bounds are specified.
+            result = 200;
+        } else {
+            // As you want to fill the available space
+            // always return the full available bounds.
+            result = specSize;
+        }
+        return result;
+    }
+
+    @Override
+    protected void onDraw(Canvas canvas) {
+        int px = getMeasuredWidth() / 2;
+        int py = getMeasuredHeight() / 2;
+
+        int width = innerPadding;
+
+        // Draw the background
+        canvas.drawRect(px-width, handleRadius, px+width, getMeasuredHeight()-handleRadius, circlePaint);
+
+        // Draw the handle
+        RectF rect = new RectF(
+                (int) px - handleRadius,
+                (int) touchY + py - handleRadius,
+                (int) px+handleRadius,
+                (int) touchY + py
+                );
+        canvas.drawOval(rect, handlePaint);
+
+        canvas.save();
+    }
+
+    @Override
+    public boolean onTouchEvent(MotionEvent event) {
+        int actionType = event.getAction();
+        if (actionType == MotionEvent.ACTION_MOVE) {
+            int px = getMeasuredWidth() / 2;
+            int py = getMeasuredHeight() / 2;
+            int radius = py - handleInnerBoundaries;
+
+            touchX = px;
+            touchY = (event.getY() - py);
+
+            // Coordinates
+            Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
+
+            // Pressure
+            if (listener != null) {
+                listener.OnMoved(0,(int) (touchY / radius * sensitivity));
+            }
+
+            invalidate();
+        } else if (actionType == MotionEvent.ACTION_UP) {
+            returnHandleToCenter();
+            Log.d(TAG, "Y:" + touchY);
+        }
+        return true;
+    }
+
+    private void returnHandleToCenter() {
+
+        Handler handler = new Handler();
+        int numberOfFrames = 5;
+        final double intervalsY = (sensitivity - touchY-handleRadius) / numberOfFrames;
+
+        for (int i = 0; i < numberOfFrames; i++) {
+            handler.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    touchY += intervalsY;
+                    invalidate();
+                }
+            }, i * 40);
+        }
+
+        if (listener != null) {
+            listener.OnReleased();
+        }
+    }
+}
