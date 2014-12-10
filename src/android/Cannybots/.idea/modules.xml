@@ -2,7 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$USER_HOME$/Google Drive/projects/Android/Cannybots/app/app.iml" filepath="$USER_HOME$/Google Drive/projects/Android/Cannybots/app/app.iml" />
+      <module fileurl="file://$PROJECT_DIR$/Cannybots.iml" filepath="$PROJECT_DIR$/Cannybots.iml" />
+      <module fileurl="file://$PROJECT_DIR$/../../../../Android/Cannybots/app/app.iml" filepath="$PROJECT_DIR$/../../../../Android/Cannybots/app/app.iml" />
     </modules>
   </component>
 </project>

@@ -14,7 +14,7 @@
 // Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define BOT_NAME "CannyBot1"                   // custom name (16 chars max)
+#define BOT_NAME "Cannybot2"                   // custom name (16 chars max)
 #define GZLL_HOST_ADDRESS 0x12ACB010           // this needs to match the Joypad sketch value
 
 
@@ -39,7 +39,7 @@ void joypad_display(char *fmt, ... );
 // DEFINITIONS & ITIALISATION
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 #define JOYPAD_AXIS_DEADZONE 20 //this is to eleminate jitter in 0 position
-#define IR_WHITE_THRESHOLD_DEFAULT 700 //to determinie on line or not 
+#define IR_WHITE_THRESHOLD_DEFAULT 750 //to determinie on line or not 
 
 //IR sensor bias
 #define IR1_BIAS 0
@@ -164,7 +164,8 @@ void calculatePID() {
   pidLastTime = time_Now;
 
   // process IR readings via PID
-  Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
+  //Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
+  Kp = 50; Ki = 0; Kd = 500; //laser cut
   error_last = error; // store previous error value before new one is caluclated
   error = IRval1 - IRval3;
   P_error = error * Kp / 100.0; // calculate proportional term
@@ -194,11 +195,11 @@ void joypad_update(int x, int y, int z, int b) {
   // If the axis readings are small, in the 'deadzone', set them to 0
   if ( abs(x) < JOYPAD_AXIS_DEADZONE)  x = 0;
   if ( abs(y) < JOYPAD_AXIS_DEADZONE)  y = 0;
-  if ( abs(z) < JOYPAD_AXIS_DEADZONE)  z = 0;
+  //if ( abs(z) < JOYPAD_AXIS_DEADZONE)  z = -255;
 
   xAxisValue = x;
   yAxisValue = y;
-  zAxisValue = -z;
+  zAxisValue = -(z-255)/2;
   buttonPressed = b;
 
   //radio_debug("%d,%d,%d,%d = %d,%d,%d,%d", x,y,z,b, xAxisValue,yAxisValue,zAxisValue,buttonPressed);

@@ -143,7 +143,7 @@ void setup_ble() {
   RFduinoBLE.customUUID        = BLE_UUID;
 #endif  
   RFduinoBLE.deviceName        = bleName;
-  RFduinoBLE.advertisementData = "CB01\x00";
+  RFduinoBLE.advertisementData = "CB01";
   RFduinoBLE.begin();
   //RFduinoBLE_update_conn_interval(20, 20);
 }
@@ -226,7 +226,7 @@ void process_message(char *data, int len) {
     joypad_update(
       map(data[0], 0, 255, -255, 255),   // x axis
       map(data[1], 0, 255, -255, 255),   // y axis
-      map(data[3], 0, 255, -255, 255),   // y axis
+      map(data[3], 0, 255, -255, 255),   // z axis
       data[2]                            // button(s) - 8 bits can support up to 8 buttons
     );
   } else if (len >= 5) {
@@ -237,7 +237,7 @@ void process_message(char *data, int len) {
 // tidyup helper for when GZLL connection times out or BLE client disconnects
 void client_disconnected() {
 #ifndef IGNORE_JOYPAD_DISCONNECT  
-  joypad_update(0, 0, 0, 0);
+  joypad_update(0, 0, 255, 0);
 #endif  
 }
 
