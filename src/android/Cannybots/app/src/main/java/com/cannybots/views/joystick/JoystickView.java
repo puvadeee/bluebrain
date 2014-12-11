@@ -3,16 +3,25 @@ package com.cannybots.views.joystick;
 
 
         import android.content.Context;
+        import android.content.res.Resources;
+        import android.graphics.Bitmap;
+        import android.graphics.BitmapFactory;
         import android.graphics.Canvas;
         import android.graphics.Color;
         import android.graphics.Paint;
+        import android.graphics.Rect;
+        import android.graphics.drawable.Drawable;
         import android.os.Handler;
         import android.util.AttributeSet;
         import android.util.Log;
         import android.view.MotionEvent;
         import android.view.View;
+        import android.widget.ImageView;
+
+        import com.cannybots.cannybotsapp.R;
 
 public class JoystickView extends View {
+    static final boolean USE_JOYSTICK_BITMAPS = true;
 
     // =========================================
     // Private Members
@@ -27,6 +36,15 @@ public class JoystickView extends View {
     int handleInnerBoundaries;
     JoystickMovedListener listener;
     int sensitivity;
+
+
+    Paint knobPaint;
+    Bitmap knobBitmap;
+
+    Paint joystickPaint;
+    Bitmap joystickBitmap;
+
+
 
     // =========================================
     // Constructors
@@ -54,6 +72,13 @@ public class JoystickView extends View {
 
     private void initJoystickView() {
         setFocusable(true);
+
+        if (USE_JOYSTICK_BITMAPS) {
+            knobPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            knobBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.knob);
+            joystickPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            joystickBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.joystick);
+        }
 
         circlePaint = new Paint(Paint.ANTI_ALIAS_FLAG);
         circlePaint.setColor(Color.DKGRAY);
@@ -116,12 +141,33 @@ public class JoystickView extends View {
         int py = getMeasuredHeight() / 2;
         int radius = Math.min(px, py);
 
-        // Draw the background
-        canvas.drawCircle(px, py, radius - innerPadding, circlePaint);
+        if (!USE_JOYSTICK_BITMAPS) {
+            // Draw the background
+            canvas.drawCircle(px, py, radius - innerPadding, circlePaint);
 
-        // Draw the handle
-        canvas.drawCircle((int) touchX + px, (int) touchY + py,
-                handleRadius, handlePaint);
+            // Draw the handle
+            canvas.drawCircle((int) touchX + px, (int) touchY + py, handleRadius, handlePaint);
+        } else {
+            Rect joystickRect = new Rect(
+                    px -  radius + innerPadding,
+                    py -  radius + innerPadding,
+                    px +  radius - innerPadding,
+                    py +  radius - innerPadding);
+
+            canvas.drawBitmap(joystickBitmap, null, joystickRect, joystickPaint);
+
+
+            //canvas.drawBitmap(knobBitmap, (float) (touchX+px), (float) (touchY + py), knobPaint);
+            Rect knobRect = new Rect(
+                    px + (int) touchX - handleRadius,
+                    py + (int) touchY - handleRadius,
+                    px + (int) touchX + handleRadius,
+                    py + (int) touchY + handleRadius);
+
+            canvas.drawBitmap(knobBitmap, null, knobRect, knobPaint);
+
+
+        }
 
         canvas.save();
     }

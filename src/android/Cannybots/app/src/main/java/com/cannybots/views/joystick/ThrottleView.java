@@ -3,14 +3,19 @@ package com.cannybots.views.joystick;
 
 
 import android.content.Context;
+import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.graphics.Rect;
 import android.graphics.RectF;
 import android.os.Handler;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.MotionEvent;
+
+import com.cannybots.cannybotsapp.R;
 
 public class ThrottleView extends JoystickView {
 
@@ -20,7 +25,9 @@ public class ThrottleView extends JoystickView {
 
     private final String TAG = "ThrottleView";
 
-
+    Paint throttleKnobPaint;
+    Bitmap throttleKnobBitmap;
+    Paint throttleLevelPaint;
     // =========================================
     // Constructors
     // =========================================
@@ -58,8 +65,21 @@ public class ThrottleView extends JoystickView {
         handlePaint.setStrokeWidth(1);
         handlePaint.setStyle(Paint.Style.FILL_AND_STROKE);
 
+        throttleLevelPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+        throttleLevelPaint.setColor(Color.rgb(234,168,40));
+        throttleLevelPaint.setStrokeWidth(1);
+        throttleLevelPaint.setStyle(Paint.Style.FILL_AND_STROKE);
+
+
         innerPadding = 10;
         sensitivity = 255;
+
+        touchY = 180;
+
+        if (USE_JOYSTICK_BITMAPS) {
+            throttleKnobPaint = new Paint(Paint.ANTI_ALIAS_FLAG);
+            throttleKnobBitmap = BitmapFactory.decodeResource(getResources(), R.drawable.throttle_knob);
+        }
     }
 
     // =========================================
@@ -83,7 +103,7 @@ public class ThrottleView extends JoystickView {
         handleRadius = (int) (measuredWidth * 0.25);
         handleInnerBoundaries = handleRadius;
 
-        setMeasuredDimension(measuredWidth, measuredHeight);
+        setMeasuredDimension(measuredWidth, measuredHeight-handleRadius);
     }
 
     private int measure(int measureSpec) {
@@ -112,14 +132,29 @@ public class ThrottleView extends JoystickView {
         // Draw the background
         canvas.drawRect(px-width, handleRadius, px+width, getMeasuredHeight()-handleRadius, circlePaint);
 
-        // Draw the handle
-        RectF rect = new RectF(
-                (int) px - handleRadius,
-                (int) touchY + py - handleRadius,
-                (int) px+handleRadius,
-                (int) touchY + py
-                );
-        canvas.drawOval(rect, handlePaint);
+        canvas.drawRect(px-width, (int) touchY + py - handleRadius, px+width, getMeasuredHeight()-handleRadius, throttleLevelPaint);
+
+        if (!USE_JOYSTICK_BITMAPS) {
+            // Draw the handle
+            RectF rect = new RectF(
+                    (int) px - handleRadius,
+                    (int) touchY + py - handleRadius,
+                    (int) px+handleRadius,
+                    (int) touchY + py
+            );
+            canvas.drawOval(rect, handlePaint);
+        } else {
+            Rect throttleKnobRect = new Rect(
+                    px + (int) touchX - handleRadius,
+                    py + (int) touchY - handleRadius,
+                    px + (int) touchX + handleRadius,
+                    py + (int) touchY + handleRadius/2);
+
+            canvas.drawBitmap(throttleKnobBitmap, null, throttleKnobRect, throttleKnobPaint);
+
+
+        }
+
 
         canvas.save();
     }
@@ -128,15 +163,14 @@ public class ThrottleView extends JoystickView {
     public boolean onTouchEvent(MotionEvent event) {
         int actionType = event.getAction();
         if (actionType == MotionEvent.ACTION_MOVE) {
-            int px = getMeasuredWidth() / 2;
             int py = getMeasuredHeight() / 2;
             int radius = py - handleInnerBoundaries;
 
-            touchX = px;
             touchY = (event.getY() - py);
+            touchY = Math.max(Math.min(touchY, radius), -radius);
 
             // Coordinates
-            Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
+            Log.d(TAG, "Y:" + touchY);
 
             // Pressure
             if (listener != null) {
