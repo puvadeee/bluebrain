@@ -4,8 +4,8 @@
 
 // Choose one of:
 //#define  RADIO_ONLY_GZLL 
-#define  RADIO_ONLY_BLE 
-//#define RADIO_TOGGLE 
+//#define  RADIO_ONLY_BLE 
+#define RADIO_TOGGLE 
 //#define RADIO_NONE
 
 // don't change these
