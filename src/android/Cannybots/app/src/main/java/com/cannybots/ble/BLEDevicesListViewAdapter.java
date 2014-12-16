@@ -1,8 +1,10 @@
 package com.cannybots.ble;
 
+import android.bluetooth.BluetoothDevice;
 import android.content.Context;
 import android.os.Handler;
 import android.os.Looper;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -11,6 +13,7 @@ import android.widget.TextView;
 
 import com.cannybots.cannybotsapp.R;
 
+import java.util.ArrayList;
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -20,11 +23,11 @@ import static java.lang.Math.random;
  * Created by wayne on 16/12/14.
  */
 public class BLEDevicesListViewAdapter extends BaseAdapter {
-    public String[] CHEESES = {"Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam", "Abbaye de Belloc", "Abbaye du Mont des Cats", "Abertam"};
+
+    private static ArrayList devices = new ArrayList(10);
 
     public BLEDevicesListViewAdapter() {
         Timer timer = new Timer();
-
         timer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
@@ -32,22 +35,22 @@ public class BLEDevicesListViewAdapter extends BaseAdapter {
                     }
                 },
                 0,
-                1000*2);
+                1000*1);
     }
 
     @Override
     public int getCount() {
-        return CHEESES.length;
+        return devices.size();
     }
 
     @Override
-    public String getItem(int position) {
-        return CHEESES[position];
+    public BluetoothDevice getItem(int position) {
+        return (BluetoothDevice) devices.get(position);
     }
 
     @Override
     public long getItemId(int position) {
-        return CHEESES[position].hashCode();
+        return devices.get(position).hashCode();
     }
 
     @Override
@@ -58,18 +61,16 @@ public class BLEDevicesListViewAdapter extends BaseAdapter {
             convertView = inflater.inflate(R.layout.fragment_connections_list_item, container, false);
         }
 
-        ((TextView) convertView.findViewById(android.R.id.text1))
-                .setText(getItem(position));
+        BluetoothDevice device = ((BluetoothDevice)devices.get(position));
+        String name = device.getName();
+        if (name == null)
+            name = "[no name] - " + device.getAddress();
+
+        ((TextView) convertView.findViewById(android.R.id.text1)).setText(name);
         return convertView;
     }
 
     void bleUpdate() {
-        if (random()>0.5) {
-            CHEESES = new String[]{"A", "B", "C"};
-        } else {
-            CHEESES = new String[]{"1", "2"};
-        }
-
         // need to run on a GUI thread
         Handler refresh = new Handler(Looper.getMainLooper());
         refresh.post(new Runnable() {
@@ -79,5 +80,34 @@ public class BLEDevicesListViewAdapter extends BaseAdapter {
             }
         });
 
+    }
+
+    public void clear() {
+        devices.clear();
+    }
+
+    synchronized public static void addDevice(final BluetoothDevice device) {
+        if (device == null)
+            return;
+
+        Log.i("ble", "addDevice" +device.getName() + " -> " + device);
+
+        // run on the gui thread
+        Handler refresh = new Handler(Looper.getMainLooper());
+        refresh.post(new Runnable() {
+            public void run()
+            {
+                int index = 0 ;
+                while (devices.size()> index) {
+                    if( ( (BluetoothDevice)devices.get(index)).getAddress().equals(device.getAddress())) {
+                        devices.set(index, device);
+                        return;
+                    }
+                    index++ ;
+                }
+
+                devices.add(device);
+            }
+        });
     }
 }

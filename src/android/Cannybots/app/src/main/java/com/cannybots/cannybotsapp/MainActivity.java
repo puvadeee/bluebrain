@@ -89,43 +89,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private static final String TAG = "CannybotsActivity";
 
-    /////////////////////////////////////////////
-    /// BLE
-    // State machine
-    final private static int STATE_BLUETOOTH_OFF = 1;
-    final private static int STATE_DISCONNECTED = 2;
-    final private static int STATE_CONNECTING = 3;
-    final private static int STATE_CONNECTED = 4;
-
-    private int state;
-
     private boolean scanStarted;
     private boolean scanning;
 
     private BluetoothAdapter bluetoothAdapter;
-    private BluetoothDevice bluetoothDevice;
+    public static BluetoothDevice bluetoothDevice;
 
     public static RFduinoService rfduinoService;
     private boolean deviceHasBluetoothLE = false;
 
-    // BLE state managment
-
-    private void upgradeState(int newState) {
-        if (newState > state) {
-            updateState(newState);
-        }
-    }
-
-    private void downgradeState(int newState) {
-        if (newState < state) {
-            updateState(newState);
-        }
-    }
-
-    private void updateState(int newState) {
-        state = newState;
-        //updateUi();
-    }
 
     // BLE callbacks
 
@@ -133,31 +105,30 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public void onReceive(Context context, Intent intent) {
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
-            if (state == BluetoothAdapter.STATE_ON) {
-                upgradeState(STATE_DISCONNECTED);
-            } else if (state == BluetoothAdapter.STATE_OFF) {
-                downgradeState(STATE_BLUETOOTH_OFF);
-            }
         }
     };
 
     private final BroadcastReceiver scanModeReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+            Log.i(TAG, "scanModeReceiver.onReceive");
+
             scanning = (bluetoothAdapter.getScanMode() != BluetoothAdapter.SCAN_MODE_NONE);
             scanStarted &= scanning;
-            //updateUi();
         }
     };
 
     private final ServiceConnection rfduinoServiceConnection = new ServiceConnection() {
         @Override
         public void onServiceConnected(ComponentName name, IBinder service) {
+
+            Log.i(TAG, "rfduinoServiceConnection.onServiceConnected");
+
+
             rfduinoService = ((RFduinoService.LocalBinder) service).getService();
             if (rfduinoService.initialize()) {
                 if (bluetoothDevice != null) {
                     if (rfduinoService.connect(bluetoothDevice.getAddress())) {
-                        upgradeState(STATE_CONNECTING);
                     }
                 }
             }
@@ -165,21 +136,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
         @Override
         public void onServiceDisconnected(ComponentName name) {
+            Log.i(TAG, "rfduinoServiceConnection.onServiceDisconnected");
+
             rfduinoService = null;
-            downgradeState(STATE_DISCONNECTED);
         }
     };
 
     private final BroadcastReceiver rfduinoReceiver = new BroadcastReceiver() {
         @Override
         public void onReceive(Context context, Intent intent) {
+
+            Log.i(TAG, "rfduinoReceiver.onReceive");
+
             final String action = intent.getAction();
             if (RFduinoService.ACTION_CONNECTED.equals(action)) {
-                upgradeState(STATE_CONNECTED);
             } else if (RFduinoService.ACTION_DISCONNECTED.equals(action)) {
-                downgradeState(STATE_DISCONNECTED);
-                BLE_disconnected();
-
             } else if (RFduinoService.ACTION_DATA_AVAILABLE.equals(action)) {
                 addData(intent.getByteArrayExtra(RFduinoService.EXTRA_DATA));
             }
@@ -189,17 +160,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     public void onLeScan(BluetoothDevice device, final int rssi, final byte[] scanRecord) {
+
         byte advData[] = BluetoothHelper.parseAdvertisementFromScanRecord(scanRecord);
-        Log.d(TAG, "Potential BLE Device found name = " + device.getName());
+        Log.i(TAG, "Potential BLE Device found name = " + device.getName());
         if ( (advData[0] == 'C') && (advData[1] == 'B') && (advData[2] == '0') && (advData[3] == '1') ) {
-           bluetoothDevice = device;
-           BLE_stopScanning();
-           BLE_connect();
-           Log.d(TAG, "Found Cannybot! BLE Device Info = " + BluetoothHelper.getDeviceInfoText(device, rssi, scanRecord));
+           BLEDevicesListViewAdapter.addDevice(device);
+           Log.i(TAG, "Found Cannybot! BLE Device Info = " + BluetoothHelper.getDeviceInfoText(device, rssi, scanRecord));
         }
     }
 
     private void BLE_onCreate() {
+        Log.i(TAG, "BLE_onCreate");
+
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
         if (bluetoothAdapter != null) {
             deviceHasBluetoothLE = true;
@@ -221,19 +193,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     private void BLE_onStart() {
+        Log.i(TAG, "BLE_onStart");
+
         if (!deviceHasBluetoothLE)
             return;
         registerReceiver(scanModeReceiver, new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED));
         registerReceiver(bluetoothStateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         registerReceiver(rfduinoReceiver, RFduinoService.getIntentFilter());
 
-        updateState(bluetoothAdapter.isEnabled() ? STATE_DISCONNECTED : STATE_BLUETOOTH_OFF);
-
-        BLE_startScanning();
         Joystick_stopTimer();
 
         joypadUpdateTimer = new Timer();
-
         joypadUpdateTimer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
@@ -254,9 +224,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     private void BLE_onStop() {
+        Log.i(TAG, "BLE_onStop");
+
         if (!deviceHasBluetoothLE)
             return;
-        downgradeState(STATE_DISCONNECTED);
 
         Joystick_stopTimer();
         BLE_stopScanning();
@@ -268,6 +239,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     private void BLE_startScanning() {
+        Log.i(TAG, "BLE_startScanning");
+
         if (!deviceHasBluetoothLE)
             return;
         // when scan pressed
@@ -280,7 +253,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         bluetoothAdapter.startLeScan(MainActivity.this);
     }
 
-    private void BLE_stopScanning() {
+    public void BLE_stopScanning() {
+        Log.i(TAG, "BLE_stopScanning");
+
         if (!deviceHasBluetoothLE)
             return;
         scanStarted = false;
@@ -289,10 +264,16 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     Timer joypadUpdateTimer;
 
-    private void BLE_connect() {
+    // when 'connect' pressed
+
+    public void BLE_connect(BluetoothDevice device) {
+        Log.i(TAG, "BLE_connect");
+
+
         if (!deviceHasBluetoothLE)
             return;
-        // when 'connect' pressed
+        bluetoothDevice = device;
+
         Intent rfduinoIntent = new Intent(MainActivity.this, RFduinoService.class);
         bindService(rfduinoIntent, rfduinoServiceConnection, BIND_AUTO_CREATE);
     }
@@ -304,9 +285,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     private void BLE_disconnected() {
+        Log.i(TAG, "BLE_disconnected");
+
         if (!deviceHasBluetoothLE)
             return;
-        Log.i(TAG, "******  BLE_disconnected *******");
 
         bluetoothDevice = null;
         BLE_onStop();
@@ -314,14 +296,31 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
 
+    private void BLE_disconnect() {
+        Log.i(TAG, "BLE_disconnect");
+
+        if (rfduinoService != null) {
+            rfduinoService.disconnect();
+            rfduinoService.close();
+            rfduinoService.initialize();
+            BLE_disconnected();
+
+        }
+        bluetoothDevice = null;
+    }
+
+
     @Override
     protected void onStart() {
+        Log.i(TAG, "******  onStart *******");
+
         super.onStart();
         BLE_onStart();
     }
 
     @Override
     protected void onStop() {
+        Log.i(TAG, "******  onStop *******");
         super.onStop();
         BLE_onStop();
     }
@@ -422,10 +421,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        Log.i(TAG, "onTabUnselected");
+
     }
 
     @Override
     public void onTabReselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
+        Log.i(TAG, "onTabReselected");
+
     }
 
     /**
@@ -446,7 +449,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 case 0:
                     return JoypadFragment.newInstance();
                 case 1:
-                    return JoypadFragment.newInstance();
+                    return SettingsFragment.newInstance();
                 case 2:
                     return ConnectionsFragment.newInstance();
             }
@@ -475,8 +478,31 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    /**
-     * A placeholder fragment containing a simple view.
+    public static class SettingsFragment extends Fragment {
+
+        public static SettingsFragment newInstance() {
+            SettingsFragment fragment = new SettingsFragment();
+
+            return fragment;
+        }
+
+        public SettingsFragment() {
+        }
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+
+            return rootView;
+        }
+    }
+
+
+        /**
+     * Joystick fragment view.
      */
     public static class JoypadFragment extends Fragment {
 
@@ -507,14 +533,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 return;
             }
             lastTime=thisTime;*/
-            Log.i(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
+            Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
 
             byte xAxis = (byte) ((xAxisValue+255)/2);
             byte yAxis = (byte) ((yAxisValue+255)/2);
             byte zAxis = (byte) ((zAxisValue+255)/2);
             byte button = (byte) buttonValue;
 
-            if (MainActivity.rfduinoService != null ) {
+            if ( (MainActivity.rfduinoService != null) && (MainActivity.bluetoothDevice!=null)) {
                 MainActivity.rfduinoService.send(new byte[]{xAxis,yAxis,button,zAxis});
             }
         }
@@ -571,7 +597,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     // see: http://www.vogella.com/tutorials/AndroidListView/article.html
     public static class ConnectionsFragment extends ListFragment {
 
-        public  static ConnectionsFragment newInstance() {
+        private static BLEDevicesListViewAdapter adapter = new BLEDevicesListViewAdapter();
+        public static ConnectionsFragment newInstance() {
             ConnectionsFragment fragment = new ConnectionsFragment();
             return fragment;
         }
@@ -579,41 +606,44 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public ConnectionsFragment() {
         }
 
-        /*
-        @Override
-        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
-                                 Bundle savedInstanceState) {
-
-            setListAdapter(new BLEDevicesListViewAdapter());
-            //ListView rootView = (ListView) inflater.inflate(R.layout.fragment_connections, container, false);
-            ListView listview = (ListView)  getView().findViewById(R.id.connectionsListView);
-
-
-            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                @Override
-                public void onItemClick(AdapterView<?> parent, View view,
-                                        int position, long id) {
-                    Toast.makeText(container.getContext(),
-                            "Click ListItem Number " + position, Toast.LENGTH_LONG)
-                            .show();
-                }
-            });
-
-
-            return listview;
-        }
-        */
         @Override
         public void onActivityCreated(Bundle savedInstanceState) {
             super.onActivityCreated(savedInstanceState);
-            setListAdapter(new BLEDevicesListViewAdapter());
+            setListAdapter(adapter);
         }
 
         @Override
         public void onListItemClick(ListView l, View v, int position, long id) {
-            Toast.makeText(l.getContext(),
+            /*Toast.makeText(l.getContext(),
                     "Click ListItem Number " + position, Toast.LENGTH_LONG)
-                    .show();        }
+                    .show();        }*/
+            MainActivity activity = (MainActivity) getActivity();
+            activity.BLE_stopScanning();
+            BluetoothDevice device = (BluetoothDevice) getListAdapter().getItem(position);
+            Log.i(TAG, "onListItemClick for BLE device:" + device);
+            activity.BLE_connect(device);
+            activity.getSupportActionBar().setSelectedNavigationItem(0);
+        }
+
+        @Override
+        public void setUserVisibleHint(boolean isVisibleToUser) {
+            super.setUserVisibleHint(isVisibleToUser);
+            MainActivity activity = (MainActivity) getActivity();
+            if (isVisibleToUser) {
+                Log.i(TAG, "connections visible)");
+                activity.BLE_disconnect();
+                activity.BLE_startScanning();
+            }
+            else {
+                Log.i(TAG, "connections NOT visible)");
+                if (activity != null) {
+                    //activity.BLE_stopScanning();
+                    adapter.clear();
+                }
+
+
+            }
+        }
     }
 
 
