@@ -46,6 +46,8 @@ import java.util.UUID;
 /*
  * Adapted from:
  * http://developer.android.com/samples/BluetoothLeGatt/src/com.example.android.bluetoothlegatt/BluetoothLeService.html
+ *
+ * Extended to support LE scanning and publishing found device events
  */
 public class RFduinoService extends Service {
     private final static String TAG = RFduinoService.class.getSimpleName();
@@ -64,6 +66,10 @@ public class RFduinoService extends Service {
             "com.rfduino.ACTION_DATA_AVAILABLE";
     public final static String EXTRA_DATA =
             "com.rfduino.EXTRA_DATA";
+
+    public final static String ACTION_DEVICE_FOUND =
+            "com.rfduino.ACTION_DEVICE_FOUND";
+
 
     public final static UUID UUID_SERVICE_LONG = BluetoothHelper.longUuid(0x0001);
     public final static UUID UUID_RECEIVE_LONG = BluetoothHelper.longUuid(0x0002);

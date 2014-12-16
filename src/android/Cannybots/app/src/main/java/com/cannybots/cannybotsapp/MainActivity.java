@@ -3,14 +3,18 @@ package com.cannybots.cannybotsapp;
 
 
 
+import android.app.AlertDialog;
+import android.support.v4.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.content.BroadcastReceiver;
 import android.content.ComponentName;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.ServiceConnection;
+import android.content.pm.ActivityInfo;
 import android.os.IBinder;
 import android.support.v7.app.ActionBarActivity;
 import android.support.v7.app.ActionBar;
@@ -28,18 +32,24 @@ import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.cannybots.ble.BLEDevicesListViewAdapter;
 import com.cannybots.ble.BluetoothHelper;
 import com.cannybots.ble.HexAsciiHelper;
 import com.cannybots.ble.RFduinoService;
 import com.cannybots.views.joystick.*;
 
 import android.util.Log;
+import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
+import android.widget.BaseAdapter;
 import android.widget.FrameLayout;
+import android.widget.ListView;
+import android.widget.TextView;
+import android.widget.Toast;
 
 
 import java.util.Timer;
 import java.util.TimerTask;
-import java.util.UUID;
 
 // Disable Swiping, see: https://blog.svpino.com/2011/08/29/disabling-pagingswiping-on-android
 // also see in project: /res/layout/activity_main.xml
@@ -96,6 +106,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     private BluetoothDevice bluetoothDevice;
 
     public static RFduinoService rfduinoService;
+    private boolean deviceHasBluetoothLE = false;
 
     // BLE state managment
 
@@ -190,11 +201,28 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private void BLE_onCreate() {
         bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        bluetoothAdapter.enable();
+        if (bluetoothAdapter != null) {
+            deviceHasBluetoothLE = true;
+            bluetoothAdapter.enable();
+        } else {
+            AlertDialog.Builder builder = new AlertDialog.Builder(this);
+            builder.setMessage("No Bluetooth LE hardware detected, you won't be able to connect to a Cannybot.")
+                    .setCancelable(false)
+                    .setPositiveButton("OK", new DialogInterface.OnClickListener() {
+                        public void onClick(DialogInterface dialog, int id) {
+                            //do things
+                        }
+                    });
+            AlertDialog alert = builder.create();
+            alert.show();
+            deviceHasBluetoothLE = false;
+        }
     }
 
 
     private void BLE_onStart() {
+        if (!deviceHasBluetoothLE)
+            return;
         registerReceiver(scanModeReceiver, new IntentFilter(BluetoothAdapter.ACTION_SCAN_MODE_CHANGED));
         registerReceiver(bluetoothStateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         registerReceiver(rfduinoReceiver, RFduinoService.getIntentFilter());
@@ -209,7 +237,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         joypadUpdateTimer.scheduleAtFixedRate(
                 new TimerTask() {
                     public void run() {
-                        PlaceholderFragment.sendJoypadUpdate(false);
+                        JoypadFragment.sendJoypadUpdate(false);
                     }
                 },
                 0,
@@ -226,6 +254,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     private void BLE_onStop() {
+        if (!deviceHasBluetoothLE)
+            return;
         downgradeState(STATE_DISCONNECTED);
 
         Joystick_stopTimer();
@@ -238,6 +268,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     private void BLE_startScanning() {
+        if (!deviceHasBluetoothLE)
+            return;
         // when scan pressed
         scanStarted = true;
 
@@ -249,6 +281,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     private void BLE_stopScanning() {
+        if (!deviceHasBluetoothLE)
+            return;
         scanStarted = false;
         bluetoothAdapter.stopLeScan(this);
     }
@@ -256,6 +290,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     Timer joypadUpdateTimer;
 
     private void BLE_connect() {
+        if (!deviceHasBluetoothLE)
+            return;
         // when 'connect' pressed
         Intent rfduinoIntent = new Intent(MainActivity.this, RFduinoService.class);
         bindService(rfduinoIntent, rfduinoServiceConnection, BIND_AUTO_CREATE);
@@ -268,6 +304,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
 
     private void BLE_disconnected() {
+        if (!deviceHasBluetoothLE)
+            return;
         Log.i(TAG, "******  BLE_disconnected *******");
 
         bluetoothDevice = null;
@@ -311,6 +349,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
+
         setContentView(R.layout.activity_main);
 
         // Set up the action bar.
@@ -366,9 +406,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         int id = item.getItemId();
 
         //noinspection SimplifiableIfStatement
-        if (id == R.id.action_settings) {
+        /*if (id == R.id.action_settings) {
             return true;
-        }
+        }*/
 
         return super.onOptionsItemSelected(item);
     }
@@ -401,19 +441,26 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public Fragment getItem(int position) {
             // getItem is called to instantiate the fragment for the given page.
-            // Return a PlaceholderFragment (defined as a static inner class below).
-            return PlaceholderFragment.newInstance(position + 1);
+            // Return a JoypadFragment (defined as a static inner class below).
+            switch (position) {
+                case 0:
+                    return JoypadFragment.newInstance();
+                case 1:
+                    return JoypadFragment.newInstance();
+                case 2:
+                    return ConnectionsFragment.newInstance();
+            }
+            return null;
         }
 
         @Override
         public int getCount() {
             // Show 3 total pages.
-            return 1;
+            return 3;
         }
 
         @Override
         public CharSequence getPageTitle(int position) {
-            Log.i(TAG, "wrtf!!!");
             switch (position) {
                 case 0:
                     return getString(R.string.title_section1).toUpperCase();
@@ -431,26 +478,21 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     /**
      * A placeholder fragment containing a simple view.
      */
-    public static class PlaceholderFragment extends Fragment {
-        /**
-         * The fragment argument representing the section number for this
-         * fragment.
-         */
-        private static final String ARG_SECTION_NUMBER = "section_number";
+    public static class JoypadFragment extends Fragment {
 
         /**
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static PlaceholderFragment newInstance(int sectionNumber) {
-            PlaceholderFragment fragment = new PlaceholderFragment();
-            Bundle args = new Bundle();
-            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
-            fragment.setArguments(args);
+        public static JoypadFragment newInstance(/*int sectionNumber*/) {
+            JoypadFragment fragment = new JoypadFragment();
+            //Bundle args = new Bundle();
+            //args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            //fragment.setArguments(args);
             return fragment;
         }
 
-        public PlaceholderFragment() {
+        public JoypadFragment() {
         }
 
         //static long lastTime   =0;
@@ -481,7 +523,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
 
-            View rootView = inflater.inflate(R.layout.fragment_main, container, false);
+            View rootView = inflater.inflate(R.layout.fragment_joypad, container, false);
             FrameLayout joystickLayout = (FrameLayout) rootView.findViewById(R.id.joystick);
             FrameLayout throttleLayout = (FrameLayout) rootView.findViewById(R.id.throttle);
 
@@ -525,4 +567,54 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return rootView;
         }
     }
+
+    // see: http://www.vogella.com/tutorials/AndroidListView/article.html
+    public static class ConnectionsFragment extends ListFragment {
+
+        public  static ConnectionsFragment newInstance() {
+            ConnectionsFragment fragment = new ConnectionsFragment();
+            return fragment;
+        }
+
+        public ConnectionsFragment() {
+        }
+
+        /*
+        @Override
+        public View onCreateView(LayoutInflater inflater, final ViewGroup container,
+                                 Bundle savedInstanceState) {
+
+            setListAdapter(new BLEDevicesListViewAdapter());
+            //ListView rootView = (ListView) inflater.inflate(R.layout.fragment_connections, container, false);
+            ListView listview = (ListView)  getView().findViewById(R.id.connectionsListView);
+
+
+            listview.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                @Override
+                public void onItemClick(AdapterView<?> parent, View view,
+                                        int position, long id) {
+                    Toast.makeText(container.getContext(),
+                            "Click ListItem Number " + position, Toast.LENGTH_LONG)
+                            .show();
+                }
+            });
+
+
+            return listview;
+        }
+        */
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+            setListAdapter(new BLEDevicesListViewAdapter());
+        }
+
+        @Override
+        public void onListItemClick(ListView l, View v, int position, long id) {
+            Toast.makeText(l.getContext(),
+                    "Click ListItem Number " + position, Toast.LENGTH_LONG)
+                    .show();        }
+    }
+
+
 }

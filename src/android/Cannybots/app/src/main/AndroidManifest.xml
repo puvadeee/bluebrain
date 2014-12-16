@@ -11,7 +11,7 @@
     <uses-permission android:name="android.permission.BLUETOOTH" />
     <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
 
-    <uses-feature android:name="android.hardware.bluetooth_le" android:required="true" />
+    <uses-feature android:name="android.hardware.bluetooth_le" android:required="false" />
 
 
     <application
@@ -30,6 +30,8 @@
         </activity>
 
         <service android:name="com.cannybots.ble.RFduinoService" />
+
+        <!--<application android:hardwareAccelerated="true"/>-->
     </application>
 
 </manifest>

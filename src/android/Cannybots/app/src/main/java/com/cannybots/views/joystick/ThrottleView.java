@@ -24,6 +24,7 @@ public class ThrottleView extends JoystickView {
     // =========================================
 
     private final String TAG = "ThrottleView";
+    private final int MIN_THROTTLE = 80;
 
     Paint throttleKnobPaint;
     Bitmap throttleKnobBitmap;
@@ -99,11 +100,12 @@ public class ThrottleView extends JoystickView {
 
         int measuredWidth = measure(widthMeasureSpec);
         int measuredHeight = measure(heightMeasureSpec);
+        int d = Math.min(measuredWidth, measuredHeight);
 
-        handleRadius = (int) (measuredWidth * 0.25);
-        handleInnerBoundaries = handleRadius;
+        handleRadius = (int) (d * 0.1);
+        handleInnerBoundaries = handleRadius*2;
 
-        setMeasuredDimension(measuredWidth, measuredHeight-handleRadius);
+        setMeasuredDimension(d, d-handleRadius);
     }
 
     private int measure(int measureSpec) {
@@ -113,7 +115,7 @@ public class ThrottleView extends JoystickView {
         int specSize = MeasureSpec.getSize(measureSpec);
         if (specMode == MeasureSpec.UNSPECIFIED) {
             // Return a default size of 200 if no bounds are specified.
-            result = 200;
+            result = 100;
         } else {
             // As you want to fill the available space
             // always return the full available bounds.
@@ -189,7 +191,7 @@ public class ThrottleView extends JoystickView {
 
         Handler handler = new Handler();
         int numberOfFrames = 5;
-        final double intervalsY = (sensitivity - touchY-handleRadius) / numberOfFrames;
+        final double intervalsY = (sensitivity - touchY-handleRadius-handleInnerBoundaries-MIN_THROTTLE) / numberOfFrames;
 
         for (int i = 0; i < numberOfFrames; i++) {
             handler.postDelayed(new Runnable() {
