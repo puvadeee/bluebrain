@@ -166,10 +166,10 @@ public class ThrottleView extends JoystickView {
         int actionType = event.getAction();
         if (actionType == MotionEvent.ACTION_MOVE) {
             int py = getMeasuredHeight() / 2;
-            int radius = py - handleInnerBoundaries;
+            int radius = py - handleRadius;
 
             touchY = (event.getY() - py);
-            //touchY = Math.max(Math.min(touchY, radius), -radius);
+            touchY = Math.max(Math.min(touchY, radius), -radius);
 
             // Coordinates
             Log.d(TAG, "Y:" + touchY);
