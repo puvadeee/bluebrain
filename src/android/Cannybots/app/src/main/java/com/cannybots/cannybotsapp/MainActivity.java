@@ -704,7 +704,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             else {
                 Log.i(TAG, "connections NOT visible)");
                 if (activity != null) {
-                    //activity.BLE_stopScanning();
+                    activity.BLE_stopScanning();
                     adapter.clear();
                 }
             }

@@ -84,6 +84,7 @@ public class BLEDevicesListViewAdapter extends BaseAdapter {
 
     public void clear() {
         devices.clear();
+        bleUpdate();
     }
 
     synchronized public static void addDevice(final BluetoothDevice device) {
@@ -107,6 +108,7 @@ public class BLEDevicesListViewAdapter extends BaseAdapter {
                 }
 
                 devices.add(device);
+
             }
         });
     }
