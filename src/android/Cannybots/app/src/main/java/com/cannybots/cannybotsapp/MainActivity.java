@@ -4,6 +4,7 @@ package com.cannybots.cannybotsapp;
 
 
 import android.app.AlertDialog;
+import android.content.SharedPreferences;
 import android.support.v4.app.ListFragment;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
@@ -42,8 +43,12 @@ import android.util.Log;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ListView;
+import android.widget.SeekBar;
+import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -88,6 +93,8 @@ class CustomViewPager extends ViewPager {
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener,BluetoothAdapter.LeScanCallback {
 
     private static final String TAG = "CannybotsActivity";
+    private boolean confReverseFrontBack;
+    private boolean confReverseLeftRight;
 
     private boolean scanStarted;
     private boolean scanning;
@@ -202,7 +209,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         registerReceiver(rfduinoReceiver, RFduinoService.getIntentFilter());
 
         Joystick_stopTimer();
+        Joystick_startTimer();
+    }
 
+    public void Joystick_startTimer() {
         joypadUpdateTimer = new Timer();
         joypadUpdateTimer.scheduleAtFixedRate(
                 new TimerTask() {
@@ -214,8 +224,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 50);
     }
 
-
-    private void Joystick_stopTimer() {
+    public void Joystick_stopTimer() {
         if (joypadUpdateTimer!=null) {
             joypadUpdateTimer.cancel();
             joypadUpdateTimer.purge();
@@ -283,6 +292,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Log.i(TAG, "RECV: " + HexAsciiHelper.bytesToHex(data));
     }
 
+    private static void sendBytes(byte[] bytes) {
+        if ( (MainActivity.rfduinoService != null) && (MainActivity.bluetoothDevice!=null)) {
+            //Log.d(TAG, "sendBytes: " + bytes);
+
+            MainActivity.rfduinoService.send(bytes);
+        }
+    }
 
     private void BLE_disconnected() {
         Log.i(TAG, "BLE_disconnected");
@@ -294,7 +310,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         BLE_onStop();
         BLE_onStart();
     }
-
 
     private void BLE_disconnect() {
         Log.i(TAG, "BLE_disconnect");
@@ -386,9 +401,30 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                             .setTabListener(this));
         }
 
+        loadSettings();
+
         BLE_onCreate();
     }
 
+    public static final String PREFS_NAME = "CannybotsPrefsV1";
+
+    public void loadSettings() {
+        // Restore preferences
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        confReverseFrontBack = settings.getBoolean("reverseFrontBack", true);
+        confReverseLeftRight = settings.getBoolean("reverseLeftRight", false);
+
+    }
+
+    public void saveSettings() {
+        SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean("reverseFrontBack", confReverseFrontBack);
+        editor.putBoolean("reverseLeftRight", confReverseLeftRight);
+
+        // Commit the edits!
+        editor.commit();
+    }
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -417,11 +453,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // When the given tab is selected, switch to the corresponding page in
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
+        if (tab.getPosition() == 0 ) {
+            Joystick_startTimer();
+        }
+
     }
 
     @Override
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         Log.i(TAG, "onTabUnselected");
+        if (tab.getPosition() == 0 ) {
+            Joystick_stopTimer();
+        }
 
     }
 
@@ -493,8 +536,55 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
-
             View rootView = inflater.inflate(R.layout.fragment_settings, container, false);
+            final MainActivity activity = (MainActivity) getActivity();
+
+
+            final Switch frontBackSwitch  = (Switch) rootView.findViewById(R.id.reverseFrontBack);
+            final Switch leftRightSwitch  = (Switch) rootView.findViewById(R.id.reverseLeftRight);
+            final SeekBar whiteThresholdSlider = (SeekBar) rootView.findViewById(R.id.whiteThresholdSlider);
+            final TextView whiteThresholdLabel = (TextView) rootView.findViewById(R.id.whiteThresholdLable);
+            frontBackSwitch.setChecked(activity.confReverseFrontBack);
+            leftRightSwitch.setChecked(activity.confReverseLeftRight);
+
+            frontBackSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    MainActivity activity = (MainActivity) getActivity();
+
+                    Log.i(TAG, "reverseFrontBack=" + isChecked);
+                    activity.confReverseFrontBack=isChecked;
+                    activity.saveSettings();
+                }
+            });
+            leftRightSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                    Log.i(TAG, "reverseLeftRight=" + isChecked);
+                    MainActivity activity = (MainActivity) getActivity();
+                    activity.confReverseLeftRight=isChecked;
+                    activity.saveSettings();
+
+                }
+            });
+
+            whiteThresholdSlider.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+                @Override
+                public void onProgressChanged(SeekBar seekBar, int progress, boolean fromUser) {
+                    Log.i(TAG, "whiteThreshold=" + progress);
+                    whiteThresholdLabel.setText(Integer.toString(progress));
+                    activity.sendBytes(new byte[]{0x7f, 0x7f, 0x00,0x7f, (byte) (progress/4)});
+                }
+
+                @Override
+                public void onStartTrackingTouch(SeekBar seekBar) {
+
+                }
+
+                @Override
+                public void onStopTrackingTouch(SeekBar seekBar) {
+
+                }
+            });
+
 
             return rootView;
         }
@@ -533,16 +623,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 return;
             }
             lastTime=thisTime;*/
-            Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
+            //Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
 
             byte xAxis = (byte) ((xAxisValue+255)/2);
             byte yAxis = (byte) ((yAxisValue+255)/2);
             byte zAxis = (byte) ((zAxisValue+255)/2);
             byte button = (byte) buttonValue;
 
-            if ( (MainActivity.rfduinoService != null) && (MainActivity.bluetoothDevice!=null)) {
-                MainActivity.rfduinoService.send(new byte[]{xAxis,yAxis,button,zAxis});
-            }
+            MainActivity.sendBytes(new byte[]{xAxis, yAxis, button, zAxis});
+
         }
 
         @Override
@@ -593,6 +682,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return rootView;
         }
     }
+
 
     // see: http://www.vogella.com/tutorials/AndroidListView/article.html
     public static class ConnectionsFragment extends ListFragment {

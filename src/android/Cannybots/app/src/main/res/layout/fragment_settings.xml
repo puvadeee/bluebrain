@@ -16,10 +16,12 @@
         android:layout_height="fill_parent"
         android:layout_alignParentTop="true"
         android:layout_alignParentStart="true"
-        android:columnCount="7"
-        android:rowCount="6"
+        android:columnCount="4"
+        android:rowCount="4"
         android:orientation="horizontal"
-        android:id="@+id/settingGrid">
+        android:id="@+id/settingGrid"
+        android:rowOrderPreserved="true"
+        android:useDefaultMargins="false">
 
         <TextView
             android:layout_width="wrap_content"
@@ -31,7 +33,6 @@
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Switch"
             android:id="@+id/reverseLeftRight"
             android:layout_row="0"
             android:layout_column="1" />
@@ -49,7 +50,6 @@
         <Switch
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="New Switch"
             android:id="@+id/reverseFrontBack"
             android:layout_row="1"
             android:layout_column="1" />
@@ -67,7 +67,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:textAppearance="?android:attr/textAppearanceSmall"
-            android:text="700"
+            android:text="0"
             android:id="@+id/whiteThresholdLable"
             android:layout_row="2"
             android:layout_column="1" />
@@ -77,8 +77,67 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:id="@+id/whiteThresholdSlider"
+            android:layout_row="3"
+            android:layout_column="0"
+            android:layout_gravity="fill_horizontal|left|right"
+            android:max="1000"
+            android:progress="500"
+            android:layout_columnSpan="2"
+            android:layout_columnWeight="1" />
+
+        <!-- PID -->
+        <!--
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="PID (P)"
+            android:layout_row="0"
+            android:layout_column="2" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/pidP"
+            android:layout_row="0"
+            android:layout_column="3" />
+
+        <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:textAppearance="?android:attr/textAppearanceSmall"
+        android:text="PID (I)"
+        android:layout_row="1"
+        android:layout_column="2" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/pidI"
+            android:layout_row="1"
+            android:layout_column="3" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textAppearance="?android:attr/textAppearanceSmall"
+            android:text="PID (D)"
             android:layout_row="2"
             android:layout_column="2" />
+
+        <EditText
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:inputType="number"
+            android:ems="10"
+            android:id="@+id/pidD"
+            android:layout_row="2"
+            android:layout_column="3" />
+            -->
     </GridLayout>
 
 
