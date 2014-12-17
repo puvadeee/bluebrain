@@ -56,45 +56,11 @@ import android.widget.Toast;
 import java.util.Timer;
 import java.util.TimerTask;
 
-// Disable Swiping, see: https://blog.svpino.com/2011/08/29/disabling-pagingswiping-on-android
-// also see in project: /res/layout/activity_main.xml
-class CustomViewPager extends ViewPager {
-
-    private boolean enabled;
-
-    public CustomViewPager(Context context, AttributeSet attrs) {
-        super(context, attrs);
-        this.enabled = false;
-    }
-
-    @Override
-    public boolean onTouchEvent(MotionEvent event) {
-        if (this.enabled) {
-            return super.onTouchEvent(event);
-        }
-
-        return false;
-    }
-
-    @Override
-    public boolean onInterceptTouchEvent(MotionEvent event) {
-        if (this.enabled) {
-            return super.onInterceptTouchEvent(event);
-        }
-
-        return false;
-    }
-
-    public void setPagingEnabled(boolean enabled) {
-        this.enabled = enabled;
-    }
-}
-
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener,BluetoothAdapter.LeScanCallback {
 
     private static final String TAG = "CannybotsActivity";
-    private boolean confReverseFrontBack;
-    private boolean confReverseLeftRight;
+    public static boolean confReverseFrontBack;
+    public static boolean confReverseLeftRight;
 
     private boolean scanStarted;
     private boolean scanning;
@@ -317,9 +283,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         if (rfduinoService != null) {
             rfduinoService.disconnect();
             rfduinoService.close();
-            rfduinoService.initialize();
             BLE_disconnected();
-
         }
         bluetoothDevice = null;
     }
@@ -411,7 +375,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void loadSettings() {
         // Restore preferences
         SharedPreferences settings = getSharedPreferences(PREFS_NAME, 0);
-        confReverseFrontBack = settings.getBoolean("reverseFrontBack", true);
+        confReverseFrontBack = settings.getBoolean("reverseFrontBack", false);
         confReverseLeftRight = settings.getBoolean("reverseLeftRight", false);
 
     }
@@ -623,10 +587,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 return;
             }
             lastTime=thisTime;*/
-            //Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
+            Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
+            int x = xAxisValue * (MainActivity.confReverseLeftRight==true?-1:1);
+            int y = yAxisValue * (MainActivity.confReverseFrontBack==true?-1:1);
 
-            byte xAxis = (byte) ((xAxisValue+255)/2);
-            byte yAxis = (byte) ((yAxisValue+255)/2);
+            byte xAxis = (byte) ((x+255)/2);
+            byte yAxis = (byte) ((y+255)/2);
             byte zAxis = (byte) ((zAxisValue+255)/2);
             byte button = (byte) buttonValue;
 
@@ -730,11 +696,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     //activity.BLE_stopScanning();
                     adapter.clear();
                 }
-
-
             }
         }
     }
-
-
 }

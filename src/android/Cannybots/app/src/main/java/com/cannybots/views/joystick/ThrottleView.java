@@ -24,7 +24,7 @@ public class ThrottleView extends JoystickView {
     // =========================================
 
     private final String TAG = "ThrottleView";
-    private final int MIN_THROTTLE = 80;
+    private final int MIN_THROTTLE = 0;
 
     Paint throttleKnobPaint;
     Bitmap throttleKnobBitmap;
@@ -169,7 +169,7 @@ public class ThrottleView extends JoystickView {
             int radius = py - handleInnerBoundaries;
 
             touchY = (event.getY() - py);
-            touchY = Math.max(Math.min(touchY, radius), -radius);
+            //touchY = Math.max(Math.min(touchY, radius), -radius);
 
             // Coordinates
             Log.d(TAG, "Y:" + touchY);
@@ -191,7 +191,7 @@ public class ThrottleView extends JoystickView {
 
         Handler handler = new Handler();
         int numberOfFrames = 5;
-        final double intervalsY = (sensitivity - touchY-handleRadius-handleInnerBoundaries-MIN_THROTTLE) / numberOfFrames;
+        final double intervalsY = (sensitivity - touchY-handleRadius) / numberOfFrames;
 
         for (int i = 0; i < numberOfFrames; i++) {
             handler.postDelayed(new Runnable() {
