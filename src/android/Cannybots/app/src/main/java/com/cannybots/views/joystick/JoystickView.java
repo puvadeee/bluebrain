@@ -187,7 +187,7 @@ public class JoystickView extends View {
             touchY = Math.max(Math.min(touchY, radius), -radius);
 
             // Coordinates
-            Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
+            //Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
 
             // Pressure
             if (listener != null) {
@@ -198,7 +198,7 @@ public class JoystickView extends View {
             invalidate();
         } else if (actionType == MotionEvent.ACTION_UP) {
             returnHandleToCenter();
-            Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
+            //Log.d(TAG, "X:" + touchX + "|Y:" + touchY);
         }
         return true;
     }

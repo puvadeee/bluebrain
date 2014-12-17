@@ -172,7 +172,7 @@ public class ThrottleView extends JoystickView {
             touchY = Math.max(Math.min(touchY, radius), -radius);
 
             // Coordinates
-            Log.d(TAG, "Y:" + touchY);
+            //Log.d(TAG, "Y:" + touchY);
 
             // Pressure
             if (listener != null) {

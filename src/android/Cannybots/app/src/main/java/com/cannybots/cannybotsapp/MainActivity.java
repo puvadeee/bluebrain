@@ -96,13 +96,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         public void onServiceConnected(ComponentName name, IBinder service) {
 
             Log.i(TAG, "rfduinoServiceConnection.onServiceConnected");
-
-
-            rfduinoService = ((RFduinoService.LocalBinder) service).getService();
-            if (rfduinoService.initialize()) {
-                if (bluetoothDevice != null) {
-                    if (rfduinoService.connect(bluetoothDevice.getAddress())) {
-                    }
+            if (rfduinoService == null) {
+                rfduinoService = ((RFduinoService.LocalBinder) service).getService();
+                if (!rfduinoService.initialize()) {
+                    Log.e(TAG, "Failed to start RFduino service.");
                 }
             }
         }
@@ -138,7 +135,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Log.i(TAG, "Potential BLE Device found name = " + device.getName());
         if ( (advData[0] == 'C') && (advData[1] == 'B') && (advData[2] == '0') && (advData[3] == '1') ) {
            BLEDevicesListViewAdapter.addDevice(device);
-           Log.i(TAG, "Found Cannybot! BLE Device Info = " + BluetoothHelper.getDeviceInfoText(device, rssi, scanRecord));
+           Log.i(TAG, "Found Cannybot! BLE Device Info = " + device.getAddress());//BluetoothHelper.getDeviceInfoText(device, rssi, scanRecord));
         }
     }
 
@@ -174,11 +171,14 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         registerReceiver(bluetoothStateReceiver, new IntentFilter(BluetoothAdapter.ACTION_STATE_CHANGED));
         registerReceiver(rfduinoReceiver, RFduinoService.getIntentFilter());
 
-        Joystick_stopTimer();
-        Joystick_startTimer();
+        Intent rfduinoIntent = new Intent(MainActivity.this, RFduinoService.class);
+        bindService(rfduinoIntent, rfduinoServiceConnection, BIND_AUTO_CREATE);
+
     }
 
     public void Joystick_startTimer() {
+        Log.i(TAG, "Joystick_startTimer");
+
         joypadUpdateTimer = new Timer();
         joypadUpdateTimer.scheduleAtFixedRate(
                 new TimerTask() {
@@ -187,10 +187,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                     }
                 },
                 0,
-                50);
+                75);
     }
 
     public void Joystick_stopTimer() {
+        Log.i(TAG, "Joystick_stopTimer");
+
         if (joypadUpdateTimer!=null) {
             joypadUpdateTimer.cancel();
             joypadUpdateTimer.purge();
@@ -205,7 +207,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return;
 
         Joystick_stopTimer();
-        BLE_stopScanning();
         unregisterReceiver(scanModeReceiver);
         unregisterReceiver(bluetoothStateReceiver);
         unregisterReceiver(rfduinoReceiver);
@@ -244,13 +245,23 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void BLE_connect(BluetoothDevice device) {
         Log.i(TAG, "BLE_connect");
 
-
         if (!deviceHasBluetoothLE)
             return;
-        bluetoothDevice = device;
 
-        Intent rfduinoIntent = new Intent(MainActivity.this, RFduinoService.class);
-        bindService(rfduinoIntent, rfduinoServiceConnection, BIND_AUTO_CREATE);
+        if (device != null) {
+            bluetoothDevice = device;
+            if (rfduinoService.connect(bluetoothDevice.getAddress())) {
+                Log.i(TAG, "Connected to BLE device!");
+            } else {
+                Log.e(TAG, "Connect to BLE device failed!");
+                Toast.makeText(getApplicationContext(),
+                        "Failed to connect to '"
+                                + device.getName()
+                                +"'"
+                                + " [" + device.getAddress() + "]",
+                        Toast.LENGTH_LONG).show();
+            }
+        }
     }
 
     // BLE UI
@@ -273,8 +284,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             return;
 
         bluetoothDevice = null;
-        BLE_onStop();
-        BLE_onStart();
     }
 
     private void BLE_disconnect() {
@@ -287,6 +296,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
         bluetoothDevice = null;
     }
+
+
 
 
     @Override
@@ -587,7 +598,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 return;
             }
             lastTime=thisTime;*/
-            Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
+            //Log.d(TAG, "joypad(x,y,z)=(" + xAxisValue + "," + yAxisValue  + "," + zAxisValue + ")");
             int x = xAxisValue * (MainActivity.confReverseLeftRight==true?-1:1);
             int y = yAxisValue * (MainActivity.confReverseFrontBack==true?-1:1);
 
