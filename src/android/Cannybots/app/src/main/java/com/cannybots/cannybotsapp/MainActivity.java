@@ -78,6 +78,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         @Override
         public void onReceive(Context context, Intent intent) {
             int state = intent.getIntExtra(BluetoothAdapter.EXTRA_STATE, 0);
+            Log.i(TAG, "BluetoothAdapter state = " + state);
         }
     };
 
@@ -120,7 +121,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
             final String action = intent.getAction();
             if (RFduinoService.ACTION_CONNECTED.equals(action)) {
+                Joystick_startTimer();
+
             } else if (RFduinoService.ACTION_DISCONNECTED.equals(action)) {
+                Joystick_stopTimer();
+                BLE_disconnected();
+
             } else if (RFduinoService.ACTION_DATA_AVAILABLE.equals(action)) {
                 addData(intent.getByteArrayExtra(RFduinoService.EXTRA_DATA));
             }
@@ -176,30 +182,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     }
 
-    public void Joystick_startTimer() {
-        Log.i(TAG, "Joystick_startTimer");
-
-        joypadUpdateTimer = new Timer();
-        joypadUpdateTimer.scheduleAtFixedRate(
-                new TimerTask() {
-                    public void run() {
-                        JoypadFragment.sendJoypadUpdate(false);
-                    }
-                },
-                0,
-                75);
-    }
-
-    public void Joystick_stopTimer() {
-        Log.i(TAG, "Joystick_stopTimer");
-
-        if (joypadUpdateTimer!=null) {
-            joypadUpdateTimer.cancel();
-            joypadUpdateTimer.purge();
-
-        }
-    }
-
     private void BLE_onStop() {
         Log.i(TAG, "BLE_onStop");
 
@@ -210,6 +192,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         unregisterReceiver(scanModeReceiver);
         unregisterReceiver(bluetoothStateReceiver);
         unregisterReceiver(rfduinoReceiver);
+        unbindService(rfduinoServiceConnection);
     }
 
 
@@ -264,7 +247,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
-    // BLE UI
     private void addData(byte[] data) {
         Log.i(TAG, "RECV: " + HexAsciiHelper.bytesToHex(data));
     }
@@ -277,6 +259,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
+
+
+    private void BLE_disconnect() {
+        Log.i(TAG, "BLE_disconnect");
+
+        if (rfduinoService != null) {
+            rfduinoService.disconnect();
+            rfduinoService.close();
+        }
+    }
+
     private void BLE_disconnected() {
         Log.i(TAG, "BLE_disconnected");
 
@@ -286,23 +279,37 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         bluetoothDevice = null;
     }
 
-    private void BLE_disconnect() {
-        Log.i(TAG, "BLE_disconnect");
 
-        if (rfduinoService != null) {
-            rfduinoService.disconnect();
-            rfduinoService.close();
-            BLE_disconnected();
-        }
-        bluetoothDevice = null;
+
+    public void Joystick_startTimer() {
+        Log.i(TAG, "Joystick_startTimer");
+
+        joypadUpdateTimer = new Timer();
+        joypadUpdateTimer.scheduleAtFixedRate(
+                new TimerTask() {
+                    public void run() {
+                        JoypadFragment.sendJoypadUpdate(false);
+                    }
+                },
+                0,
+                75);
     }
 
+    public void Joystick_stopTimer() {
+        Log.i(TAG, "Joystick_stopTimer");
+
+        if (joypadUpdateTimer!=null) {
+            joypadUpdateTimer.cancel();
+            joypadUpdateTimer.purge();
+
+        }
+    }
 
 
 
     @Override
     protected void onStart() {
-        Log.i(TAG, "******  onStart *******");
+         Log.i(TAG, "******  onStart *******");
 
         super.onStart();
         BLE_onStart();
@@ -429,7 +436,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         // the ViewPager.
         mViewPager.setCurrentItem(tab.getPosition());
         if (tab.getPosition() == 0 ) {
-            Joystick_startTimer();
         }
 
     }
@@ -438,7 +444,6 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     public void onTabUnselected(ActionBar.Tab tab, FragmentTransaction fragmentTransaction) {
         Log.i(TAG, "onTabUnselected");
         if (tab.getPosition() == 0 ) {
-            Joystick_stopTimer();
         }
 
     }
@@ -697,16 +702,19 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             super.setUserVisibleHint(isVisibleToUser);
             MainActivity activity = (MainActivity) getActivity();
             if (isVisibleToUser) {
-                Log.i(TAG, "connections visible)");
+                Log.i(TAG, "connections visible");
                 activity.BLE_disconnect();
                 activity.BLE_startScanning();
             }
             else {
-                Log.i(TAG, "connections NOT visible)");
+                Log.i(TAG, "connections NOT visible");
                 if (activity != null) {
                     activity.BLE_stopScanning();
                     adapter.clear();
+                } else {
+                    Log.w(TAG, "!!!activity null");
                 }
+
             }
         }
     }
