@@ -55,11 +55,11 @@ overwriting whats there already.
 
 ##4. iOS and Android Apps
 
-The apps are available in source form in the repo and also on the respective app stores.
+The apps are available in source form in this repo and also as released apps on the respective app stores.
 
-Apple users can find the app [here](https://itunes.apple.com/us/app/cannybots/id932910715?mt=8)
+Apple users can find the app [here](https://itunes.apple.com/us/app/cannybots/id932910715?mt=8).
 
-Android users can find the app [here](https://play.google.com/store/apps/details?id=com.cannybots.cannybots)
+Android users can find the app [here](https://play.google.com/store/apps/details?id=com.cannybots.cannybots).
 
 
 ##5. Using the programmer
