@@ -58,6 +58,7 @@ overwriting whats there already.
 The apps are available in source form in the repo and also on the respective app stores.
 
 Apple users can go [here](https://itunes.apple.com/us/app/cannybots/id932910715?mt=8)
+
 Android user can go [here](https://play.google.com/store/apps/details?id=com.cannybots.cannybots)
 
 
