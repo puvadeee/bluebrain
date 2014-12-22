@@ -53,16 +53,18 @@ overwriting whats there already.
 
 
 
-##3. iOS App
+##4. iOS and Android Apps
 
-In Safari on on your iOS device goto http://cannybots.github.io/cannybots-beta/
+The apps are available in source form in this repo and also as released apps on the respective app stores.
 
-You will have needed to provide us with your Device ID for this to install and run.
+Apple users can find the app [here](https://itunes.apple.com/us/app/cannybots/id932910715?mt=8).
+
+Android users can find the app [here](https://play.google.com/store/apps/details?id=com.cannybots.cannybots).
 
 
-##4. Using the programmer
+##5. Using the programmer
 
-isntall the altest drivers form the www.ftdichip.com website.
+Install the latest drivers form the www.ftdichip.com website.
 
 
 
