@@ -11,12 +11,7 @@ DRiver IC:    https://www.sparkfun.com/products/9622
 
 Reference:    http://playground.arduino.cc/Main/MAX72XXHardware
 
- ***** These pin numbers will probably need ot be changed for your Arduino *****
-
- pin 12 is connected to the DataIn
- pin 11 is connected to the CLK
- pin 10 is connected to LOAD
- We have only a single MAX72XX.
+We have only a single MAX72XX.
 
 MAX7219 / MAX7221 IC Pinout:
 
@@ -27,7 +22,7 @@ MAX7219 / MAX7221 IC Pinout:
 Passivle component wiring:
 
 9  -> 100nf -> 19  (capacitor)
-9  -> 10uf  -> 19  (electrolytic capactir)
+9  -> 10uf  -> 19  (electrolytic capacitor)
 18  -> 330k    -> +ve (resistor, used to current limit the IC output t the LED's)
 19  +ve
 
@@ -42,10 +37,10 @@ GND       9
 
 Wiringg for
 MAX72**   ->  LED 4 Segment DIsplay pin
-2       12    dig 0
-11      9
-6        8
-7      6
+2       12    digit 0
+11       9    digit 1
+6        8    digit 2
+7        6    digit 3
 
 22       3    Decimal Point
 
@@ -65,7 +60,7 @@ MAX72**   ->  LED 4 Segment DIsplay pin
 LedControl lc = LedControl(2, 8, 9, 1);
 
 /* we always wait a bit between updates of the display */
-unsigned long delaytime = 250;
+unsigned long delaytime = 50;
 
 void setup() {
   /*
