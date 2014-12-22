@@ -9,6 +9,7 @@ Arduino:      http://www.pololu.com/product/3101
 LED Segment:  https://www.sparkfun.com/products/11405
 DRiver IC:    https://www.sparkfun.com/products/9622
 
+Reference:    http://playground.arduino.cc/Main/MAX72XXHardware
 
  ***** These pin numbers will probably need ot be changed for your Arduino *****
 
@@ -27,7 +28,7 @@ Passivle component wiring:
 
 9  -> 100nf -> 19  (capacitor)
 9  -> 10uf  -> 19  (electrolytic capactir)
-18  -> k    -> +ve
+18  -> 330k    -> +ve (resistor, used to current limit the IC output t the LED's)
 19  +ve
 
 Wiring for: 
