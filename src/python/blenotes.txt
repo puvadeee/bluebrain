@@ -1,0 +1,9 @@
+sudo apt-get install libsdl-dev
+cd bluez-5.4
+export CFLAGS=`sdl-config --cflags`
+export LDFLAGS=`sdl-config --libs`
+./configure --disable-systemd --disable-cups --disable-obex  --enable-experimental
+make
+
+rm ./attrib/gatttool; make; sudo ./attrib/gatttool -t random --primary -I -b FB:EB:5A:37:34:B9
+
