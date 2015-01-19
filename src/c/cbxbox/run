@@ -1,0 +1,6 @@
+killall gatttool
+killall hcitool
+hciconfig hci0 down
+hciconfig hci0 up
+sleep 2
+exec ./gatttool -t random --primary -I -b E4:0C:7B:D3:7A:3F
