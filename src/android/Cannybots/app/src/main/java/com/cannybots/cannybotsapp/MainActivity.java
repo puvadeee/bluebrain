@@ -703,6 +703,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             MainActivity activity = (MainActivity) getActivity();
             if (isVisibleToUser) {
                 Log.i(TAG, "connections visible");
+                activity.Joystick_stopTimer();
                 activity.BLE_disconnect();
                 activity.BLE_startScanning();
             }
