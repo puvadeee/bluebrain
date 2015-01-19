@@ -3,9 +3,9 @@
 #include <stdarg.h>
 
 // Choose one of:
-//#define  RADIO_ONLY_GZLL 
+#define  RADIO_ONLY_GZLL 
 //#define  RADIO_ONLY_BLE 
-#define RADIO_TOGGLE 
+//#define RADIO_TOGGLE 
 //#define RADIO_NONE
 
 // don't change these
@@ -189,7 +189,7 @@ void radio_debug(char *fmt, ... ){
         _radio_debug(buf);
 }
 
-void joypad_display(char *fmt, ... ){
+void radio_send_formatted(char *fmt, ... ){
         char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
         va_list args;
         va_start (args, fmt );
@@ -209,8 +209,8 @@ void joypad_display(char *fmt, ... ){
 // PARAMETER1 = int16
 
 void process_message(char *data, int len) {
-  if (len >= 5) {
-      logo_received_command(data[2], word(data[3], data[4]));
+  if (len > 0) {
+      received_client_data(data, len);
   } 
 }
 
@@ -223,7 +223,7 @@ void client_disconnected() {
 #if defined(SERIAL_DEBUG)    
     Serial.println("client_disconnected()");
 #endif  
-  logo_received_command('s', 0); // stop turtle
+  received_client_disconnect(); 
 }
 
 

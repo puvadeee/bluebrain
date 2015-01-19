@@ -9,6 +9,8 @@
 // Version:   1.0  -  15.01.2015  -  Inital Version  (wayne@cannybots.com)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+//#define   SERIAL_DEBUG
+
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>
@@ -56,8 +58,11 @@ int16_t nextP1 = 0;
 
 
 void setup() {
+#if defined(SERIAL_DEBUG)    
+  Serial.begin(9600);
+#else
   Serial.end();
-  //Serial.begin(9600);
+#endif
 
   // Motor pins
   pinMode(MOTOR_A1_PIN, OUTPUT);
@@ -204,7 +209,7 @@ uint8_t logo_run_command(uint8_t command, int16_t p1) {
   Serial.print("Logo cmd:\t");
   Serial.print((char)command);
   Serial.print("\t");
-  Serial.println(p1);
+  Serial.println(p1, DEC);
   uint8_t rc = RC_UNKNOWN_COMMAND;
   switch (command) {
     case 's': rc = cmd_stop(p1); break;
