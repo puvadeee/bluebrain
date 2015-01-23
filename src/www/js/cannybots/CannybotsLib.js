@@ -1,11 +1,17 @@
-// TODO: check if on
-// iOS, use:window.webkit.messageHandlers.interOp.postMessage
-// Android, use: webView.addJavascriptInterface
-// a client (e.g. desktop) talking to this webapp on a BLE enabled smartphone/tablet  (use websocket)
-// a client (e.g. non-BLE tablet) talking to this webapp hosted on a BLE enabled 'desktop' e.g. pi, linux, i.e. running in Node.js with BLE extentions, client ser comms uses websocket interface
+//////////////////////////////////////////////////////////////////////////////////////////////////
+//
+// Cannybots JavaScript Library
+//
+// Authors:  Wayne Keenan
+//
+// License: http://opensource.org/licenses/MIT
+//
+// Version:   1.0  -  15.01.2015  -  Inital Version  (wayne@cannybots.com)
+
+//////////////////////////////////////////////////////////////////////////////////////////////////
 
 
-//code.stephenmorley.org
+//Queue class: code.stephenmorley.org
 function Queue(){var a=[],b=0;this.getLength=function(){return a.length-b};this.isEmpty=function(){return 0==a.length};this.enqueue=function(b){a.push(b)};this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};this.peek=function(){return 0<a.length?a[b]:void 0}};
 
 function cannybotsWebSocket()
@@ -15,8 +21,6 @@ function cannybotsWebSocket()
         var ws = new WebSocket("%%WEBSOCKET_URL%%");
         ws.onopen = function()
         {
-            // You can send data now
-            ws.send("WS.onOpen");
             console.log("WS.onOpen");
         };
         ws.onmessage = function(evt) {
@@ -24,7 +28,7 @@ function cannybotsWebSocket()
             cannybots.receiveBytes(evt.data);
         };
         ws.onclose = function() {
-            //console.log("WS.onClose");
+            console.log("WS.onClose");
         };
         
         return ws;
@@ -61,7 +65,7 @@ var cannybots = new function() {
     
     self.sendBytes = function(message) {
         var message = {
-            "sendBytes":bytesArray
+            "rawBytes":bytesArray
         };
         
         if (self.useQueues)
@@ -69,16 +73,20 @@ var cannybots = new function() {
         else
             self.sendNativeMessage(message);
     }
-    
-    self.sendCommand = function(cmd, param) {
-        var message = {
-            "command":cmd,
+    self.createMessagePayloadForCommand = function(cmd, param) {
+		
+         return {  
+			 "command":cmd,
             "p1":param,
             "rawBytes":self.createByteMessage(cmd,param),
         };
-
+	}
+	
+    self.sendCommand = function(cmd, param) {
+        var message = self.createMessagePayloadForCommand(cmd,param);
+        
         if (self.useQueues) {
-            console.log("INFO: sendCommand(Q): " + message);
+            console.log("INFO: sendCommand(Q): " + JSON.stringify(message));
             self.commandQueue.enqueue(message);
         } else {
             self.sendNativeMessage(message);
@@ -131,14 +139,20 @@ var cannybots = new function() {
             }
         }
     }
-    
+    var rChar = "\r".charCodeAt(0);
     self.createByteMessage = function(cmd, p1) {
-        return [0,0,ord('?'),0,0,'ord(\r)'];
+        return [0,0,cmd.charCodeAt(0), p1>>8, p1 &0xFF,rChar];
         
     }
     
     self.startLib = function () {
         self.setupSendNativeMessage();
+		self.ping = function() {
+		// if okToSend taking longer then 15 seconds
+			self.sendNativeMessage(self.createMessagePayloadForCommand('?',0),0);
+		}
+		window.setInterval(self.ping, 2000);
+
     }
     
 }

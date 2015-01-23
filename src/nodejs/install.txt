@@ -1,0 +1,23 @@
+wget http://node-arm.herokuapp.com/node_latest_armhf.deb 
+sudo dpkg -i node_latest_armhf.deb
+node -v
+sudo npm install -g noble
+sudo npm install -g express
+sudo npm install -g express-generator
+
+http://cwbuecheler.com/web/tutorials/2013/node-express-mongo/
+
+sudo node ws-slave.js
+
+
+
+-- 
+End user isntall steps
+
+cp /src/nodejs/cannybox /opt/cannybots/runtime/nodejs/server
+
+cd 
+npm install
+
+sudo  mkdir /opt/cannybots/runtime/nodejs
+sudo chown pi /opt/cannybots/runtime/nodejs
