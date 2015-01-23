@@ -1,0 +1,109 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" lang="en" xml:lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+	<meta name="viewport" content="user-scalable=no, width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+	<meta name="apple-mobile-web-app-capable" content="yes"/>
+	<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+
+	<link rel="stylesheet" type="text/css" href="papert.css" />
+
+	<title>TurtleSpace</title>
+	<!--<link rel="icon" href="static/favicon.ico" />-->
+    <script type="text/javascript" src="/js/cannybots/CannybotsLib.js"></script>
+
+	<script type="text/javascript" src="js/canvas.js"></script>
+	<script type="text/javascript" src="js/turtle.js"></script>
+	<script type="text/javascript" src="js/parser.js"></script>
+	<script type="text/javascript" src="js/logo.js"></script>
+	<script type="text/javascript" src="js/init.js"></script>
+
+	<link rel="stylesheet" href="js/jquery/jquery.mobile.css"/>
+	<script src="js/jquery/jquery.js"></script>
+	<script src="js/jquery/jquery.mobile.js"></script>
+
+
+</head>
+<body onload="init('canvas','turtle', 'input','oldcode', 'textOutput'); clearcanvas(); cannybots.startLib(); run(1,false);">
+    
+<div id="main">
+
+<form id="input" action="/" method="post" onSubmit="this.img.value = canvas.toDataURL().replace('data:image/png;base64,','')">
+
+<div id="header">
+<center>
+<br/>
+<img src="images/TurtleSpace-Title_med.png"/>
+<img src="images/turtlespace-logo-large.png" height="80"/>
+</center>
+</div>
+
+<div id="content">
+    <div class="inner">
+       <!-- <div id="oldcode">&nbsp;</div>  -->
+        <div>
+            <textarea name="code" id="code" rows="80" cols="20">To DrawSquare :length
+Repeat 4 [
+  Forward :length
+    Right 90
+  ]
+End
+
+DrawSquare 100
+
+</textarea>
+        </div>
+        <div style="margin: 5px;">
+        <!--<input type="button" onClick="run(25,true);" value="Run slowly" />-->
+        <input type="button" onClick="run(5,false);" value="Run normally" style="font-weight: bold;"/>
+        <input type="button" onClick="run(1,false);" value="Run fast" />
+        <input type="button" onClick="stop();" value="Stop program" />
+        <input type="hidden" name="img" />
+        </div>
+
+    </div>
+</div>
+
+<div id="left">
+    <div class="inner">
+		<div id="textOutput"></div>
+        <div id="turtle">
+        	<canvas id="sprite" width="64" height="64">
+		    Your browser doesn't support canvas tags. Please upgrade to a recent version of Firefox or Opera.
+		    </canvas>
+        </div>
+        <canvas id="canvas" width="500" height="500">
+    Your browser doesn't support canvas tags. Please upgrade to a recent version of Firefox or Opera.
+    </canvas>
+    <span style="float: left; margin-right: auto;">
+    <!--<input type="submit" value="share this program" />-->
+    <input type="button" onClick="document.location.href = canvas.toDataURL().replace('image/png', 'image/octet-stream')" value="Save TurtleSpace" />
+    </span>
+     <span style="float: right;margin-left: auto; margin-right: 20px;">
+     <input type="button" onClick="clearcanvas();" value="Clear" />
+     </span>
+</div>
+        
+</div>
+</form>
+
+   
+<!-- 
+<div id="footer">
+<span style="float: left; margin-left: 20px; margin-right: auto; color: white;">TurtleSpace</span>
+
+<span style="float: right;margin-left: auto; margin-right: 20px; color: white;">
+<a href="http://waynekeenan.info/">Cannybots</a>
+</span>
+&nbsp;
+</div>
+
+
+<!--
+<iframe id="notes" src="static/help.txt"/>
+
+-->
+</div>
+</body>
+</html>

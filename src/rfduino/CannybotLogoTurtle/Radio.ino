@@ -180,7 +180,7 @@ void _radio_debug(char* msg) {
 #endif    
 }
 
-void radio_debug(char *fmt, ... ){
+void radio_send_formatted(char *fmt, ... ){
         char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
         va_list args;
         va_start (args, fmt );
@@ -189,14 +189,7 @@ void radio_debug(char *fmt, ... ){
         _radio_debug(buf);
 }
 
-void joypad_display(char *fmt, ... ){
-        char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
-        va_list args;
-        va_start (args, fmt );
-        vsnprintf(buf, GZLL_MAX_MSG_SIZE+1, fmt, args);
-        va_end (args);
-        _radio_debug(buf);
-}
+
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE/GZLL shared message processing

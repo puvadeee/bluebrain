@@ -8,7 +8,12 @@
 //
 // Version:   1.0  -  04.10.2014  -  Inital Version  (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
-#define   SERIAL_DEBUG
+//#define   SERIAL_DEBUG
+
+// TODO: add client alive ping in serial radio proxy
+
+#define SEND_IRVALS_UPDATE_INTERVAL 15
+#define SEND_TEMP_UPDATE_INTERVAL   1000
 
 #define MAX_COMMAND_BUFFER_SIZE 20
 
@@ -35,6 +40,11 @@ void radio_send_formatted(char *fmt, ... );
 // motor speeds
 #define MOTOR_MAX_SPEED 255
 
+
+// state
+
+bool toggle_ir_send = false;
+
 void setup() {
 #if defined(SERIAL_DEBUG)
   Serial.begin(9600);
@@ -54,7 +64,12 @@ void setup() {
 void loop() {
   radio_loop();
   firmata_check_command_queue();
-  readAndSendIRSensorValues();
+
+  if (toggle_ir_send) {
+    readAndSendIRSensorValues();
+  }
+
+  readAndSendTempValue();
 }
 
 // READ & PROCESS IR VALUES
@@ -72,12 +87,23 @@ void readAndSendIRSensorValues() {
     IRval3 = 1000;
 
   // keep alive ping
-  static unsigned long nextSendTime = millis() + 25;
+  static unsigned long nextSendTime = millis() + SEND_IRVALS_UPDATE_INTERVAL;
   if (millis() > nextSendTime) {
     radio_send_formatted("IR:%d,%d,%d", IRval1, IRval2, IRval3);
-    nextSendTime = millis() + 25;
-  }  
+    nextSendTime = millis() + SEND_IRVALS_UPDATE_INTERVAL;
+  }
+
 }
+
+void readAndSendTempValue() {
+  static unsigned long nextSendTime = millis() + SEND_TEMP_UPDATE_INTERVAL;
+  if (millis() > nextSendTime) {
+    float temp = RFduino_temperature(CELSIUS);
+    radio_send_formatted("TEMP:%d.%d", (int)temp, (int) ((int)(temp*100.0) % 100));
+    nextSendTime = millis() + SEND_TEMP_UPDATE_INTERVAL;
+  }
+}
+
 
 // MOTOR DRIVER
 void motorSpeed(int _speedA, int _speedB) {
@@ -108,7 +134,7 @@ enum command_state_t {COMMAND_IDLE, COMMAND_READY, COMMAND_RUNNING} ;
 
 // Comman processing
 uint8_t  commandProcessingState = COMMAND_IDLE;
-char     nextCommandBuffer[20+1];
+char     nextCommandBuffer[20 + 1];
 int16_t  nextCommandLength = 0;
 
 
@@ -119,7 +145,7 @@ void received_client_disconnect () {
 void received_client_data(char *data, int len)  {
   if (commandProcessingState != COMMAND_IDLE)
     return;
-  memcpy( nextCommandBuffer, data, min(sizeof(nextCommandBuffer)-1,len));
+  memcpy( nextCommandBuffer, data, min(sizeof(nextCommandBuffer) - 1, len));
   nextCommandLength = len;
   commandProcessingState = COMMAND_READY;
 }
@@ -128,7 +154,7 @@ void firmata_check_command_queue() {
   if ( commandProcessingState == COMMAND_READY ) {
     commandProcessingState = COMMAND_RUNNING;
 #if defined(SERIAL_DEBUG)
-  Serial.write((const uint8_t*)nextCommandBuffer, nextCommandLength);
+    Serial.write((const uint8_t*)nextCommandBuffer, nextCommandLength);
 #endif
     uint8_t rc = firmata_run_command(nextCommandBuffer, nextCommandLength);
     send_command_status(rc);
@@ -169,6 +195,7 @@ uint8_t firmata_run_command(char *data, int len) {
 
   switch (command) {
     case 'm': rc = cmd_set_motor_speeds(data + 3, len - 3); break;
+    case 's': rc = cmd_set_motor_speeds(0, 0); break;
     default:  rc = RC_UNKNOWN_COMMAND; break;
   }
   return rc;

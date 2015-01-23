@@ -1,0 +1,19 @@
+<html>
+<head>
+<title>CannbotsWebSocketServer</title>
+<script type="text/javascript" src="WebSocketTest.js"></script>
+<script type="text/javascript" src="/js/cannybots/CannybotsLib.js"></script>
+</head>
+<body bgcolor="#FFFFFF">
+<a href="javascript:WebSocketTest()">Does my browser support WebSockets?</a><br/>
+<br/>
+<p>
+<button onclick="javascript:cannybots.sendCommand('?',0)">Send ? Command</button>
+<button onclick="javascript:cannybots.sendCommand('F',10)">Send F 10 Command</button>
+<button onclick="javascript:cannybots.sendCommand('R',90)">Send R 90 Command</button>
+</p>
+
+<br/>
+<div id="cannybotsDebugPane"/>
+</body>
+</html>

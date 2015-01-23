@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cannyblocks for the Turtle</title>
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../msg/js/en.js"></script>
+  <script src="blocks.js"></script>
+  <script src="/js/cannybots/CannybotsLib.js"></script>
+  <script src="/js/cannybots/CannybotsTurtle.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  
+  #main {
+      width: 1000px;
+      margin: 0 auto;
+  }
+  #blocklyDiv    {
+      position: absolute;
+      width: 600px;
+      height: 480px;
+      background: red;
+  }
+  
+  #codeAreaDiv  {
+      position: relative;
+      width: 380px;
+      height: 480px;
+      background: #ffffff;
+      margin: 30 auto;
+      float:right;
+  }
+  
+  textarea {
+      width: 100%;
+      height: 100%;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+      box-sizing: border-box;         /* Opera/IE 8+ */
+      font-size: 10pt;
+      font-family: "Lucida Console", Monaco, monospace;
+  }
+  
+  </style>
+</head>
+<body>
+  <h1>Cannyblocks</h1>
+ 
+  <p>
+    <!--<button onclick="showCode()">Show JavaScript</button>-->
+    <button onclick="runCode()">Run</button>
+  </p>
+  
+  <div id="main">
+      <div id="blocklyDiv" style="height: 480px; width: 600px; float:left;"></div>
+      <div id="codeAreaDiv"><textarea id="codeArea" wrap="off"></textarea></div>
+  </div>
+
+<!--
+    <div id="blocklyDiv" style="height: 480px; width: 600px;">
+        <div id="codeWindow"><textarea wrap="off"></textarea></div>
+    </div>
+-->
+
+  <xml id="toolbox" style="display: none">
+    <category name="Logic">
+      <block type="controls_if"></block>
+      <block type="logic_compare"></block>
+      <block type="logic_operation"></block>
+      <block type="logic_negate"></block>
+      <block type="logic_boolean"></block>
+    </category>
+    <category name="Loops">
+      <block type="controls_repeat_ext">
+        <value name="TIMES">
+          <block type="math_number">
+            <field name="NUM">10</field>
+          </block>
+        </value>
+      </block>
+      <block type="controls_whileUntil"></block>
+    </category>
+    <category name="Math">
+      <block type="math_number"></block>
+      <block type="math_arithmetic"></block>
+      <block type="math_single"></block>
+    </category>
+    <category name="Text">
+        <block type="text"></block>
+        <block type="text_length"></block>
+        <block type="text_print"></block>
+    </category>
+    <category name="Turtle">
+        <block type="cannyblocks_turtle_forward"></block>
+        <block type="cannyblocks_turtle_backward"></block>
+        <block type="cannyblocks_turtle_left"></block>
+        <block type="cannyblocks_turtle_right"></block>
+    </category>
+    
+  </xml>
+
+  <xml id="startBlocks" style="display: none">
+      <block type="controls_repeat_ext" id="10" inline="true" x="38" y="27">
+          <value name="TIMES">
+              <block type="math_number" id="11">
+                  <field name="NUM">4</field>
+              </block>
+          </value>
+          <statement name="DO">
+              <block type="cannyblocks_turtle_forward" inline="false">
+                  <value name="Distance">
+                      <block type="math_number">
+                          <field name="NUM">100</field>
+                      </block>
+                  </value>
+                  <next>
+                      <block type="cannyblocks_turtle_right" inline="false">
+                          <value name="Angle">
+                              <block type="math_number">
+                                  <field name="NUM">90</field>
+                              </block>
+                          </value>
+                      </block>
+                  </next>
+              </block>
+
+          </statement>
+      </block>
+      <!--
+    <block type="controls_if" inline="false" x="20" y="20">
+      <mutation else="1"></mutation>
+      <value name="IF0">
+        <block type="logic_compare" inline="true">
+          <field name="OP">EQ</field>
+          <value name="A">
+            <block type="math_arithmetic" inline="true">
+              <field name="OP">MULTIPLY</field>
+              <value name="A">
+                <block type="math_number">
+                  <field name="NUM">6</field>
+                </block>
+              </value>
+              <value name="B">
+                <block type="math_number">
+                  <field name="NUM">7</field>
+                </block>
+              </value>
+            </block>
+          </value>
+          <value name="B">
+            <block type="math_number">
+              <field name="NUM">42</field>
+            </block>
+          </value>
+        </block>
+      </value>
+      <statement name="DO0">
+          <block type="cannyblocks_turtle_forward" inline="false">
+              <value name="Distance">
+                  <block type="math_number">
+                      <field name="NUM">10</field>
+                  </block>
+              </value>
+              <next>
+                  <block type="cannyblocks_turtle_forward" inline="false">
+                      <value name="Distance">
+                          <block type="math_number">
+                              <field name="NUM">10</field>
+                          </block>
+                      </value>
+                  </block>
+              </next>
+          </block>
+      </statement>
+      <statement name="ELSE">
+        <block type="text_print" inline="false">
+          <value name="TEXT">
+            <block type="text">
+              <field name="TEXT">Panic</field>
+            </block>
+          </value>
+        </block>
+      </statement>
+    </block>
+       -->
+  </xml>
+  <script>
+    Blockly.inject(document.getElementById('blocklyDiv'),
+        {toolbox: document.getElementById('toolbox')});
+    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace,
+        document.getElementById('startBlocks'));
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode();
+      document.getElementById('codeArea').value = code;
+      //cannybots.sendDebug(code);
+    }
+
+    function runCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+          'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+      var code = Blockly.JavaScript.workspaceToCode();
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+        cannybots.sendError(e.message);
+      }
+    }
+  
+      Blockly.addChangeListener(showCode);
+  </script>
+  <!--<textarea id="cannybotsDebugPane" class="content" wrap="off"></textarea>-->
+  
+</body>
+</html>

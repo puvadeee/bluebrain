@@ -7,3 +7,55 @@ make
 
 rm ./attrib/gatttool; make; sudo ./attrib/gatttool -t random --primary -I -b FB:EB:5A:37:34:B9
 
+
+
+
+
+
+noble ws-slave
+
+{"action": "startScanning"}
+
+{"action": "stopScanning"}
+
+
+
+{ 
+"action": "connect",
+"peripheralUuid": "e40c7bd37a3f"
+}
+
+
+
+
+{ 
+"action": "discoverServices",
+"peripheralUuid":"e40c7bd37a3f"
+}
+
+
+{ 
+"action": "discoverCharacteristics",
+"peripheralUuid":"e40c7bd37a3f",
+"serviceUuid": "7e400001b5a3f393e0a9e50e24dcca9e",
+"characteristicUuids":["7e400002b5a3f393e0a9e50e24dcca9e","7e400003b5a3f393e0a9e50e24dcca9e"]
+}
+
+
+
+{ 
+"action": "notify",
+"peripheralUuid":"e40c7bd37a3f",
+"serviceUuid": "7e400001b5a3f393e0a9e50e24dcca9e",
+"characteristicUuid":"7e400002b5a3f393e0a9e50e24dcca9e",
+"notify":true
+}
+
+
+{ 
+"action": "read",
+"peripheralUuid":"e40c7bd37a3f",
+"serviceUuid": "7e400001b5a3f393e0a9e50e24dcca9e",
+"characteristicUuid":"7e400002b5a3f393e0a9e50e24dcca9e"
+}
+

@@ -19,7 +19,7 @@
 // Wire  Bluebrain   VCC          to  RPi 3.3v
 // Wire  Bluebrain   GND          to  RPi GND
 
-// On PI:  minicom -b 9600 -o -D /dev/ttyAMA0
+// On PI:  minicom -b 115200 -o -D /dev/ttyAMA0
 // 00?00
 // Quit:   CTRL-A  X
 
@@ -42,14 +42,13 @@ device_t role = DEVICE0;
 
 void setup()
 {
-  Serial.begin(9600, RX_PIN, TX_PIN);
+  Serial.begin(115200, RX_PIN, TX_PIN);
 #ifdef GZLL_HOST_ADDRESS
   RFduinoGZLL.hostBaseAddress = GZLL_HOST_ADDRESS;
 #endif
   RFduinoGZLL.begin(role);
-#if defined(SERIAL_DEBUG)
-  Serial.println("SerialProxy:STARTED!");
-#endif
+
+ Serial.println("SerialProxy:STARTED!");
 }
 
 void loop()

@@ -1,0 +1,19 @@
+<html>
+<head>
+    <meta name="viewport" content="width=device-width; initial-scale=1.0; maximum-scale=1.0; minimum-scale=1.0; user-scalable=0;" />
+        <link rel="stylesheet" type="text/css" href="main.css">
+        <script src="/js/cannybots/CannybotsLib.js"></script>
+
+</head>
+    <body>
+        <br/>
+        <div class="isButton" onclick="cannybots.sendCommand('?',0)">Send ? Command</div>
+        <div class="isButton" onclick="cannybots.sendCommand('F',10)">Send F 10 Command</div>
+        <div class="isButton" onclick="cannybots.sendCommand('R',10)">Send F 10 Command</div>
+        <div class="isButton" onclick="cannybots.sendBytes(['?',0])">Send Bytes</div>
+        <br/>
+        <div id="cannybotsDebugPane"/>
+    </body>
+</html>
+
+

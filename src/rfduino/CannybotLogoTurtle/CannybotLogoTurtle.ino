@@ -9,18 +9,30 @@
 // Version:   1.0  -  15.01.2015  -  Inital Version  (wayne@cannybots.com)
 
 //////////////////////////////////////////////////////////////////////////////////////////////////
+
+// WArning: enabling serial debug will cause the motors to rotate only one way.
 //#define   SERIAL_DEBUG
 
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
+void radio_send_formatted(char *fmt, ... );
+
+// configure depending on physical characteristics
+#define COUNTS_PER_REVOLUTION 335
+#define WHEEL_DIAMETER        32      // mm
+
+#define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
 // Time based hacks!
+//#define USE_DELAYS_FOR_MOVEMENT
 #define MAX_TURTLE_MOTOR_SPEED  80
 #define MOTION_DELAY_MULTIPLIER 60
 #define TURN_DELAY_MULTIPLIER 3
 
+#define ANGLE_CALC 1
+#define DISTANCE_CALC 2
 
 // Pin Assignments
 
@@ -29,18 +41,29 @@
 #define MOTOR_A2_PIN 6  // motor speed (PWM)
 #define MOTOR_B1_PIN 1	// motor direction
 #define MOTOR_B2_PIN 5	// motor speed (PWM)
-#define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
 // Wheel encoders
 #define ENCODER1A_PIN 2
+#define ENCODER1B_PIN x
 #define ENCODER2A_PIN 3
 #define ENCODER2B_PIN 4
 
 
+#define COUNTER_NONE 0
+#define COUNTER_1A 1
+#define COUNTER_1B 2
+#define COUNTER_2A 3
+#define COUNTER_2B 4
+
+
 // Wheel encoder state
 volatile unsigned int encoder1ACount = 0;
+volatile unsigned int encoder1BCount = 0;
 volatile unsigned int encoder2ACount = 0;
 volatile unsigned int encoder2BCount = 0;
+int currentCounter = 0;
+int currentCounterTarget = 0;
+
 
 
 // Command statuses
@@ -58,7 +81,7 @@ int16_t nextP1 = 0;
 
 
 void setup() {
-#if defined(SERIAL_DEBUG)    
+#if defined(SERIAL_DEBUG)
   Serial.begin(9600);
 #else
   Serial.end();
@@ -71,26 +94,58 @@ void setup() {
   pinMode(MOTOR_B2_PIN, OUTPUT);
 
   // encoder
-  pinMode(ENCODER1A_PIN, INPUT);
+  //pinMode(ENCODER1A_PIN, INPUT);
   pinMode(ENCODER2A_PIN, INPUT);
   pinMode(ENCODER2B_PIN, INPUT);
   //attachPinInterrupt(ENCODER1A_PIN, encoderCallbackSensor1A, HIGH);
-  //attachPinInterrupt(ENCODER2A_PIN, encoderCallbackSensor2A, HIGH);
-  //attachPinInterrupt(ENCODER2B_PIN, encoderCallbackSensor2B, LOW);
+  //attachPinInterrupt(ENCODER1B_PIN, encoderCallbackSensor1B, HIGH);
+  attachPinInterrupt(ENCODER2A_PIN, encoderCallbackSensor2A, HIGH);
+  attachPinInterrupt(ENCODER2B_PIN, encoderCallbackSensor2B, HIGH);
+
 
 
   radio_setup();
-  /*
-    motorSpeed(255, 0);
-    delay(1000);
-    motorSpeed(0, 255);
-    delay(1000);
-    motorSpeed(0, 0);
-  */
+}
+
+void motorTestPattern() {
+  motorSpeed(255, 255);
+  delay(500);
+  motorSpeed(-255, -255);
+  delay(500);
+  motorSpeed(0, 0);
+  delay(1000);
+
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);  delay(500); motorSpeed(0, 0); delay(500);
+  motorSpeed(-MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED); delay(500);  motorSpeed(0, 0); delay(1000);
+
+  radio_send("TurtleUp!");
+  cmd_forward(50);  delay(500);
+  cmd_backward(50); delay(500);
+  cmd_forward(50);  delay(500);
+
+  motorSpeed(0, 0);
+
+  cmd_left(90);     delay(500);
+  cmd_right(90);    delay(500);
+
+  cmd_left(90);     delay(500);
+  cmd_right(90);    delay(500);
+
+  for (int i = 0; i < 4; i++) {
+    cmd_forward(100);
+    cmd_right(90);
+  }
+
+  motorSpeed(0, 0);
 }
 
 
 int encoderCallbackSensor1A(uint32_t ulPin) {
+  encoder1ACount++;
+  return 0;
+}
+
+int encoderCallbackSensor1B(uint32_t ulPin) {
   encoder1ACount++;
   return 0;
 }
@@ -106,11 +161,97 @@ int encoderCallbackSensor2B(uint32_t ulPin) {
 }
 
 
+void resetEnocderCounters() {
+  encoder1ACount = 0;
+  encoder1BCount = 0;
+  encoder2ACount = 0;
+  encoder2BCount = 0;
+}
+
+
+void setTargetCounter(int counter, int target) {
+  currentCounter = counter;
+  currentCounterTarget = target;
+}
+
+int checkEncoderCountsForStopping() {
+  bool stopMotors = false;
+  switch (currentCounter) {
+    case COUNTER_1A: stopMotors = encoder1ACount > currentCounterTarget; break;
+    case COUNTER_1B: stopMotors = encoder1BCount > currentCounterTarget; break;
+    case COUNTER_2A: stopMotors = encoder2ACount > currentCounterTarget; break;
+    case COUNTER_2B: stopMotors = encoder2BCount > currentCounterTarget; break;
+  }
+  if (stopMotors) {
+    motorSpeed(0, 0);
+  }
+  return stopMotors;
+}
+
+int calculateEncoderCountForDistance(int distance) {
+  int count = 0;
+  float wheelCircumference = WHEEL_DIAMETER * M_PI;                       // =  32mm x Pi =  100.53
+  float ticksPerMilliMeter = COUNTS_PER_REVOLUTION / wheelCircumference;  // =  300 ticks /  100.53 = 2.98
+  // => fwd 100 mm =    distance * ticksPerMilliMeter =  100 * 2.98 = 298 ticks
+
+  count = (float)fabs(distance) * (float)ticksPerMilliMeter;
+  return count;
+}
+
+int calculateEncoderCountForAngle(int angle) {
+  angle = abs(angle % 360);
+  int count = 0;
+  // ticksPerAngle = 300/360 = 0.83
+  float ticksPerAngle = (float)COUNTS_PER_REVOLUTION / (float)360;                // =  300 ticks / 360 = 0.83
+  // => right 90 =    angle * ticksPerAngle =  90 * 0.83 = 74.7 ticks
+
+  count = (float)angle * (float)ticksPerAngle * 2;
+
+  return count;
+}
+
+
+
+int setupCounterFor(int calcMode, int distanceOrAngle) {
+
+  resetEnocderCounters();
+  int ticks = 0;
+  if (calcMode == ANGLE_CALC) {
+    ticks = calculateEncoderCountForAngle(distanceOrAngle);
+
+    if (distanceOrAngle > 0) {
+      setTargetCounter(COUNTER_2A, ticks);
+    } else if (distanceOrAngle < 0) {
+      setTargetCounter(COUNTER_2B, ticks);
+    } else {
+      ticks = 0;
+    }
+  } else {
+    ticks = calculateEncoderCountForDistance(distanceOrAngle);
+
+    if (distanceOrAngle > 0) {
+      setTargetCounter(COUNTER_2B, ticks);
+    } else if (distanceOrAngle < 0) {
+      setTargetCounter(COUNTER_2A, ticks);
+    } else {
+      ticks = 0;
+    }
+  }
+
+  return ticks;
+}
 
 
 // MOTOR DRIVER
 void motorSpeed(int _speedA, int _speedB) {
-  _speedA = -constrain(_speedA, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
+#if defined(SERIAL_DEBUG)
+  Serial.print("Motors (Not sent) A,B:\t");
+  Serial.print(_speedA, DEC);
+  Serial.print("\t");
+  Serial.println(_speedB, DEC);
+  return;
+#endif
+  _speedA = constrain(_speedA, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
   _speedB = constrain(_speedB, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
   digitalWrite(MOTOR_A1_PIN, _speedA >= 0 ? LOW : HIGH) ;
   analogWrite (MOTOR_A2_PIN, abs(_speedA));
@@ -122,53 +263,84 @@ void motorSpeed(int _speedA, int _speedB) {
 
 ///////////////
 
-void loop() {
-  radio_loop(); //read radio input
-  logo_check_command_queue();
-}
 
-void show_counters() {
-  Serial.print("Enc 1A, 2A, 2B:\t");
-  Serial.print(encoder1ACount);
-  Serial.print("\t");
-  Serial.print(encoder2ACount);
-  Serial.print("\t");
-  Serial.println(encoder2BCount);
-}
 
 uint8_t cmd_stop(int16_t p1) {
   motorSpeed(0, 0);
   return RC_OK;
 }
 
+#if defined(USE_DELAYS_FOR_MOVEMENT)
 
+// used as a fallback, this is a very poor approximation method, no good for drawing, only navigating a bit
 uint8_t cmd_forward(int16_t p1) {
-  motorSpeed(MAX_TURTLE_MOTOR_SPEED,MAX_TURTLE_MOTOR_SPEED);
-  delay(p1*MOTION_DELAY_MULTIPLIER);
-  motorSpeed(0,0);
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
+  delay(p1 * MOTION_DELAY_MULTIPLIER);
+  motorSpeed(0, 0);
   return RC_OK;
 }
 
 uint8_t cmd_backward(int16_t p1) {
-  motorSpeed(MAX_TURTLE_MOTOR_SPEED,MAX_TURTLE_MOTOR_SPEED);
-  delay(p1*MOTION_DELAY_MULTIPLIER);
-  motorSpeed(0,0);
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
+  delay(p1 * MOTION_DELAY_MULTIPLIER);
+  motorSpeed(0, 0);
   return RC_OK;
 }
 
 uint8_t cmd_left(int16_t p1) {
-  motorSpeed(MAX_TURTLE_MOTOR_SPEED,-MAX_TURTLE_MOTOR_SPEED);
-  delay(p1*TURN_DELAY_MULTIPLIER);
-  motorSpeed(0,0);
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED);
+  delay(p1 * TURN_DELAY_MULTIPLIER);
+  motorSpeed(0, 0);
   return RC_OK;
 }
 
 uint8_t cmd_right(int16_t p1) {
-  motorSpeed(-MAX_TURTLE_MOTOR_SPEED,MAX_TURTLE_MOTOR_SPEED);
-  delay(p1*TURN_DELAY_MULTIPLIER);
-  motorSpeed(0,0);
+  motorSpeed(-MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
+  delay(p1 * TURN_DELAY_MULTIPLIER);
+  motorSpeed(0, 0);
   return RC_OK;
 }
+#else
+
+uint8_t cmd_forward(int16_t p1) {
+  setupCounterFor(DISTANCE_CALC, p1);
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
+  // block for movement, possible cout return a 'pending' rc that doesnt return OK immediately to the client
+  while (!checkEncoderCountsForStopping()) {
+  }
+  motorSpeed(0, 0);
+
+  return RC_OK;
+}
+
+uint8_t cmd_backward(int16_t p1) {
+  setupCounterFor(DISTANCE_CALC, -p1);
+  motorSpeed(-MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED);
+  while (!checkEncoderCountsForStopping()) {
+  }
+  motorSpeed(0, 0);
+  return RC_OK;
+}
+
+uint8_t cmd_left(int16_t p1) {
+  setupCounterFor(ANGLE_CALC, -p1);
+  motorSpeed(MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED);
+  while (!checkEncoderCountsForStopping()) {
+  }
+  motorSpeed(0, 0);
+  return RC_OK;
+}
+
+uint8_t cmd_right(int16_t p1) {
+  setupCounterFor(ANGLE_CALC, p1);
+  motorSpeed(-MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
+  while (!checkEncoderCountsForStopping()) {
+  }
+  motorSpeed(0, 0);
+  return RC_OK;
+}
+#endif
+
 
 uint8_t cmd_pen_up(int16_t p1) {
   return RC_COMMAND_UNIMPLEMENTED;
@@ -206,10 +378,13 @@ void logo_check_command_queue() {
 }
 
 uint8_t logo_run_command(uint8_t command, int16_t p1) {
+#if defined(SERIAL_DEBUG)
+
   Serial.print("Logo cmd:\t");
   Serial.print((char)command);
   Serial.print("\t");
   Serial.println(p1, DEC);
+#endif
   uint8_t rc = RC_UNKNOWN_COMMAND;
   switch (command) {
     case 's': rc = cmd_stop(p1); break;
@@ -239,3 +414,22 @@ void send_command_status(uint8_t rc) {
   }
   radio_send(msg);
 }
+
+
+void loop() {
+  radio_loop(); //read radio input
+  logo_check_command_queue();
+  show_counters();
+}
+
+void show_counters() {
+#if defined(SERIAL_DEBUG_DETAILED)
+  Serial.print("Enc 1A, 2A, 2B:\t");
+  Serial.print(encoder1ACount);
+  Serial.print("\t");
+  Serial.print(encoder2ACount);
+  Serial.print("\t");
+  Serial.println(encoder2BCount);
+#endif
+}
+
