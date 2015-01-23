@@ -75,7 +75,9 @@ var cannybots = new function() {
             "command":cmd,
             "p1":param
         };
+
         if (self.useQueues) {
+            console.log("INFO: sendCommand(Q): " + message);
             self.commandQueue.enqueue(message);
         } else {
             self.sendNativeMessage(message);
@@ -84,14 +86,15 @@ var cannybots = new function() {
 
     self.receiveBytes = function (bytesArray) {
         self.okToSend = true;
+         console.log("DEBUG: receiveBytes: " + bytesArray);
     }
     
     self.sendDebug = function(msg) {
-        //console.log("DEBUG: " + msg);
+        console.log("DEBUG: " + msg);
         self.sendNativeMessage({"debug":msg});
     }
     self.sendError = function(msg) {
-        //console.log("ERROR: " + msg);
+        console.log("ERROR: " + msg);
         self.sendNativeMessage({"error":msg});
     }
     
