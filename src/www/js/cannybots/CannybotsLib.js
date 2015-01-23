@@ -73,7 +73,8 @@ var cannybots = new function() {
     self.sendCommand = function(cmd, param) {
         var message = {
             "command":cmd,
-            "p1":param
+            "p1":param,
+            "rawBytes":self.createByteMessage(cmd,param),
         };
 
         if (self.useQueues) {
@@ -129,6 +130,11 @@ var cannybots = new function() {
                 console.log("ERROR: " + err.message);
             }
         }
+    }
+    
+    self.createByteMessage = function(cmd, p1) {
+        return [0,0,ord('?'),0,0,'ord(\r)'];
+        
     }
     
     self.startLib = function () {

@@ -25,7 +25,7 @@
 
 //#define GZLL_HOST_ADDRESS 0x12ACB001           // this needs to match the Bot sketch value
 
-#define SERIAL_DEBUG
+//#define SERIAL_DEBUG
 
 #define GZLL_MAX_MSG_SIZE 20      // keep it the same a BLE, otherwise could be 32
 
