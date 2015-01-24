@@ -10,17 +10,46 @@
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SERIAL_DEBUG
 
-// ****** IMPORTANT: these bias must be ajusted so that all 3 radings are +/-2
-//IR sensor bias
-#if 0
-#define IR1_BIAS -66
-#define IR2_BIAS 0
-#define IR3_BIAS -178
-#else
+// Notes:
+
+
+// Function that are almost unchanged and can be considred the same as before:  setup, readIRSensors, motorSpeed & calculatePID
+
+// Significant changes:
+//   loop -                           first pass at a discriminator for left/right/t-junction,
+//                                    notifies client of state (determined corner) and stops if not on the line.
+//                                    uses smoothed IR values and a counter
+//
+
+// New functions:
+
+//  calibrateIRSensors():              a simple IR sensor min/max (bot must be place onm the line on powerup)
+//                                     1. bot spins round and records min & max values read for each IR sensor
+//                                     2a) IR1 & IR3 have their whitethreshol set to 95% of max
+//                                     2b) IR2 has it own whitethreshold set to 90% of max
+
+//  send_status :                      notifies client of a trasistion betwween line discrinatorstates, e.g. LINE_STATUS_FOLLOWING_LINE, LINE_STATUS_RIGHT_TURN
+//                                     surpresses duplicates
+
+//  received_client_disconnect :       called when client radio disconneccts
+
+//  received_client_data:              over the air data, raw input, not filterd or processed by Radio.ino  (unlike the Joypad stuf fin the racer)
+
+//  calculate_smoothing:               perform a rolling average filter, used byt the IS_ON_LINE/NOT_ON_LINE helpers
+//                                     smoothing is applied to the IR vals for the discriminator in loop(), however the orginal raw (unsmoothed) values are still used by the PID loop.
+
+//
+// Helpers
+//  IS_ON_LINE(irNum:1-3) / NOT_ONLINE(irNum:1-3)        uses the smoothed values to determine is sensor x is on or of the line.
+
+
+
+
+
+
 #define IR1_BIAS 0
 #define IR2_BIAS 0
 #define IR3_BIAS 0
-#endif
 
 // ****** IMPORTANT: Very important this is tuned!
 
@@ -67,7 +96,7 @@ void radio_send_formatted(char *fmt, ... );
 // DEFINITIONS & ITIALISATION
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
-// Line satus constants
+// Line status constants
 
 #define LINE_STATUS_UNKNOWN           -1
 #define LINE_STATUS_NO_LINE           0
@@ -85,28 +114,23 @@ void radio_send_formatted(char *fmt, ... );
 
 
 
-#define IS_ON_LINE(x) ( (average[(x)-1])>=IR##x##whiteThreshold )
+#define IS_ON_LINE(x) ( (average[(x)-1])>=IRwhiteThreshold[(x)-1] )
 #define NOT_ON_LINE(x) (!IS_ON_LINE(x))
 
 
 
-//
-volatile int IRwhiteThreshold = IR_WHITE_THRESHOLD_DEFAULT;
-
 
 //set IR initial reading to zero
-int IRval1 = 0;
-int IRval2 = 0;
-int IRval3 = 0;
+int IRvals[3] = {0};
+int IRvalMin[3] = {0};
+int IRvalMax[3] = {0};
+int IRwhiteThreshold[3] = {0};
 
-int IRval1Min, IRval1Max, IR1whiteThreshold;
-int IRval2Min, IRval2Max, IR2whiteThreshold;
-int IRval3Min, IRval3Max, IR3whiteThreshold;
 
 // Analog smoothing
 
-const int numReadings = 10;
-int readings[3][numReadings];      // the readings from the analog input
+const int numReadings = 5;
+int readings[3][numReadings] = {0};      // the readings from the analog input
 int sindex[3] = {0};                  // the index of the current reading
 int total[3] = {0};                  // the running total
 int average[3] = {0};                // the average for each IR
@@ -168,20 +192,20 @@ void readIRSensors() {
 
   //analogRead(IR1_PIN);
   //delay(20);
-  IRval1 = analogRead(IR1_PIN) + IR1_BIAS; //left looking from behind
-  if (IRval1 >= 1000)
-    IRval1 = 1000;
+  IRvals[0] = analogRead(IR1_PIN) + IR1_BIAS; //left looking from behind
+  if (IRvals[0] >= 1000)
+    IRvals[0] = 1000;
 
   //analogRead(IR2_PIN);
-  IRval2 = analogRead(IR2_PIN) + IR2_BIAS; //centre
-  if (IRval2 >= 1000)
-    IRval2 = 1000;
+  IRvals[1] = analogRead(IR2_PIN) + IR2_BIAS; //centre
+  if (IRvals[1] >= 1000)
+    IRvals[1] = 1000;
 
   //analogRead(IR3_PIN);
-  IRval3 = analogRead(IR3_PIN) + IR3_BIAS; //right
-  if (IRval3 >= 1000)
-    IRval3 = 1000;
-    
+  IRvals[2] = analogRead(IR3_PIN) + IR3_BIAS; //right
+  if (IRvals[2] >= 1000)
+    IRvals[2] = 1000;
+
   calculate_smoothing();
 }
 
@@ -224,15 +248,17 @@ void send_status(int status) {
       default: c = 'x';  break;
     }
 
-    radio_send_formatted("MAZE:%c,%d,%d,%d", c, IRval1, IRval2, IRval3);
+    radio_send_formatted("MAZE:%c,%d,%d,%d", c, IRvals[0], IRvals[1], IRvals[2]);
   }
 
 }
+
 
 void received_client_disconnect () {
 }
 
 
+static bool sendIRStatsFlag = 0;
 
 // do as little in here as possible as it's called under an interrupt.
 void received_client_data(char *data, int len)  {
@@ -244,32 +270,47 @@ void received_client_data(char *data, int len)  {
     //if (data[0] == 'c')  calibrateIRSensors();
   }
 
-  radio_send_formatted("MAZE:%d,%d,%d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3));
+  sendIRStatsFlag = 1;
+}
 
+void sendIRStats() {
+  radio_send_formatted("--------IR State");
+  delay(150);
+  radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
+  delay(150);
+  radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
+  delay(150);
+  radio_send_formatted("ol?:%d,%d,%d  ", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3));
+  sendIRStatsFlag = 0;
 }
 
 
 
 // CALCULATE PID
-void calculatePID() {
+int calculatePID() {
 
   // Calculate PID on a regular time basis
   if ((time_Now - pidLastTime) < PID_SAMPLE_TIME ) {
-    // return if called too soon
-    return;
+    // return previous vakyeif called too soon
+    return correction;
   }
   pidLastTime = time_Now;
 
   // process IR readings via PID
   error_last = error; // store previous error value before new one is caluclated
-  error = IRval1 - IRval3;
+  error = IRvals[0] - IRvals[2];
   P_error = error * Kp / 100.0; // calculate proportional term
   I_sum = constrain ((I_sum + error), -1000, 1000); // integral term
   I_error = I_sum * Ki / 100.0;
   D_error = (error - error_last) * Kd / 100.0;          // calculate differential term
   correction = P_error + D_error + I_error;
+  return correction;
 }
 
+int counterL = 0;
+int counterR = 0;
+int counterT = 0;
+int counterMax = 10;  // samples
 
 void loop() {
 
@@ -277,48 +318,58 @@ void loop() {
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
 
-  correction = 0;
-  lineSpeed = 0;
+
 
   if ( IS_ON_LINE(2) )
   {
-    if (IS_ON_LINE(1) && IS_ON_LINE(3) )
+    if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
     {
-      send_status(LINE_STATUS_T_JUNCTION);
+      counterT++;
+      if (counterT > counterMax) {
+        counterT = counterR = counterL = 0;
+        correction = 0;
+        lineSpeed = 0;
+        send_status(LINE_STATUS_T_JUNCTION);
+      }
     }
-    else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )
+    else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
     {
-      send_status(LINE_STATUS_LEFT_TURN);
+      counterL++;
+      if (counterL > counterMax) {
+        counterT = counterR = counterL = 0;
+        correction = 0;
+        lineSpeed = 0;
+        send_status(LINE_STATUS_LEFT_TURN);
+      }
     }
-    else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )
+    else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right C
     {
-      send_status(LINE_STATUS_RIGHT_TURN);
-    } else {
-      calculatePID();
+      counterR++;
+      if (counterR > counterMax) {
+        counterT = counterR = counterL = 0;
+        correction = 0;
+        lineSpeed = 0;
+        send_status(LINE_STATUS_RIGHT_TURN);
+      }
+    } else {                                            // Line Following
+      correction = calculatePID();
       lineSpeed = DEFAULT_CRUISE_SPEED;
       send_status(LINE_STATUS_FOLLOWING_LINE);
     }
   } else
   {
-    send_status(LINE_STATUS_NO_LINE);
+    correction = 0;
+    lineSpeed = 0;
+    send_status(LINE_STATUS_NO_LINE);                    // Off the line
   }
 
   speedA = (lineSpeed + correction);
   speedB = (lineSpeed - correction);
   motorSpeed(speedA, speedB);
 
-  // TODO:  check IR sensors current value (and past?) to determine if we are at a junction/choice point
-
-
-#if defined(SERIAL_DEBUG)
-  Serial.print(IRval1, DEC);
-  Serial.print("\t");
-  Serial.print(IRval2, DEC);
-  Serial.print("\t");
-  Serial.print(IRval3, DEC);
-  Serial.print("\n");
-#endif
-
+  if (sendIRStatsFlag) {
+    sendIRStats();
+  }
 }
 
 
@@ -327,36 +378,34 @@ void calibrateIRSensors() {
   radio_send_formatted("MAZE:Calibrating...");
   // take intial readings and set the min/max as those.
   readIRSensors();
-  IRval1Min = IRval1Max = IRval1;
-  IRval2Min = IRval2Max = IRval2;
-  IRval3Min = IRval3Max = IRval3;
+  IRvalMin[0] = IRvalMax[0] = IRvals[0];
+  IRvalMin[1] = IRvalMax[1] = IRvals[1];
+  IRvalMin[2] = IRvalMax[2] = IRvals[2];
   for (int i = -1; i <= 1; i += 1) {
     motorSpeed( i * DEFAULT_CRUISE_SPEED / 3, -(i * DEFAULT_CRUISE_SPEED / 3));
-    for (int i = 0; i < 40; i++) {
+    for (int i = 0; i < 100; i++) {
 
       readIRSensors();
-      // find minimums
-      if (IRval1 < IRval1Min) IRval1Min = IRval1;
-      if (IRval2 < IRval2Min) IRval2Min = IRval2;
-      if (IRval3 < IRval3Min) IRval3Min = IRval3;
+      for (int j = 0; j < 3; j++) {
+        // find min/max
+        if (IRvals[j]  < IRvalMin[j]) IRvalMin[j] = IRvals[j];
+        if (IRvals[j]  > IRvalMax[j]) IRvalMax[j] = IRvals[j];
+        delay(10);
+      }
 
-      // find maximums
-      if (IRval1 > IRval1Max) IRval1Max = IRval1;
-      if (IRval2 > IRval2Max) IRval2Max = IRval2;
-      if (IRval3 > IRval3Max) IRval3Max = IRval3;
-      delay(25);
     }
   }
-  //IR1whiteThreshold = IRval1Max * 0.98;
-  //IR2whiteThreshold = IRval2Max * 0.95;
-  //IR3whiteThreshold = IRval3Max * 0.98;
-  radio_send_formatted("MAZE:IR1,%d..%d=%d", IRval1Min, IRval1Max, IRval1Max - IRval1Min);
+  IRwhiteThreshold[0] = IRvalMax[0] * 0.98;
+  IRwhiteThreshold[1] = IRvalMax[1] * 0.90;
+  IRwhiteThreshold[2] = IRvalMax[2] * 0.98;
+  
+  radio_send_formatted("----IR Calibration");
   delay(150);
-  radio_send_formatted("MAZE:IR2,%d..%d=%d", IRval2Min, IRval2Max, IRval2Max - IRval2Min);
-  delay(150);
-  radio_send_formatted("MAZE:IR3,%d..%d=%d", IRval3Min, IRval3Max, IRval3Max - IRval3Min);
-  delay(150);
-  radio_send_formatted("MAZE:WT,%d,%d,%d", IR1whiteThreshold, IR2whiteThreshold, IR3whiteThreshold);
+  for  (int j = 0; j < 3; j++) {
+    radio_send_formatted("IR%d:%d..%d=%d", j, IRvalMin[j],  IRvalMax[j],  IRvalMax[j] - IRvalMin[j]);
+    delay(150);
+  }
+  radio_send_formatted("WT:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
   delay(150);
 
 }
@@ -371,11 +420,6 @@ void setup_smoothing()
 }
 
 void calculate_smoothing() {
-  int IRvals[3];
-  IRvals[0]=IRval1;
-  IRvals[1]=IRval2;
-  IRvals[2]=IRval3;
-  
   for (int i = 0; i < 3; i++) {
     total[i] = total[i] - readings[i][sindex[i]];
     readings[i][sindex[i]] = IRvals[i];
@@ -384,7 +428,8 @@ void calculate_smoothing() {
 
     if (sindex[i] >= numReadings)
       sindex[i] = 0;
-    average[i] = total[i] / numReadings;
+
+    average[i] = total[i] / numReadings; //map(total[i], IRvalMin[i], IRvalMax[i], 0, 1000) / numReadings;
   }
 }
 
