@@ -232,10 +232,84 @@ void motorSpeed(int _speedA, int _speedB) {
 }
 
 
+///////////////////////////////////////////////////////////////////////////////////////
+// CALCULATE PID
+
+int calculatePID() {
+
+  // Calculate PID on a regular time basis
+  if ((time_Now - pidLastTime) < PID_SAMPLE_TIME ) {
+    // just return previous value if called too soon
+    return correction;
+  }
+  pidLastTime = time_Now;
+
+  // process IR readings via PID
+  error_last = error; // store previous error value before new one is caluclated
+  error = IRvals[0] - IRvals[2];
+  P_error = error * Kp / 100.0; // calculate proportional term
+  I_sum = constrain ((I_sum + error), -1000, 1000); // integral term
+  I_error = I_sum * Ki / 100.0;
+  D_error = (error - error_last) * Kd / 100.0;          // calculate differential term
+  correction = P_error + D_error + I_error;
+  return correction;
+}
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // Radio
 
+
+void received_client_disconnect () {
+}
+
+bool turnLeftFlag = false;
+bool turnRightFlag = false;
+bool haltFlag = false;
+bool calibrateIRFlag = false;
+
+// do as little in here as possible (e..g just set flags)
+// as it's called under an interrupt and must return quickly.
+void received_client_data(char *data, int len)  {
+  // Commands: find line left, find line right, halt,
+  // settings: p, i d, whitethress
+  if (len > 0) {
+      switch(data[0]) {
+        case 'i':  sendIRStatsFlag = 1;break;
+        case 'l':  turnLeftFlag = true; break;
+        case 'r':  turnRightFlag = true; break;
+        case 's':  haltFlag = true; break;
+        case 'c':  calibrateIRFlag = true; break;        
+    }
+  }
+}
+
+void run_commands() {
+    if (sendIRStatsFlag) {
+      sendIRStatsFlag = false;
+      sendIRStats();
+    }
+    
+    if (turnLeftFlag) {
+      turnLeftFlag=false;
+      turn_left();
+    }
+    
+    if (turnRightFlag) {
+      turnRightFlag = false;
+      turn_right();
+    }
+    
+    if (haltFlag) {
+      haltFlag = false;
+      motorSpeed(0,0);
+    }
+    
+    if (calibrateIRFlag) {
+      calibrateIRFlag=false;     
+      calibrateIRSensors(); 
+    }
+}
 
 
 void send_status(int status) {
@@ -254,50 +328,12 @@ void send_status(int status) {
 
     radio_send_formatted("MAZE:%c,%d,%d,%d", c, IRvals[0], IRvals[1], IRvals[2]);
   }
-
 }
 
 
-void received_client_disconnect () {
-}
+///////////////////////////////////////////////////////////////////////////////////////
+// Main Loop
 
-
-// do as little in here as possible as it's called under an interrupt.
-void received_client_data(char *data, int len)  {
-  // Commands: find line left, find line right, halt,
-  // settings: p, i d, whitethress
-  if (len > 0) {
-    //radio_send_formatted("RCV:%d", data[0]);
-
-    //if (data[0] == 'c')  calibrateIRSensors();
-  }
-
-  sendIRStatsFlag = 1;
-}
-
-
-
-
-// CALCULATE PID
-int calculatePID() {
-
-  // Calculate PID on a regular time basis
-  if ((time_Now - pidLastTime) < PID_SAMPLE_TIME ) {
-    // return previous vakyeif called too soon
-    return correction;
-  }
-  pidLastTime = time_Now;
-
-  // process IR readings via PID
-  error_last = error; // store previous error value before new one is caluclated
-  error = IRvals[0] - IRvals[2];
-  P_error = error * Kp / 100.0; // calculate proportional term
-  I_sum = constrain ((I_sum + error), -1000, 1000); // integral term
-  I_error = I_sum * Ki / 100.0;
-  D_error = (error - error_last) * Kd / 100.0;          // calculate differential term
-  correction = P_error + D_error + I_error;
-  return correction;
-}
 
 void loop() {
 
@@ -356,11 +392,12 @@ void loop() {
 
   updateIdleTimer();
 
-  if (sendIRStatsFlag) {
-    sendIRStats();
-  }
-
+  run_commands();
 }
+
+//////////////////////////////////////////////////////////////////////////////////////
+// Movement
+
 
 bool idleTimerTriggered = false;
 int idleCount = 0;
@@ -384,28 +421,30 @@ void updateIdleTimer() {
   }
 }
 
-int detectCornerType() {
 
-  if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
-  {
-    return LINE_STATUS_T_JUNCTION;
+void turn_left() {
+  motorSpeed(DEFAULT_TURN_SPEED*1.5, -DEFAULT_TURN_SPEED/2);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
   }
-  else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
-  {
-    return LINE_STATUS_LEFT_TURN;
-  }
-  else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right C
-  {
-    return LINE_STATUS_RIGHT_TURN;
-  } else if ( NOT_ON_LINE(1) && IS_ON_LINE(2) && NOT_ON_LINE(3)) {
-    return LINE_STATUS_FOLLOWING_LINE;
-  }
-  else {
-    return LINE_STATUS_UNKNOWN;
-  }
+   motorSpeed(0, 0);
 }
+
+void turn_right() {
+  motorSpeed(-DEFAULT_TURN_SPEED/2, DEFAULT_TURN_SPEED*1.5);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
+  }
+   motorSpeed(0, 0);
+}
+
+
+///////////////////////////////////////////////////////////////////////////////////////
+// IR
+
+
 void calibrateIRSensors() {
-  radio_send_formatted("Calibrating...");
+  radio_send_formatted("Calibrating IR...");
   // take intial readings and set the min/max as those.
   readIRSensors();
   IRvalMin[0] = IRvalMax[0] = IRvals[0];
@@ -472,6 +511,32 @@ void calculate_smoothing() {
   }
 }
 
+int detectCornerType() {
+
+  if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
+  {
+    return LINE_STATUS_T_JUNCTION;
+  }
+  else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
+  {
+    return LINE_STATUS_LEFT_TURN;
+  }
+  else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right Corner
+  {
+    return LINE_STATUS_RIGHT_TURN;
+  } 
+  else if ( NOT_ON_LINE(1) && IS_ON_LINE(2) && NOT_ON_LINE(3))   // On the line
+  {
+    return LINE_STATUS_FOLLOWING_LINE;
+  }
+  else if ( NOT_ON_LINE(1) && NOT_ON_LINE(2) && NOT_ON_LINE(3))  // No line
+  {
+    return LINE_STATUS_NO_LINE;
+  }
+  else {
+    return LINE_STATUS_UNKNOWN;
+  }
+}
 
 void sendIRStats() {
   radio_send_formatted("--------IR State");
@@ -485,28 +550,13 @@ void sendIRStats() {
   radio_send_formatted("--------Motor State");
   delay(150);
   radio_send_formatted("A,B,Idle:%d,%d,%d  ", speedA, speedB, idleCount);
-
-  sendIRStatsFlag = 0;
 }
 
-
-void turn_left() {
-  motorSpeed(DEFAULT_TURN_SPEED*1.5, -DEFAULT_TURN_SPEED/2);
-  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
-    readIRSensors();
-  }
-   motorSpeed(0, 0);
-}
-
-void turn_right() {
-  motorSpeed(-DEFAULT_TURN_SPEED/2, DEFAULT_TURN_SPEED*1.5);
-  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
-    readIRSensors();
-  }
-   motorSpeed(0, 0);
-}
 
 /*
+///////////////////////////////////////////////////////////////////////////////////////
+// Data Sampling, for future use...
+
 // stats collection
 #define SAMPLES_MAX 50
 #define SAMPLES_PER_SECOND 20
@@ -536,7 +586,7 @@ void sampling_update()  {
 
   sampleOffset = (sampleOffset + 1) % SAMPLES_MAX;
   if (sampleOffset == 0) {
-     //we've looped, send samples
+     //we've looped, send samples data if switch on (will hold up main loop/PID/line following)
   }
 }
 */
