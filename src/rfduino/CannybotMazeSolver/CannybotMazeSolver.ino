@@ -9,7 +9,9 @@
 // Version:   1.0  -  23.10.2014  -  Inital Version  (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SERIAL_DEBUG
-
+#include <RFduinoGZLL.h>
+#include <RFduinoBLE.h>
+void radio_send_formatted(char *fmt, ... );
 // Notes:
 
 
@@ -42,40 +44,43 @@
 // Helpers
 //  IS_ON_LINE(irNum:1-3) / NOT_ONLINE(irNum:1-3)        uses the smoothed values to determine is sensor x is on or of the line.
 
+// Tuning
 
+// IR
 
+#define IR1_SCALING 0.98
+#define IR2_SCALING 0.90
+#define IR3_SCALING 0.98
 
-
-
-#define IR1_BIAS 0
-#define IR2_BIAS 0
-#define IR3_BIAS 0
-
-// ****** IMPORTANT: Very important this is tuned!
-
-#define IR_WHITE_THRESHOLD_DEFAULT 850 //to determinie on line or not 
 
 // PID gain setting
-#define PID_P 50  //PID gains set below in the code.. 
+//Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
+//Kp = 50; Ki = 0; Kd = 500; //laser cut
+
+#define PID_P 50 
 #define PID_I 0
 #define PID_D 400
+
 #define PID_SAMPLE_TIME 5 //determine how fast the loop is executed
 
 
+int counterMax = 15;  // cornerType samples to take before IR corner detection halts bot
 
 
-#define DEFAULT_CRUISE_SPEED 80
-//Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
-//Kp = 50; Ki = 0; Kd = 500; //laser cut
+#define DEFAULT_CRUISE_SPEED 40
+
+
+#define MOTOR_IDLE_TIME 1000        // number of cycles to wait to determin if bot is halted (triggers sending of corner status)
+
+
+
 
 //#define   SERIAL_DEBUG            // enablign this will print message to serial and also disable the motors.
 
 #define BOT_NAME "CannyMaze"                   // custom name (16 chars max)
 #define GZLL_HOST_ADDRESS 0x99ACB010           // this needs to match the Client sketch value
 
-#include <RFduinoGZLL.h>
-#include <RFduinoBLE.h>
-void radio_send_formatted(char *fmt, ... );
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // PIN ASSIGNEMENT
@@ -107,17 +112,8 @@ void radio_send_formatted(char *fmt, ... );
 
 
 // Helper Macros
-
-//#define IS_ON_LINE(x) ( (x)>=IRwhiteThreshold )
-//#define NOT_ON_LINE(x) (!IS_ON_LINE(x))
-
-
-
-
 #define IS_ON_LINE(x) ( (average[(x)-1])>=IRwhiteThreshold[(x)-1] )
 #define NOT_ON_LINE(x) (!IS_ON_LINE(x))
-
-
 
 
 //set IR initial reading to zero
@@ -136,7 +132,11 @@ int total[3] = {0};                  // the running total
 int average[3] = {0};                // the average for each IR
 
 
+int counterL = 0;
+int counterR = 0;
+int counterT = 0;
 
+int lastStatus = LINE_STATUS_UNKNOWN;
 
 
 // PID working parameters
@@ -151,9 +151,6 @@ int error = 0;
 int error_last = 0; // to calculate D_error = error - error_last
 int correction = 0;
 
-// Joypad
-volatile int16_t  zAxisValue    = 100;
-
 
 // Timers in milli-seconds (1/1000 of a second)
 unsigned long time_Now = millis();                    // the time at the start of the loop()
@@ -163,6 +160,11 @@ unsigned long pidLastTime = millis();                // when the PID was calcula
 int lineSpeed = 0;
 int speedA = 0;
 int speedB = 0;
+
+//
+
+static bool sendIRStatsFlag = 0;
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -192,17 +194,17 @@ void readIRSensors() {
 
   //analogRead(IR1_PIN);
   //delay(20);
-  IRvals[0] = analogRead(IR1_PIN) + IR1_BIAS; //left looking from behind
+  IRvals[0] = analogRead(IR1_PIN) ; //left looking from behind
   if (IRvals[0] >= 1000)
     IRvals[0] = 1000;
 
   //analogRead(IR2_PIN);
-  IRvals[1] = analogRead(IR2_PIN) + IR2_BIAS; //centre
+  IRvals[1] = analogRead(IR2_PIN) ; //centre
   if (IRvals[1] >= 1000)
     IRvals[1] = 1000;
 
   //analogRead(IR3_PIN);
-  IRvals[2] = analogRead(IR3_PIN) + IR3_BIAS; //right
+  IRvals[2] = analogRead(IR3_PIN) ; //right
   if (IRvals[2] >= 1000)
     IRvals[2] = 1000;
 
@@ -233,7 +235,6 @@ void motorSpeed(int _speedA, int _speedB) {
 
 
 
-int lastStatus = LINE_STATUS_UNKNOWN;
 void send_status(int status) {
   char c = '?';
   if (status != lastStatus) {
@@ -258,8 +259,6 @@ void received_client_disconnect () {
 }
 
 
-static bool sendIRStatsFlag = 0;
-
 // do as little in here as possible as it's called under an interrupt.
 void received_client_data(char *data, int len)  {
   // Commands: find line left, find line right, halt,
@@ -273,16 +272,6 @@ void received_client_data(char *data, int len)  {
   sendIRStatsFlag = 1;
 }
 
-void sendIRStats() {
-  radio_send_formatted("--------IR State");
-  delay(150);
-  radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
-  delay(150);
-  radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
-  delay(150);
-  radio_send_formatted("ol?:%d,%d,%d  ", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3));
-  sendIRStatsFlag = 0;
-}
 
 
 
@@ -307,11 +296,6 @@ int calculatePID() {
   return correction;
 }
 
-int counterL = 0;
-int counterR = 0;
-int counterT = 0;
-int counterMax = 10;  // samples
-
 void loop() {
 
   time_Now = millis(); //record time at start of loop
@@ -319,37 +303,36 @@ void loop() {
   readIRSensors(); //read IR sensors
 
 
-
   if ( IS_ON_LINE(2) )
   {
-    if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
+    int cornerType = detectCornerType();
+
+    if (cornerType ==  LINE_STATUS_T_JUNCTION)                // T-Junction
     {
       counterT++;
       if (counterT > counterMax) {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
-        send_status(LINE_STATUS_T_JUNCTION);
       }
     }
-    else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
+    else if ( cornerType == LINE_STATUS_LEFT_TURN  )          // Left Corner
     {
       counterL++;
       if (counterL > counterMax) {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
-        send_status(LINE_STATUS_LEFT_TURN);
       }
     }
-    else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right C
+
+    else if ( cornerType == LINE_STATUS_RIGHT_TURN)         // Right C
     {
       counterR++;
       if (counterR > counterMax) {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
-        send_status(LINE_STATUS_RIGHT_TURN);
       }
     } else {                                            // Line Following
       correction = calculatePID();
@@ -363,17 +346,58 @@ void loop() {
     send_status(LINE_STATUS_NO_LINE);                    // Off the line
   }
 
+  //if speeds are 0 (or a 'cotner found flag set) then check line status and send thestat just here instead, seems the status is ok after stopping!
   speedA = (lineSpeed + correction);
   speedB = (lineSpeed - correction);
   motorSpeed(speedA, speedB);
 
+  updateIdleTimer();
+
   if (sendIRStatsFlag) {
     sendIRStats();
   }
+
 }
 
+bool idleTimerTriggered = false;
+int idleCount = 0;
 
+void updateIdleTimer() {
+  if ( (speedA==0) && (speedB==0) ) {
+      idleCount++;
+  } else {
+      idleCount=0;
+      idleTimerTriggered=false;
+      return;
+  }
 
+  if (idleTimerTriggered)
+    return;
+  
+  if (idleCount>MOTOR_IDLE_TIME) {
+     idleTimerTriggered=true;
+     send_status(detectCornerType());       
+     delay(150);
+  }
+}
+
+int detectCornerType() {
+
+  if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
+  {
+    return LINE_STATUS_T_JUNCTION;
+  }
+  else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
+  {
+    return LINE_STATUS_LEFT_TURN;
+  }
+  else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right C
+  {
+    return LINE_STATUS_RIGHT_TURN;
+  } else {
+    return LINE_STATUS_UNKNOWN;
+  }
+}
 void calibrateIRSensors() {
   radio_send_formatted("MAZE:Calibrating...");
   // take intial readings and set the min/max as those.
@@ -382,7 +406,7 @@ void calibrateIRSensors() {
   IRvalMin[1] = IRvalMax[1] = IRvals[1];
   IRvalMin[2] = IRvalMax[2] = IRvals[2];
   for (int i = -1; i <= 1; i += 1) {
-    motorSpeed( i * DEFAULT_CRUISE_SPEED / 3, -(i * DEFAULT_CRUISE_SPEED / 3));
+    motorSpeed( i * DEFAULT_CRUISE_SPEED / 2, -(i * DEFAULT_CRUISE_SPEED / 2));
     for (int i = 0; i < 100; i++) {
 
       readIRSensors();
@@ -395,10 +419,11 @@ void calibrateIRSensors() {
 
     }
   }
-  IRwhiteThreshold[0] = IRvalMax[0] * 0.98;
-  IRwhiteThreshold[1] = IRvalMax[1] * 0.90;
-  IRwhiteThreshold[2] = IRvalMax[2] * 0.98;
-  
+  IRwhiteThreshold[0] = IRvalMax[0] * IR1_SCALING; 
+  IRwhiteThreshold[1] = IRvalMax[1] * IR2_SCALING;
+  IRwhiteThreshold[2] = IRvalMax[2] * IR3_SCALING;
+
+
   radio_send_formatted("----IR Calibration");
   delay(150);
   for  (int j = 0; j < 3; j++) {
@@ -429,7 +454,58 @@ void calculate_smoothing() {
     if (sindex[i] >= numReadings)
       sindex[i] = 0;
 
-    average[i] = total[i] / numReadings; //map(total[i], IRvalMin[i], IRvalMax[i], 0, 1000) / numReadings;
+    average[i] = total[i] / numReadings; /// map(total[i], IRvalMin[i], IRvalMax[i], 0, 1000) 
+    
   }
 }
 
+
+void sendIRStats() {
+  radio_send_formatted("--------IR State");
+  delay(150);
+  radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
+  delay(150);
+  radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
+  delay(150);
+  radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
+  radio_send_formatted("--------Motor State");
+  delay(150);
+  radio_send_formatted("A,B,Idle:%d,%d,%d  ", speedA, speedB, idleCount);
+  
+  sendIRStatsFlag = 0;
+}
+
+/*
+// stats collection
+#define SAMPLES_MAX 50
+#define SAMPLES_PER_SECOND 20
+typedef struct __attribute__((__packed__))  sample_t{
+  int ir1_raw:10, ir2_raw:10, ir3_raw:10;
+  int ir1_ave:10, ir2_ave:10, ir3_ave:10;
+  int speedA:9,speedB:9;
+//  unsigned int timestamp;
+} sample;
+sample_t sampleBuffer[sizeof(sample_t)*SAMPLES_MAX] = {0};
+int  sampleOffset = 0;
+int  sampleFrequency=1000/SAMPLES_PER_SECOND;
+
+void sampling_update()  {
+  static unsigned long nextUpdate = millis() + sampleFrequency;
+  if (nextUpdate < millis())
+    return;
+
+  sampleBuffer[sampleOffset].ir1_raw=IRvals[0];
+  sampleBuffer[sampleOffset].ir2_raw=IRvals[1];
+  sampleBuffer[sampleOffset].ir3_raw=IRvals[2];
+  sampleBuffer[sampleOffset].ir1_ave=average[0];
+  sampleBuffer[sampleOffset].ir2_ave=average[1];
+  sampleBuffer[sampleOffset].ir3_ave=average[2];
+  sampleBuffer[sampleOffset].speedA=speedA;
+  sampleBuffer[sampleOffset].speedB=speedB;
+
+  sampleOffset = (sampleOffset + 1) % SAMPLES_MAX;
+  if (sampleOffset == 0) {
+     //we've looped, send samples
+  }
+}
+*/
