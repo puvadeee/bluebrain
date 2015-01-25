@@ -12,6 +12,8 @@
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
 void radio_send_formatted(char *fmt, ... );
+//#define   SERIAL_DEBUG            // enablign this will print message to serial and also disable the motors.
+
 // Notes:
 
 
@@ -44,10 +46,12 @@ void radio_send_formatted(char *fmt, ... );
 // Helpers
 //  IS_ON_LINE(irNum:1-3) / NOT_ONLINE(irNum:1-3)        uses the smoothed values to determine is sensor x is on or of the line.
 
+
 // Tuning
 
 // IR
 
+// Scale factor to apply to IRmax values detected during calibration; result is used to set the whitethreshold level individually for each IR sensor.
 #define IR1_SCALING 0.98
 #define IR2_SCALING 0.90
 #define IR3_SCALING 0.98
@@ -57,25 +61,24 @@ void radio_send_formatted(char *fmt, ... );
 //Kp = 30; Ki = 0; Kd = 300; //20,200 //35,300 for 50mm tail
 //Kp = 50; Ki = 0; Kd = 500; //laser cut
 
-#define PID_P 50 
+#define PID_P 50
 #define PID_I 0
 #define PID_D 400
 
-#define PID_SAMPLE_TIME 5 //determine how fast the loop is executed
+#define PID_SAMPLE_TIME 5                       //determine how fast the loop is executed (millis seconds)
 
 
-int counterMax = 15;  // cornerType samples to take before IR corner detection halts bot
+int counterMax = 20;                            // number of samples (loop() cycles) to take before IR corner detection decides it's found a corner match
+// or put another way, how far 'into' the corner to stop, ideally stop half over the intesection way
+// so turing left or right lines results in IR2 being on the center of the line, ideally...s
 
 
-#define DEFAULT_CRUISE_SPEED 40
+#define DEFAULT_CRUISE_SPEED 40                // default speed when line following (calibration speed uses 50% of this)
+#define DEFAULT_TURN_SPEED   40
+#define MOTOR_IDLE_TIME 1000                   // number of samples (loop() cycles) to wait to determine if bot is halted, on halt detection the bot sends corner type 
 
 
-#define MOTOR_IDLE_TIME 1000        // number of cycles to wait to determin if bot is halted (triggers sending of corner status)
-
-
-
-
-//#define   SERIAL_DEBUG            // enablign this will print message to serial and also disable the motors.
+// BLE name and Gazelle ID
 
 #define BOT_NAME "CannyMaze"                   // custom name (16 chars max)
 #define GZLL_HOST_ADDRESS 0x99ACB010           // this needs to match the Client sketch value
@@ -363,21 +366,21 @@ bool idleTimerTriggered = false;
 int idleCount = 0;
 
 void updateIdleTimer() {
-  if ( (speedA==0) && (speedB==0) ) {
-      idleCount++;
+  if ( (speedA == 0) && (speedB == 0) ) {
+    idleCount++;
   } else {
-      idleCount=0;
-      idleTimerTriggered=false;
-      return;
+    idleCount = 0;
+    idleTimerTriggered = false;
+    return;
   }
 
   if (idleTimerTriggered)
     return;
-  
-  if (idleCount>MOTOR_IDLE_TIME) {
-     idleTimerTriggered=true;
-     send_status(detectCornerType());       
-     delay(150);
+
+  if (idleCount > MOTOR_IDLE_TIME) {
+    idleTimerTriggered = true;
+    send_status(detectCornerType());
+    delay(150);
   }
 }
 
@@ -394,12 +397,15 @@ int detectCornerType() {
   else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right C
   {
     return LINE_STATUS_RIGHT_TURN;
-  } else {
+  } else if ( NOT_ON_LINE(1) && IS_ON_LINE(2) && NOT_ON_LINE(3)) {
+    return LINE_STATUS_FOLLOWING_LINE;
+  }
+  else {
     return LINE_STATUS_UNKNOWN;
   }
 }
 void calibrateIRSensors() {
-  radio_send_formatted("MAZE:Calibrating...");
+  radio_send_formatted("Calibrating...");
   // take intial readings and set the min/max as those.
   readIRSensors();
   IRvalMin[0] = IRvalMax[0] = IRvals[0];
@@ -419,7 +425,7 @@ void calibrateIRSensors() {
 
     }
   }
-  IRwhiteThreshold[0] = IRvalMax[0] * IR1_SCALING; 
+  IRwhiteThreshold[0] = IRvalMax[0] * IR1_SCALING;
   IRwhiteThreshold[1] = IRvalMax[1] * IR2_SCALING;
   IRwhiteThreshold[2] = IRvalMax[2] * IR3_SCALING;
 
@@ -427,9 +433,10 @@ void calibrateIRSensors() {
   radio_send_formatted("----IR Calibration");
   delay(150);
   for  (int j = 0; j < 3; j++) {
-    radio_send_formatted("IR%d:%d..%d=%d", j, IRvalMin[j],  IRvalMax[j],  IRvalMax[j] - IRvalMin[j]);
+    radio_send_formatted("IR%d:%d..%d= %d", j, IRvalMin[j],  IRvalMax[j],  IRvalMax[j] - IRvalMin[j]);
     delay(150);
   }
+
   radio_send_formatted("WT:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
   delay(150);
 
@@ -441,6 +448,12 @@ void setup_smoothing()
   for (int i = 0; i < 3; i++) {
     for (int thisReading = 0; thisReading < numReadings; thisReading++)
       readings[i][thisReading] = 0;
+
+    IRvals[i] = 0;
+    total[i] = 0;
+    sindex[i] = 0;
+    average[i] = 0;
+
   }
 }
 
@@ -454,8 +467,8 @@ void calculate_smoothing() {
     if (sindex[i] >= numReadings)
       sindex[i] = 0;
 
-    average[i] = total[i] / numReadings; /// map(total[i], IRvalMin[i], IRvalMax[i], 0, 1000) 
-    
+    average[i] = total[i] / numReadings; /// map(total[i], IRvalMin[i], IRvalMax[i], 0, 1000)
+
   }
 }
 
@@ -468,11 +481,29 @@ void sendIRStats() {
   radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
   delay(150);
   radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
+  delay(150);
   radio_send_formatted("--------Motor State");
   delay(150);
   radio_send_formatted("A,B,Idle:%d,%d,%d  ", speedA, speedB, idleCount);
-  
+
   sendIRStatsFlag = 0;
+}
+
+
+void turn_left() {
+  motorSpeed(DEFAULT_TURN_SPEED*1.5, -DEFAULT_TURN_SPEED/2);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
+  }
+   motorSpeed(0, 0);
+}
+
+void turn_right() {
+  motorSpeed(-DEFAULT_TURN_SPEED/2, DEFAULT_TURN_SPEED*1.5);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
+  }
+   motorSpeed(0, 0);
 }
 
 /*
