@@ -231,6 +231,62 @@ void motorSpeed(int _speedA, int _speedB) {
   analogWrite (MOTOR_B2_PIN, abs(_speedB));
 }
 
+//////////////////////////////////////////////////////////////////////////////////////
+// Movement
+
+
+bool idleTimerTriggered = false;
+int idleCount = 0;
+
+void updateIdleTimer() {
+  if ( (speedA == 0) && (speedB == 0) ) {
+    idleCount++;
+  } else {
+    idleCount = 0;
+    idleTimerTriggered = false;
+    return;
+  }
+
+  if (idleTimerTriggered)
+    return;
+
+  if (idleCount > MOTOR_IDLE_TIME) {
+    idleTimerTriggered = true;
+    send_status(detectCornerType());
+    delay(150);
+  }
+}
+
+
+void turn_left() {
+  motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
+  }
+  motorSpeed(0, 0);
+}
+
+void turn_right() {
+  motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
+  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
+    readIRSensors();
+  }
+  motorSpeed(0, 0);
+}
+
+
+void move_forward() {
+  motorSpeed(DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED /2);
+  while (  (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) ) {
+    readIRSensors();
+  }
+  motorSpeed(0, 0);
+}
+
+
+
+
+
 
 ///////////////////////////////////////////////////////////////////////////////////////
 // CALCULATE PID
@@ -265,6 +321,7 @@ void received_client_disconnect () {
 
 bool turnLeftFlag = false;
 bool turnRightFlag = false;
+bool goForwardFlag = false;
 bool haltFlag = false;
 bool calibrateIRFlag = false;
 
@@ -278,6 +335,7 @@ void received_client_data(char *data, int len)  {
       case 'i':  sendIRStatsFlag = 1; break;
       case 'l':  turnLeftFlag = true; break;
       case 'r':  turnRightFlag = true; break;
+      case 'f':  goForwardFlag = true; break;      
       case 's':  haltFlag = true; break;
       case 'c':  calibrateIRFlag = true; break;
       default:
@@ -309,6 +367,11 @@ void run_commands() {
 
   }
 
+  if (goForwardFlag) {
+    goForwardFlag = false;
+    move_forward();
+    radio_send("OK");
+  }
   if (haltFlag) {
     haltFlag = false;
     motorSpeed(0, 0);
@@ -404,49 +467,6 @@ void loop() {
   updateIdleTimer();
 
   run_commands();
-}
-
-//////////////////////////////////////////////////////////////////////////////////////
-// Movement
-
-
-bool idleTimerTriggered = false;
-int idleCount = 0;
-
-void updateIdleTimer() {
-  if ( (speedA == 0) && (speedB == 0) ) {
-    idleCount++;
-  } else {
-    idleCount = 0;
-    idleTimerTriggered = false;
-    return;
-  }
-
-  if (idleTimerTriggered)
-    return;
-
-  if (idleCount > MOTOR_IDLE_TIME) {
-    idleTimerTriggered = true;
-    send_status(detectCornerType());
-    delay(150);
-  }
-}
-
-
-void turn_left() {
-  motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
-  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
-    readIRSensors();
-  }
-  motorSpeed(0, 0);
-}
-
-void turn_right() {
-  motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
-  while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
-    readIRSensors();
-  }
-  motorSpeed(0, 0);
 }
 
 
