@@ -274,41 +274,52 @@ void received_client_data(char *data, int len)  {
   // Commands: find line left, find line right, halt,
   // settings: p, i d, whitethress
   if (len > 0) {
-      switch(data[0]) {
-        case 'i':  sendIRStatsFlag = 1;break;
-        case 'l':  turnLeftFlag = true; break;
-        case 'r':  turnRightFlag = true; break;
-        case 's':  haltFlag = true; break;
-        case 'c':  calibrateIRFlag = true; break;        
+    switch (data[0]) {
+      case 'i':  sendIRStatsFlag = 1; break;
+      case 'l':  turnLeftFlag = true; break;
+      case 'r':  turnRightFlag = true; break;
+      case 's':  haltFlag = true; break;
+      case 'c':  calibrateIRFlag = true; break;
+      default:
+        radio_send("CMD?");
+        return;
+        break;
     }
   }
 }
 
 void run_commands() {
-    if (sendIRStatsFlag) {
-      sendIRStatsFlag = false;
-      sendIRStats();
-    }
-    
-    if (turnLeftFlag) {
-      turnLeftFlag=false;
-      turn_left();
-    }
-    
-    if (turnRightFlag) {
-      turnRightFlag = false;
-      turn_right();
-    }
-    
-    if (haltFlag) {
-      haltFlag = false;
-      motorSpeed(0,0);
-    }
-    
-    if (calibrateIRFlag) {
-      calibrateIRFlag=false;     
-      calibrateIRSensors(); 
-    }
+  if (sendIRStatsFlag) {
+    sendIRStatsFlag = false;
+    sendIRStats();
+    radio_send("OK");
+  }
+
+  if (turnLeftFlag) {
+    turnLeftFlag = false;
+    turn_left();
+    radio_send("OK");
+
+  }
+
+  if (turnRightFlag) {
+    turnRightFlag = false;
+    turn_right();
+    radio_send("OK");
+
+  }
+
+  if (haltFlag) {
+    haltFlag = false;
+    motorSpeed(0, 0);
+    radio_send("OK");
+  }
+
+  if (calibrateIRFlag) {
+    calibrateIRFlag = false;
+    calibrateIRSensors();
+    radio_send("OK");
+  }
 }
 
 
@@ -423,19 +434,19 @@ void updateIdleTimer() {
 
 
 void turn_left() {
-  motorSpeed(DEFAULT_TURN_SPEED*1.5, -DEFAULT_TURN_SPEED/2);
+  motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
   }
-   motorSpeed(0, 0);
+  motorSpeed(0, 0);
 }
 
 void turn_right() {
-  motorSpeed(-DEFAULT_TURN_SPEED/2, DEFAULT_TURN_SPEED*1.5);
+  motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
   }
-   motorSpeed(0, 0);
+  motorSpeed(0, 0);
 }
 
 
@@ -524,7 +535,7 @@ int detectCornerType() {
   else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right Corner
   {
     return LINE_STATUS_RIGHT_TURN;
-  } 
+  }
   else if ( NOT_ON_LINE(1) && IS_ON_LINE(2) && NOT_ON_LINE(3))   // On the line
   {
     return LINE_STATUS_FOLLOWING_LINE;
