@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+<head>
+ <script language="javascript">
+
+  function diplayJavaMsg(msg){
+      alert(msg);
+  }
+
+  function callTojavaFn(){
+      var msg = "Calling from Java Script";
+      JsHandler.jsFnCall(msg);
+  }
+
+  </script>
+
+</head>
+
+<body>
+
+    <input type="button" onClick="callTojavaFn()" value="Call Java Fn">
+
+</body>
+
+</html>
