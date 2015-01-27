@@ -35,25 +35,7 @@ public class JsHandler
      */
     @JavascriptInterface
     public void jsFnCall(String jsString) {
-
-        //showDialog(jsString);
-        try {
-            JSONObject jObject = new JSONObject(jsString);
-
-            JSONArray jArray = jObject.getJSONArray("rawBytes");
-
-            byte[] bytes = new byte[jArray.length()];
-            for (int i=0; i < jArray.length(); i++)
-            {
-                bytes[i] = (byte)jArray.getInt(i);
-                //Log.d(MainActivity.TAG, "array["+i+"]=" + item);
-            }
-
-            ((MainActivity) activity).sendBytes(bytes);
-
-        } catch (JSONException e) {
-            e.printStackTrace();
-        }
+        ((MainActivity) activity).sendJSONBytes(jsString);
     }
 
     /**

@@ -57,6 +57,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -93,7 +97,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     static JsHandler _jsHandler;
 
     private static final int PORT = 3141;
-    private NanoHTTPD server;
+    private WebServer server;
     public static String formatedIpAddress;
 
 
@@ -281,7 +285,9 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private void addData(byte[] data) {
         Log.i(TAG, "RECV: " + HexAsciiHelper.bytesToHex(data));
-        _jsHandler.javaFnCall(new String(data));
+        String dataStr = new String(data);
+        _jsHandler.javaFnCall(dataStr);
+        server.sendToAll(dataStr);
     }
 
     public static void sendBytes(byte[] bytes) {
@@ -292,6 +298,25 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         }
     }
 
+    public void sendJSONBytes(String jsString) {
+        try {
+            JSONObject jObject = new JSONObject(jsString);
+
+            JSONArray jArray = jObject.getJSONArray("rawBytes");
+
+            byte[] bytes = new byte[jArray.length()];
+            for (int i=0; i < jArray.length(); i++)
+            {
+                bytes[i] = (byte)jArray.getInt(i);
+                //Log.d(MainActivity.TAG, "array["+i+"]=" + item);
+            }
+
+            sendBytes(bytes);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+    }
 
 
     private void BLE_disconnect() {
@@ -357,7 +382,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Log.d(TAG, "Please access! http://" + formatedIpAddress + ":" + PORT);
 
         try {
-            server = new SimpleWebServer(formatedIpAddress, PORT, new File("/data/data/com.cannybots.codepad/www/"), false );
+            server = new WebServer(formatedIpAddress, PORT, new File("/data/data/com.cannybots.codepad/www/"), false, this );
             server.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -503,6 +528,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         Log.i(TAG, "onTabReselected");
 
     }
+
+
 
     /**
      * A {@link FragmentPagerAdapter} that returns a fragment corresponding to

@@ -74,7 +74,7 @@ public abstract class NanoHTTPD {
      * This is required as the Keep-Alive HTTP connections would otherwise
      * block the socket reading thread forever (or as long the browser is open).
      */
-    public static final int SOCKET_READ_TIMEOUT = 5000;
+    //WK:public static final int SOCKET_READ_TIMEOUT = 5000;
     /**
      * Common mime type for dynamic content: plain text
      */
@@ -161,7 +161,7 @@ public abstract class NanoHTTPD {
                     try {
                         final Socket finalAccept = myServerSocket.accept();
                         registerConnection(finalAccept);
-                        finalAccept.setSoTimeout(SOCKET_READ_TIMEOUT);
+                        //WK:finalAccept.setSoTimeout(SOCKET_READ_TIMEOUT);
                         final InputStream inputStream = finalAccept.getInputStream();
                         asyncRunner.exec(new Runnable() {
                             @Override
