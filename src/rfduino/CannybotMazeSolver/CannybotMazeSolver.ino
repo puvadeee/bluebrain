@@ -276,10 +276,12 @@ void turn_right() {
 
 
 void move_forward() {
-  motorSpeed(DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED /2);
-  while (  (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) ) {
-    readIRSensors();
-  }
+  motorSpeed(DEFAULT_TURN_SPEED, DEFAULT_TURN_SPEED );
+  delay(200);
+  //while (  (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) ) {
+  //  readIRSensors();
+  //}
+  
   motorSpeed(0, 0);
 }
 
@@ -400,7 +402,7 @@ void send_status(int status) {
       default: c = 'x';  break;
     }
 
-    radio_send_formatted("MAZE:%c,%d,%d,%d", c, IRvals[0], IRvals[1], IRvals[2]);
+    radio_send_formatted("MAZE:%c", c);
   }
 }
 

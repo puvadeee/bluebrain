@@ -23,14 +23,21 @@
 // 00?00
 // Quit:   CTRL-A  X
 
-//#define GZLL_HOST_ADDRESS 0x12ACB001           // this needs to match the Bot sketch value
+#define GZLL_HOST_ADDRESS 0x99ACB010           // this needs to match the Bot sketch value
 
 //#define SERIAL_DEBUG
 
 #define GZLL_MAX_MSG_SIZE 20      // keep it the same a BLE, otherwise could be 32
 
+#define USE_DEFUALT_UART_PINS
+
+#if defined(USE_DEFUALT_UART_PINS)
+#define RX_PIN 0
+#define TX_PIN 1
+#else
 #define RX_PIN 3
 #define TX_PIN 4
+#endif
 
 #include <RFduinoGZLL.h>
 
@@ -53,6 +60,12 @@ void setup()
 
 void loop()
 {
+  // keep alive ping
+  static unsigned long nextPingTime = 0;
+  if (millis() > nextPingTime) {
+    RFduinoGZLL.sendToHost((const char*)serialPrintBuffer, 0);
+    nextPingTime = millis() + 100;
+  }
   process_serial2radio();
 
   // for GZLL check for returned messages
@@ -62,12 +75,7 @@ void loop()
     radioMessageReceived = NULL;
   }
 
-  // keep alive ping
-  static unsigned long nextPingTime = millis() + 50;
-  if (millis() > nextPingTime) {
-    RFduinoGZLL.sendToHost((const char*)serialPrintBuffer, 0);
-    nextPingTime = millis() + 100;
-  }
+
 }
 // Process incomming serial data
 
@@ -93,7 +101,7 @@ void process_serial2radio() {
       foundNewLine = true;
     }
 
-    if (!foundNewLine && (serialBufPtr < GZLL_MAX_MSG_SIZE)) {
+    if (!foundNewLine && (serialBufPtr < GZLL_MAX_MSG_SIZE) && (c!='\r')&& (c!='\n') ) {
 #if defined(SERIAL_DEBUG)
       Serial.print("serialBuffer[");
       Serial.print(serialBufPtr, DEC);

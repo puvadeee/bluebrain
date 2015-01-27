@@ -8,11 +8,11 @@
 //
 // Version:   1.0  -  15.01.2015  -  Inital Version  (wayne@cannybots.com)
 
-//////////////////////////////////////////////////////////////////////////////////////////////////
+////////////////////////////////////////////////////////////////////////////////////////// ///////
 
 // WArning: enabling serial debug will cause the motors to rotate only one way.
 //#define   SERIAL_DEBUG
-
+//#define   SERIAL_DEBUG_DETAILED       // Show encoder counts
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>
@@ -20,12 +20,12 @@
 void radio_send_formatted(char *fmt, ... );
 
 // configure depending on physical characteristics
-#define COUNTS_PER_REVOLUTION 335
+#define COUNTS_PER_REVOLUTION 352
 #define WHEEL_DIAMETER        32      // mm
 
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
-// Time based hacks!
+// Time based hacks! (for dev use without encoders)
 //#define USE_DELAYS_FOR_MOVEMENT
 #define MAX_TURTLE_MOTOR_SPEED  80
 #define MOTION_DELAY_MULTIPLIER 60
@@ -101,8 +101,6 @@ void setup() {
   //attachPinInterrupt(ENCODER1B_PIN, encoderCallbackSensor1B, HIGH);
   attachPinInterrupt(ENCODER2A_PIN, encoderCallbackSensor2A, HIGH);
   attachPinInterrupt(ENCODER2B_PIN, encoderCallbackSensor2B, HIGH);
-
-
 
   radio_setup();
 }
@@ -303,6 +301,11 @@ uint8_t cmd_right(int16_t p1) {
 #else
 
 uint8_t cmd_forward(int16_t p1) {
+  if (p1 == 0) {
+    motorSpeed(0, 0);
+    return RC_OK;
+  }
+
   setupCounterFor(DISTANCE_CALC, p1);
   motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
   // block for movement, possible cout return a 'pending' rc that doesnt return OK immediately to the client
@@ -314,6 +317,10 @@ uint8_t cmd_forward(int16_t p1) {
 }
 
 uint8_t cmd_backward(int16_t p1) {
+  if (p1 == 0) {
+    motorSpeed(0, 0);
+    return RC_OK;
+  }
   setupCounterFor(DISTANCE_CALC, -p1);
   motorSpeed(-MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED);
   while (!checkEncoderCountsForStopping()) {
@@ -323,6 +330,10 @@ uint8_t cmd_backward(int16_t p1) {
 }
 
 uint8_t cmd_left(int16_t p1) {
+  if (p1 == 0) {
+    motorSpeed(0, 0);
+    return RC_OK;
+  }
   setupCounterFor(ANGLE_CALC, -p1);
   motorSpeed(MAX_TURTLE_MOTOR_SPEED, -MAX_TURTLE_MOTOR_SPEED);
   while (!checkEncoderCountsForStopping()) {
@@ -332,6 +343,10 @@ uint8_t cmd_left(int16_t p1) {
 }
 
 uint8_t cmd_right(int16_t p1) {
+  if (p1 == 0) {
+    motorSpeed(0, 0);
+    return RC_OK;
+  }
   setupCounterFor(ANGLE_CALC, p1);
   motorSpeed(-MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
   while (!checkEncoderCountsForStopping()) {
