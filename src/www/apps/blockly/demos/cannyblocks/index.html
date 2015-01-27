@@ -56,8 +56,8 @@
   <h1>Cannyblocks</h1>
  
   <p>
-    <!--<button onclick="showCode()">Show JavaScript</button>-->
     <button onclick="runCode()">Run</button>
+      <button onclick="showXML()">Show XML (dev only)</button>
   </p>
   
   <div id="main">
@@ -220,7 +220,20 @@
         cannybots.sendError(e.message);
       }
     }
-  
+
+    function showXML() {
+        var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+        var xml_text = Blockly.Xml.domToText(xml);
+        var xml_text = Blockly.Xml.domToPrettyText(xml);
+
+        document.getElementById('codeArea').value = xml_text;
+    }
+
+    function importXML(xml_text) {
+        var xml = Blockly.Xml.textToDom(xml_text);
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+    }
+
       Blockly.addChangeListener(showCode);
   </script>
   <!--<textarea id="cannybotsDebugPane" class="content" wrap="off"></textarea>-->

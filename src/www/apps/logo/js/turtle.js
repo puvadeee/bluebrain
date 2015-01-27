@@ -2,11 +2,7 @@
 
 
 function sendTurtleCommand(_cmd, _param) {
-        var message = {
-            "command":_cmd,
-            "p1":_param,
-        }
-        cannybots.sendCommand(_cmd,_param)
+    cannybots.sendCommand(_cmd,_param);
 }
 
 
@@ -330,7 +326,6 @@ DelayTurtle.prototype.start = function(){this.active = true; this.halt = false; 
 DelayTurtle.prototype.finish = function(){this.active = false;};
 DelayTurtle.prototype.stop =  function(){this.halt = true;
 
-    sendTurtleCommand("STOP", 0)
 };
 
 DelayTurtle.prototype.paint = function() {

@@ -114,30 +114,54 @@ var cannybots = new function() {
 
 
     self.setupSendNativeMessage = function() {
-        // iOS client on iOS webapp
+
+        // iOS
         if(typeof window.webkit != 'undefined') {
-            if(typeof window.webkit.messageHandlers != 'undefined') {
+            console.log("INFO: on webkit");
+            if(typeof window.webkit.messageHandlers != 'undefined') {   // iOS check
                 try {
-                    self.sendNativeMessage =     function (message){
+                        console.log('INFO: setting up JavaScript native bridge for iOS');
+                        self.sendNativeMessage =     function (message){
                         window.webkit.messageHandlers.interOp.postMessage(message);
                     }
-                } catch (err) {
+                    return;
+                } catch (err) {3
                     console.log('ERROR: The native context does not exist yet');
                 }
             } else {
-                console.log("WARN: no iOS messageHandlers");
-            }
-        } else {
-            try {
-                console.log("INFO: Using WebSocket API");
-                self.websocket = cannybotsWebSocket();
-                self.sendNativeMessage =     function (message){
-                    self.websocket.send(JSON.stringify(message));
-                }
-            } catch (err) {
-                console.log("ERROR: " + err.message);
+                console.log("WARN: iOS native bridge not found.");
             }
         }
+
+         // Android check
+        if (typeof JsHandler != 'undefined') {
+           try {
+               console.log('INFO: setting up JavaScript native bridge for Android');
+
+               self.sendNativeMessage =     function (message){
+                var msgStr = JSON.stringify(message);
+                   console.log('INFO: sending:' + msgStr);
+
+                   JsHandler.jsFnCall(msgStr);
+               }
+               return;
+           } catch (err) {
+               console.log('ERROR: The Android JS Handler does not exist yet');
+           }
+        }
+        console.log("WARN: Android JavaScript native bridge not found.");
+
+        // Fallback to WebSocket
+        try {
+            console.log("INFO: Using WebSocket API");
+            self.websocket = cannybotsWebSocket();
+            self.sendNativeMessage =     function (message){
+                self.websocket.send(JSON.stringify(message));
+            }
+        } catch (err) {
+            console.log("ERROR: Couldnt fallback to WebSockets" + err.message);
+        }
+
     }
     var rChar = "\r".charCodeAt(0);
     self.createByteMessage = function(cmd, p1) {
@@ -151,7 +175,7 @@ var cannybots = new function() {
 		// if okToSend taking longer then 15 seconds
 			self.sendNativeMessage(self.createMessagePayloadForCommand('?',0),0);
 		}
-		window.setInterval(self.ping, 2000);
+		//window.setInterval(self.ping, 2000);
 
     }
     
