@@ -147,6 +147,7 @@ public class RFduinoService extends Service {
         @Override
         public void onCharacteristicChanged(BluetoothGatt gatt,
                                             BluetoothGattCharacteristic characteristic) {
+            Log.d(TAG, "onCharacteristicChanged!!");
             broadcastUpdate(ACTION_DATA_AVAILABLE, characteristic);
         }
     };
@@ -158,7 +159,11 @@ public class RFduinoService extends Service {
 
     private void broadcastUpdate(final String action,
                                  final BluetoothGattCharacteristic characteristic) {
-        if (UUID_RECEIVE.equals(characteristic.getUuid())) {
+        //Log.d(TAG, "broadcastUpdate!! " + action);
+        //Log.d(TAG, "broadcastUpdate!! " + UUID_RECEIVE);
+        //Log.d(TAG, "broadcastUpdate!! " + characteristic.getUuid());
+
+        if (UUID_RECEIVE_LONG.equals(characteristic.getUuid())) {
             final Intent intent = new Intent(action);
             intent.putExtra(EXTRA_DATA, characteristic.getValue());
             sendBroadcast(intent, Manifest.permission.BLUETOOTH);

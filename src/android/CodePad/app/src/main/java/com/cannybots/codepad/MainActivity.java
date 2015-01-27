@@ -75,7 +75,7 @@ import fi.iki.elonen.samples.echo.DebugWebSocketServer;
 
 public class MainActivity extends ActionBarActivity implements ActionBar.TabListener,BluetoothAdapter.LeScanCallback {
 
-    private static final String TAG = "CannybotsActivity";
+    public static final String TAG = "CannybotsActivity";
     public static boolean confReverseFrontBack;
     public static boolean confReverseLeftRight;
 
@@ -94,6 +94,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private static final int PORT = 3141;
     private NanoHTTPD server;
+    public static String formatedIpAddress;
+
 
     // BLE callbacks
 
@@ -144,13 +146,15 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
             final String action = intent.getAction();
             if (RFduinoService.ACTION_CONNECTED.equals(action)) {
-                Joystick_startTimer();
+                //Joystick_startTimer();
 
             } else if (RFduinoService.ACTION_DISCONNECTED.equals(action)) {
                 Joystick_stopTimer();
                 BLE_disconnected();
 
             } else if (RFduinoService.ACTION_DATA_AVAILABLE.equals(action)) {
+                Log.i(TAG, "RFduinoService.ACTION_DATA_AVAILABLE");
+
                 addData(intent.getByteArrayExtra(RFduinoService.EXTRA_DATA));
             }
         }
@@ -211,7 +215,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         if (!deviceHasBluetoothLE)
             return;
 
-        Joystick_stopTimer();
+        //Joystick_stopTimer();
         unregisterReceiver(scanModeReceiver);
         unregisterReceiver(bluetoothStateReceiver);
         unregisterReceiver(rfduinoReceiver);
@@ -254,6 +258,11 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         if (!deviceHasBluetoothLE)
             return;
 
+        if (rfduinoService == null) {
+            Log.e(TAG, "No rfduinoService");
+            return;
+        }
+
         if (device != null) {
             bluetoothDevice = device;
             if (rfduinoService.connect(bluetoothDevice.getAddress())) {
@@ -272,11 +281,12 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
 
     private void addData(byte[] data) {
         Log.i(TAG, "RECV: " + HexAsciiHelper.bytesToHex(data));
+        _jsHandler.javaFnCall(new String(data));
     }
 
-    private static void sendBytes(byte[] bytes) {
+    public static void sendBytes(byte[] bytes) {
         if ( (MainActivity.rfduinoService != null) && (MainActivity.bluetoothDevice!=null)) {
-            //Log.d(TAG, "sendBytes: " + bytes);
+            Log.d(TAG, "sendBytes: " + bytes);
 
             MainActivity.rfduinoService.send(bytes);
         }
@@ -337,16 +347,17 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onStart();
         BLE_onStart();
 
-        copyFileOrDir("www");
+        //deleteFolder("www");
+        //copyFileOrDir("www");
 
         WifiManager wifiManager = (WifiManager) getSystemService(WIFI_SERVICE);
         int ipAddress = wifiManager.getConnectionInfo().getIpAddress();
-        final String formatedIpAddress = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
+        formatedIpAddress = String.format("%d.%d.%d.%d", (ipAddress & 0xff), (ipAddress >> 8 & 0xff),
                 (ipAddress >> 16 & 0xff), (ipAddress >> 24 & 0xff));
         Log.d(TAG, "Please access! http://" + formatedIpAddress + ":" + PORT);
 
         try {
-            server = new SimpleWebServer(formatedIpAddress, PORT, new File("file:///data/data/com.cannybots.codepad/www/"), false );
+            server = new SimpleWebServer(formatedIpAddress, PORT, new File("/data/data/com.cannybots.codepad/www/"), false );
             server.start();
         } catch (IOException e) {
             e.printStackTrace();
@@ -427,7 +438,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         BLE_onCreate();
     }
 
-    public static final String PREFS_NAME = "CannybotsPrefsV1";
+    public static final String PREFS_NAME = "CannybotsPrefsV2";
 
     public void loadSettings() {
         // Restore preferences
@@ -700,8 +711,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 public void onPageFinished(WebView view, String url) {
                     super.onPageFinished(view, url);
                     //Toast.makeText(TableContentsWithDisplay.this, "Width " + view.getWidth() +" *** " + "Height " + view.getHeight(), Toast.LENGTH_SHORT).show();
-                    _jsHandler.javaFnCall("Hey, Im calling from Android-Java");
 
+                    //_jsHandler.javaFnCall("Hey, Im calling from Android-Java");
                 }
 
                 @Override
@@ -724,7 +735,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             webView.addJavascriptInterface(_jsHandler, "JsHandler");
 
             // load the main.html file that kept in assets folder
-            webView.loadUrl("http://192.168.0.55/~wayne/main.html");//file:///android_asset/main.html");
+            //webView.loadUrl("http://192.168.0.55/~wayne/main.html");//file:///android_asset/main.html");
+            webView.loadUrl("http://"+formatedIpAddress+":" + PORT +"/orgindex.html");//file:///android_asset/main.html");
 
 
             return rootView;
@@ -787,6 +799,8 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
     }
 
     private void copyFileOrDir(String path) {
+        Log.d(TAG,path);
+
         AssetManager assetManager = this.getAssets();
         String assets[] = null;
         try {
@@ -795,16 +809,18 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
                 copyFile(path);
             } else {
                 String fullPath = "/data/data/" + this.getPackageName() + "/" + path;
-                Log.d(TAG,fullPath);
                 File dir = new File(fullPath);
                 if (!dir.exists())
                     dir.mkdir();
+                else {
+                    //return;
+                }
                 for (int i = 0; i < assets.length; ++i) {
                     copyFileOrDir(path + "/" + assets[i]);
                 }
             }
         } catch (IOException ex) {
-            Log.e(TAG, "I/O Exception", ex);
+            Log.e(TAG, ex.getMessage());
         }
     }
     private void copyFile(String filename) {
@@ -814,6 +830,10 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         try {
             in = assetManager.open(filename);
             String newFileName = "/data/data/" + this.getPackageName() + "/" + filename;
+            if (new File(newFileName).exists()) {
+                return;
+            }
+            Log.d(TAG,"target file:" + newFileName);
             out = new FileOutputStream(newFileName);
             byte[] buffer = new byte[1024];
             int read;
@@ -847,4 +867,27 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         return null;
     }
     */
+
+    public boolean deleteFolder(String folder) {
+        String fullPath = "/data/data/" + this.getPackageName() + "/" + folder;
+        return deleteDirectory(new File(fullPath));
+    }
+
+    public static boolean deleteDirectory(File path) {
+        if( path.exists() ) {
+            File[] files = path.listFiles();
+            if (files == null) {
+                return true;
+            }
+            for(int i=0; i<files.length; i++) {
+                if(files[i].isDirectory()) {
+                    deleteDirectory(files[i]);
+                }
+                else {
+                    files[i].delete();
+                }
+            }
+        }
+        return( path.delete() );
+    }
 }

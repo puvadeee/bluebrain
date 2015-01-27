@@ -5,8 +5,13 @@ package com.cannybots.codepad;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
+import android.util.Log;
 import android.webkit.JavascriptInterface;
 import android.webkit.WebView;
+
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 /**
  * Class to handle all calls from JS & from Java too
@@ -30,7 +35,25 @@ public class JsHandler
      */
     @JavascriptInterface
     public void jsFnCall(String jsString) {
-        showDialog(jsString);
+
+        //showDialog(jsString);
+        try {
+            JSONObject jObject = new JSONObject(jsString);
+
+            JSONArray jArray = jObject.getJSONArray("rawBytes");
+
+            byte[] bytes = new byte[jArray.length()];
+            for (int i=0; i < jArray.length(); i++)
+            {
+                bytes[i] = (byte)jArray.getInt(i);
+                //Log.d(MainActivity.TAG, "array["+i+"]=" + item);
+            }
+
+            ((MainActivity) activity).sendBytes(bytes);
+
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
     }
 
     /**
@@ -38,7 +61,7 @@ public class JsHandler
      */
     public void javaFnCall(String jsString) {
 
-        final String webUrl = "javascript:diplayJavaMsg('"+jsString+"')";
+        final String webUrl = "javascript:cannybots.receiveBytes('"+jsString+"')";
         // Add this to avoid android.view.windowmanager$badtokenexception unable to add window
         if(!activity.isFinishing())
             // loadurl on UI main thread
