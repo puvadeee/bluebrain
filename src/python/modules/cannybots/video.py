@@ -6,7 +6,7 @@ class Display:
     screen = None;
     isX = 0;
 
-    def __init__(self, windowWidth=320, windowHeight=240):
+    def __init__(self, windowWidth=320, windowHeight=240, windowedInX=1):
         "Ininitializes a new pygame screen using the framebuffer"
         # Based on "Python GUI in Linux frame buffer"
         # http://www.karoltomala.com/blog/?p=679
@@ -16,7 +16,7 @@ class Display:
         
         # Check which frame buffer drivers are available
         # Start with fbcon since directfb hangs with composite output
-        drivers = ['x11', 'fbcon', 'directfb', 'svgalib']
+        drivers = ['x11', 'fbcon', 'directfb', 'svgalib', 'Quartz']
         found = False
         for driver in drivers:
             # Make sure that SDL_VIDEODRIVER is set
@@ -36,7 +36,7 @@ class Display:
         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
         #print "Framebuffer size: %d x %d" % (size[0], size[1])
         opts = 0
-        if self.isX:
+        if self.isX and windowedInX:
             opts = pygame.RESIZABLE
             size=(windowWidth, windowHeight)
         else:
