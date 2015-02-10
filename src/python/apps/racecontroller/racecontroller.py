@@ -2,16 +2,19 @@
 
 # the following line is not needed if pgu is installed
 import sys
+import os
+basedir = os.path.abspath(os.path.dirname(__file__))
 
-sys.path.insert(0, "../../modules")
+sys.path.insert(0, basedir+"/../../modules")
 
 import os
 import time
 import pygame
 from cannybots.video import Display
+from cannybots.radio import BLE, BLE_Manager
+
 from pgu import gui
 
-basedir = os.path.abspath(os.path.dirname(__file__))
 
 class Obj(gui.Widget):
     def __init__(self, **params):
@@ -19,9 +22,9 @@ class Obj(gui.Widget):
 
 
 pygame.font.init()
-roboticaSmallFont = pygame.font.Font('fonts/Robotica.ttf', 24)
-roboticaMediumFont = pygame.font.Font('fonts/Robotica.ttf', 36)
-roboticaLargeFont = pygame.font.Font('fonts/Robotica.ttf', 72)
+roboticaSmallFont = pygame.font.Font(basedir+'/fonts/Robotica.ttf', 24)
+roboticaMediumFont= pygame.font.Font(basedir+'/fonts/Robotica.ttf', 36)
+roboticaLargeFont = pygame.font.Font(basedir+'/fonts/Robotica.ttf', 72)
 
 
 def formatTime(lapTime):
@@ -32,6 +35,8 @@ class PlayerTimes(gui.Table):
     def __init__(self, playerNum, **params):
         gui.Table.__init__(self, **params)
 
+        self.timerStarted=0
+        self.startTime = 0
         self.playerNum = playerNum
         self.currentLapTimeLabel = gui.Label("", color=(0, 0, 0), style={'font': roboticaMediumFont})
         self.setCurrentLapTime(0.0)
@@ -43,7 +48,7 @@ class PlayerTimes(gui.Table):
     def setCurrentLapTime(self, lapTime):
         self.currentLapTime = lapTime
         self.currentLapTimeLabel.value = formatTime(lapTime)
-        print self.currentLapTimeLabel.value + "\n"
+        #print self.currentLapTimeLabel.value + "\n"
 
 
 class LapTimeScoreBoard(gui.Table):
@@ -81,6 +86,8 @@ class LapTimeScoreBoard(gui.Table):
             self.placeDriverLabels[place].value=self.placeDriver[place]
 
     def newTime(self, driverName, time):
+        if time < 1:
+            return
         for place in range(0, len(self.placeTitle)):
             if self.placeTimes[place] == 0 or time < self.placeTimes[place]:
                 self.placeTimes.insert(place, time)
@@ -117,12 +124,12 @@ class RaceController():
 
         self.lastUpdateTime = time.time()
         self.running = True
-        self.display = Display(windowedInX=0)
+        self.display = Display(windowed=1, windowWidth=1280, windowHeight=1024)
         self.screen = self.display.screen
         self.clock = pygame.time.Clock()
 
         self.appInit()
-
+        self.bleInit()
 
     def appInit(self):
         self.app = gui.App()
@@ -171,11 +178,11 @@ class RaceController():
         self.player2Stats = PlayerTimes(2)
         self.mainScoreBoard = LapTimeScoreBoard()
 
-        p1SlowBtn = self.createIcon("images/button.png", "slower", self.decreasePlayerSpeed, 1)
-        p1FastBtn = self.createIcon("images/button.png", "faster", self.increasePlayerSpeed, 1)
-        p2SlowBtn = self.createIcon("images/button.png", "slower", self.decreasePlayerSpeed, 2)
-        p2FastBtn = self.createIcon("images/button.png", "faster", self.increasePlayerSpeed, 2)
-        resetBtn = self.createIcon("images/button.png", "reset", self.resetBoard, 1)
+        p1SlowBtn = self.createIcon(basedir+"/images/button.png", "slower", self.decreasePlayerSpeed, 1)
+        p1FastBtn = self.createIcon(basedir+"/images/button.png", "faster", self.increasePlayerSpeed, 1)
+        p2SlowBtn = self.createIcon(basedir+"/images/button.png", "slower", self.decreasePlayerSpeed, 2)
+        p2FastBtn = self.createIcon(basedir+"/images/button.png", "faster", self.increasePlayerSpeed, 2)
+        resetBtn = self.createIcon(basedir+"/images/button.png", "reset", self.resetBoard, 1)
 
 
         # Create the Table cells
@@ -232,8 +239,10 @@ class RaceController():
         pygame.display.flip()
 
     def update(self):
-        self.player1Stats.setCurrentLapTime(time.time() % 10)
-        self.player2Stats.setCurrentLapTime(2+time.time() % 10)
+        if self.player1Stats.timerStarted:
+            self.player1Stats.setCurrentLapTime(time.time() - self.player1Stats.startTime)
+        if self.player2Stats.timerStarted:
+            self.player2Stats.setCurrentLapTime(time.time() - self.player2Stats.startTime)
 
     def run(self):
         while self.running:
@@ -243,7 +252,41 @@ class RaceController():
             self.clock.tick(30)
         pygame.quit()
 
+    def bleRacer1ReceviedData(self, bleuart, message):
+        print "p1: " + str (message)
+        if message.startswith("LAP"):
+            print "Player1 Lap Start!"
+            self.mainScoreBoard.newTime("One", self.player1Stats.currentLapTime)
+            self.player1Stats.currentLapTime = 0
+            self.player1Stats.timerStarted=True
+            self.player1Stats.startTime=time.time()
+
+    def bleRacer2ReceviedData(self, bleuart, message):
+        print "p2: " + str (message)
+        if message.startswith("LAP"):
+            print "Player2 Lap Start!"
+            self.mainScoreBoard.newTime("Two", self.player2Stats.currentLapTime)
+            self.player2Stats.currentLapTime = 0
+            self.player2Stats.timerStarted=True
+            self.player2Stats.startTime=time.time()
+
+    def bleInit(self):
+        self.bleManager =  BLE_Manager("hci0")
+        self.ble        =  BLE(bleManager=self.bleManager)
+
+        self.bleManager.startScanning()
+
+        self.ble1 = self.ble.findByName(sys.argv[1])
+        self.ble2 = self.ble.findByName(sys.argv[2])
+
+        self.bleManager.stopScanning()
+
+        self.ble1.addListener(self.bleRacer1ReceviedData)
+        self.ble2.addListener(self.bleRacer2ReceviedData)
+
 
 if __name__ == "__main__":
+    print 'Number of arguments:', len(sys.argv), 'arguments.'
+    print 'Argument List:', str(sys.argv)
     rc = RaceController()
     rc.run()

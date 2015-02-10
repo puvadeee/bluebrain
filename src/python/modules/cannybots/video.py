@@ -6,7 +6,7 @@ class Display:
     screen = None;
     isX = 0;
 
-    def __init__(self, windowWidth=320, windowHeight=240, windowedInX=1):
+    def __init__(self, windowWidth=320, windowHeight=240, windowed=1):
         "Ininitializes a new pygame screen using the framebuffer"
         # Based on "Python GUI in Linux frame buffer"
         # http://www.karoltomala.com/blog/?p=679
@@ -36,7 +36,7 @@ class Display:
         size = (pygame.display.Info().current_w, pygame.display.Info().current_h)
         #print "Framebuffer size: %d x %d" % (size[0], size[1])
         opts = 0
-        if self.isX and windowedInX:
+        if self.isX and windowed:
             opts = pygame.RESIZABLE
             size=(windowWidth, windowHeight)
         else:

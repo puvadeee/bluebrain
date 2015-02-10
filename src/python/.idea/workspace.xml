@@ -2,9 +2,287 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="07326fd1-a9dd-42d1-a047-8db398463aed" name="Default" comment="">
+      <change type="DELETED" beforePath="$PROJECT_DIR$/blenotes.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/doc/commands.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/doc/plugin_comm.odt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/doc/plugin_commands.odg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/bin/linux_i386_upx/viewer" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/bin/win32_upx/viewer.exe" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/main.lfm" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/main.lrs" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/main.pas" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/mjpegviewer.lpi" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpeg-client/mjpegviewer.lpr" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/CHANGELOG" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/LICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/README" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/README-UNSTABLE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/TODO" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg-streamer.config" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg-streamer.creator" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg-streamer.files" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg-streamer.includes" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg_streamer.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/mjpg_streamer.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/dynctrl.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/dynctrl.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/input_uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/uvc_compat.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_control/uvcvideo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_file/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_file/input_file.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/input_http.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/misc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/misc.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/mjpg-proxy.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/mjpg-proxy.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_http/version.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_ptp2/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_ptp2/input_ptp2.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_ptp2/input_ptp2.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/input_testpicture.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/input_testpicture.config" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/input_testpicture.creator" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/input_testpicture.files" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/input_testpicture.includes" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/160x120_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/160x120_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/320x240_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/320x240_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/640x480_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/640x480_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/960x720_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/pictures/960x720_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_testpicture/testpictures.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/dynctrl-logitech.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/dynctrl.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/dynctrl.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/huffman.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/input_uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/jpeg_utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/jpeg_utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/uvcvideo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/v4l2uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/input_uvc/v4l2uvc.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_autofocus/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_autofocus/output_autofocus.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_autofocus/processJPEG_onlyCenter.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_autofocus/processJPEG_onlyCenter.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/examples/change_filename.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/examples/ftp_upload.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/examples/show_filename.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/output_file.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_file/output_file.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/httpd.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/httpd.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/output_http.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/output_http.creator" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_http/output_http.includes" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_rtsp/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_rtsp/output_rtsp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_rtsp/rtsp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_udp/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_udp/output_udp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_viewer/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/plugins/output_viewer/output_viewer.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/scripts/make_deb.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/start.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/JQuerySpinBtn.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/JQuerySpinBtn.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/LICENSE.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/bodybg.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/cambozola.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/control.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/control_old.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/example.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/favicon.ico" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/favicon.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/fix.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/functions.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/go-down.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/go-next.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/go-previous.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/go-up.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/java.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/java_control.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/java_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/javascript.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/javascript_motiondetection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/javascript_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.rotate.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.ui.core.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.ui.custom.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.ui.tabs.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/jquery.ui.widget.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/rotateicons.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/sidebarbg.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/spinbtn_updn.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/static.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/static_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/stream.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/stream_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/style.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer-experimental/www/videolan.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/CHANGELOG" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/LICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/README" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/TODO" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/mjpg_streamer" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/mjpg_streamer.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/mjpg_streamer.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/mjpg_streamer.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/dynctrl.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/dynctrl.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/input_uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/uvc_compat.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_control/uvcvideo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_file/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_file/input_file.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/encoder.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/encoder.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/huffman.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/huffman.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/input_gspcav1.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/jconfig.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/jdatatype.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/marker.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/marker.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/quant.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/quant.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/readme.spcacat" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/spcaframe.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/spcav4l.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/spcav4l.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_gspcav1/utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/input_testpicture.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/160x120_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/160x120_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/320x240_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/320x240_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/640x480_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/640x480_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/960x720_1.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/pictures/960x720_2.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_testpicture/testpictures.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/dynctrl.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/dynctrl.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/dynctrl.lo" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/huffman.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/input_uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/jpeg_utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/jpeg_utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/jpeg_utils.lo" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/uvc_compat.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/uvcvideo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/v4l2uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/v4l2uvc.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/input_uvc/v4l2uvc.lo" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_autofocus/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_autofocus/output_autofocus.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_autofocus/processJPEG_onlyCenter.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_autofocus/processJPEG_onlyCenter.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_file/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_file/examples/change_filename.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_file/examples/ftp_upload.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_file/examples/show_filename.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_file/output_file.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_http/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_http/httpd.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_http/httpd.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_http/httpd.lo" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_http/output_http.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_rtsp/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_rtsp/output_rtsp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_rtsp/rtsp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_udp/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_udp/output_udp.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_viewer/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/plugins/output_viewer/output_viewer.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/scripts/make_deb.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/start.sh" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/utils.o" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/JQuerySpinBtn.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/JQuerySpinBtn.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/LICENSE.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/bodybg.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/cambozola.jar" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/control.htm" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/example.jpg" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/favicon.ico" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/favicon.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/fix.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/functions.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/index.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/java.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/java_control.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/java_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/javascript.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/javascript_motiondetection.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/javascript_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.rotate.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.ui.core.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.ui.custom.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.ui.tabs.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/jquery.ui.widget.min.js" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/rotateicons.png" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/sidebarbg.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/spinbtn_updn.gif" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/static.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/static_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/stream.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/stream_simple.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/style.css" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/mjpg-streamer/www/videolan.html" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/udp_client/main.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/udp_client/mainwindow.cpp" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/udp_client/mainwindow.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/udp_client/mainwindow.ui" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/udp_client/udp_client.pro" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/CHANGELOG" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/LICENSE" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/Makefile" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/README" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/color.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/color.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/control.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/control.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/huffman.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/utils.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/utils.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/uvc_compat.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/uvc_stream.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/uvcvideo.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/v4l2uvc.c" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/mjpg-streamer-code/uvc-streamer/v4l2uvc.h" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/camera/setup.txt" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/../raspberrypi/networking/setup.txt" afterPath="" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/apps/racecontroller/racecontroller.py" afterPath="$PROJECT_DIR$/apps/racecontroller/racecontroller.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/cannybots/radio.py" afterPath="$PROJECT_DIR$/modules/cannybots/radio.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/examples/logging/simpleLogListener.py" afterPath="$PROJECT_DIR$/examples/logging/simpleLogListener.py" />
-      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/vcs.xml" afterPath="$PROJECT_DIR$/.idea/vcs.xml" />
+      <change type="MODIFICATION" beforePath="$PROJECT_DIR$/modules/cannybots/video.py" afterPath="$PROJECT_DIR$/modules/cannybots/video.py" />
       <change type="MODIFICATION" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="$PROJECT_DIR$/.idea/workspace.xml" />
     </list>
     <ignored path="python.iws" />
@@ -32,8 +310,8 @@
       <file leaf-file-name="racecontroller.py" pinned="false" current-in-tab="false">
         <entry file="file://$PROJECT_DIR$/apps/racecontroller/racecontroller.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3825">
-              <caret line="5" column="15" selection-start-line="5" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+            <state vertical-scroll-proportion="-21.62963" vertical-offset="3136" max-vertical-offset="4455">
+              <caret line="249" column="25" selection-start-line="249" selection-start-column="25" selection-end-line="249" selection-end-column="25" />
               <folding />
             </state>
           </provider>
@@ -42,11 +320,9 @@
       <file leaf-file-name="radio.py" pinned="false" current-in-tab="true">
         <entry file="file://$PROJECT_DIR$/modules/cannybots/radio.py">
           <provider selected="true" editor-type-id="text-editor">
-            <state vertical-scroll-proportion="0.25128865" vertical-offset="885" max-vertical-offset="4095">
-              <caret line="72" column="36" selection-start-line="72" selection-start-column="36" selection-end-line="72" selection-end-column="36" />
-              <folding>
-                <element signature="e#206#216#0" expanded="true" />
-              </folding>
+            <state vertical-scroll-proportion="0.46082234" vertical-offset="1551" max-vertical-offset="4230">
+              <caret line="153" column="36" selection-start-line="153" selection-start-column="36" selection-end-line="153" selection-end-column="36" />
+              <folding />
             </state>
           </provider>
         </entry>
@@ -55,7 +331,7 @@
         <entry file="file://$PROJECT_DIR$/examples/logging/simpleLogListener.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-              <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+              <caret line="8" column="31" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="31" />
               <folding />
             </state>
           </provider>
@@ -65,7 +341,7 @@
         <entry file="file://$PROJECT_DIR$/examples/joypad/simpleJoypadClient.py">
           <provider selected="true" editor-type-id="text-editor">
             <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="315">
-              <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+              <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="14" />
               <folding />
             </state>
           </provider>
@@ -89,18 +365,18 @@
   <component name="IdeDocumentHistory">
     <option name="CHANGED_PATHS">
       <list>
+        <option value="$PROJECT_DIR$/examples/logging/simpleLogListener.py" />
         <option value="$PROJECT_DIR$/modules/cannybots/video.py" />
         <option value="$PROJECT_DIR$/apps/racecontroller/racecontroller.py" />
-        <option value="$PROJECT_DIR$/examples/logging/simpleLogListener.py" />
         <option value="$PROJECT_DIR$/modules/cannybots/radio.py" />
       </list>
     </option>
   </component>
   <component name="ProjectFrameBounds">
-    <option name="x" value="199" />
-    <option name="y" value="23" />
-    <option name="width" value="1241" />
-    <option name="height" value="873" />
+    <option name="x" value="1440" />
+    <option name="y" value="-157" />
+    <option name="width" value="1280" />
+    <option name="height" value="1413" />
   </component>
   <component name="ProjectLevelVcsManager" settingsEditedManually="true">
     <OptionsSetting value="true" id="Add" />
@@ -125,7 +401,6 @@
       <sortByType />
     </navigator>
     <panes>
-      <pane id="Scope" />
       <pane id="ProjectPane">
         <subPane>
           <PATH>
@@ -172,15 +447,7 @@
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
             <PATH_ELEMENT>
-              <option name="myItemId" value="modules" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="cannybots" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="clients" />
+              <option name="myItemId" value="examples" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -195,6 +462,10 @@
             </PATH_ELEMENT>
             <PATH_ELEMENT>
               <option name="myItemId" value="examples" />
+              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
+            </PATH_ELEMENT>
+            <PATH_ELEMENT>
+              <option name="myItemId" value="logging" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
           </PATH>
@@ -247,31 +518,10 @@
               <option name="myItemId" value="apps" />
               <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
             </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="racecontroller" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="images" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-          </PATH>
-          <PATH>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.ProjectViewProjectNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="python" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
-            <PATH_ELEMENT>
-              <option name="myItemId" value="apps" />
-              <option name="myItemType" value="com.intellij.ide.projectView.impl.nodes.PsiDirectoryNode" />
-            </PATH_ELEMENT>
           </PATH>
         </subPane>
       </pane>
+      <pane id="Scope" />
     </panes>
   </component>
   <component name="PropertiesComponent">
@@ -466,7 +716,7 @@
     <servers />
   </component>
   <component name="ToolWindowManager">
-    <frame x="199" y="23" width="1241" height="873" extended-state="0" />
+    <frame x="1440" y="-157" width="1280" height="1413" extended-state="0" />
     <editor active="true" />
     <layout>
       <window_info id="Changes" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
@@ -474,20 +724,20 @@
       <window_info id="TODO" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="6" side_tool="false" content_ui="tabs" />
       <window_info id="Structure" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Application Servers" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
-      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.17405318" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
+      <window_info id="Project" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="true" weight="0.16875" sideWeight="0.5" order="0" side_tool="false" content_ui="combo" />
       <window_info id="Python Console" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Favorites" active="false" anchor="left" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="2" side_tool="true" content_ui="tabs" />
-      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
+      <window_info id="Event Log" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.329602" sideWeight="0.5" order="7" side_tool="true" content_ui="tabs" />
       <window_info id="Version Control" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="7" side_tool="false" content_ui="tabs" />
       <window_info id="Cvs" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="4" side_tool="false" content_ui="tabs" />
       <window_info id="Message" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
+      <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Debug" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="3" side_tool="false" content_ui="tabs" />
       <window_info id="Commander" active="false" anchor="right" auto_hide="false" internal_type="SLIDING" type="SLIDING" visible="false" weight="0.4" sideWeight="0.5" order="0" side_tool="false" content_ui="tabs" />
-      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
-      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
       <window_info id="Run" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.35199004" sideWeight="0.5" order="2" side_tool="false" content_ui="tabs" />
+      <window_info id="Inspection" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.4" sideWeight="0.5" order="5" side_tool="false" content_ui="tabs" />
+      <window_info id="Hierarchy" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" weight="0.25" sideWeight="0.5" order="2" side_tool="false" content_ui="combo" />
     </layout>
   </component>
   <component name="Vcs.Log.UiProperties">
@@ -511,6 +761,46 @@
     <watches-manager />
   </component>
   <component name="editorHistoryManager">
+    <entry file="file://$PROJECT_DIR$/apps/racecontroller/racecontroller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="75" max-vertical-offset="3825">
+          <caret line="5" column="15" selection-start-line="5" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/cannybots/radio.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3885">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/logging/simpleLogListener.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="30" max-vertical-offset="450">
+          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/examples/joypad/simpleJoypadClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="315">
+          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/cannybots/clients/joypad.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="345" max-vertical-offset="450">
+          <caret line="23" column="36" selection-start-line="22" selection-start-column="8" selection-end-line="23" selection-end-column="36" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/apps/racecontroller/racecontroller.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="100">
@@ -549,13 +839,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/modules/cannybots/video.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.27372262" vertical-offset="120" max-vertical-offset="900">
-          <caret line="18" column="66" selection-start-line="18" selection-start-column="66" selection-end-line="18" selection-end-column="66" />
-        </state>
-      </provider>
-    </entry>
     <entry file="file:///Library/Python/2.7/site-packages/pgu/gui/theme.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.60583943" vertical-offset="838" max-vertical-offset="7710">
@@ -579,22 +862,6 @@
         </state>
       </provider>
     </entry>
-    <entry file="file://$PROJECT_DIR$/examples/joypad/simpleJoypadClient.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="776">
-          <caret line="0" column="0" selection-start-line="0" selection-start-column="0" selection-end-line="0" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
-    <entry file="file://$PROJECT_DIR$/apps/racecontroller/racecontroller.py">
-      <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="3825">
-          <caret line="5" column="15" selection-start-line="5" selection-start-column="0" selection-end-line="6" selection-end-column="0" />
-          <folding />
-        </state>
-      </provider>
-    </entry>
     <entry file="file://$PROJECT_DIR$/modules/cannybots/clients/joypad.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="450">
@@ -603,21 +870,43 @@
         </state>
       </provider>
     </entry>
+    <entry file="file://$PROJECT_DIR$/examples/joypad/simpleJoypadClient.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="315">
+          <caret line="6" column="0" selection-start-line="6" selection-start-column="0" selection-end-line="6" selection-end-column="14" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/modules/cannybots/video.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="0.07954545" vertical-offset="0" max-vertical-offset="1320">
+          <caret line="8" column="66" selection-start-line="8" selection-start-column="66" selection-end-line="8" selection-end-column="66" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
     <entry file="file://$PROJECT_DIR$/examples/logging/simpleLogListener.py">
       <provider selected="true" editor-type-id="text-editor">
         <state vertical-scroll-proportion="0.0" vertical-offset="0" max-vertical-offset="510">
-          <caret line="2" column="20" selection-start-line="2" selection-start-column="20" selection-end-line="2" selection-end-column="20" />
+          <caret line="8" column="31" selection-start-line="8" selection-start-column="14" selection-end-line="8" selection-end-column="31" />
+          <folding />
+        </state>
+      </provider>
+    </entry>
+    <entry file="file://$PROJECT_DIR$/apps/racecontroller/racecontroller.py">
+      <provider selected="true" editor-type-id="text-editor">
+        <state vertical-scroll-proportion="-21.62963" vertical-offset="3136" max-vertical-offset="4455">
+          <caret line="249" column="25" selection-start-line="249" selection-start-column="25" selection-end-line="249" selection-end-column="25" />
           <folding />
         </state>
       </provider>
     </entry>
     <entry file="file://$PROJECT_DIR$/modules/cannybots/radio.py">
       <provider selected="true" editor-type-id="text-editor">
-        <state vertical-scroll-proportion="0.25128865" vertical-offset="885" max-vertical-offset="4095">
-          <caret line="72" column="36" selection-start-line="72" selection-start-column="36" selection-end-line="72" selection-end-column="36" />
-          <folding>
-            <element signature="e#206#216#0" expanded="true" />
-          </folding>
+        <state vertical-scroll-proportion="0.46082234" vertical-offset="1551" max-vertical-offset="4230">
+          <caret line="153" column="36" selection-start-line="153" selection-start-column="36" selection-end-line="153" selection-end-column="36" />
+          <folding />
         </state>
       </provider>
     </entry>

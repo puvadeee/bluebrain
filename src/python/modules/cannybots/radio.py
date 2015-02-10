@@ -56,10 +56,16 @@ def die(child, errstr):
 
 
 class BLE_Manager:
+
+    def __init__(self, mac, hci='hci0'):
+        self.hciDevice = hci
+        self.hcitool = False
+
     def startHCITool(self):
+        print "HCI TOOL STARTING"
         cmd = 'hcitool  lescan --duplicates --passive'
         if self.hcitool:
-            hcitool.close()
+            self.hcitool.close()
 
         self.hcitool = pexpect.spawn(cmd)
         i = self.hcitool.expect([pexpect.TIMEOUT, 'LE Scan ...'])
@@ -74,10 +80,13 @@ class BLE_Manager:
                     print "HCITOOL not running skipping"
                     time.sleep(5)
                     continue
-                # TODO: restart tool if died
-                i = self.hcitool.expect([pexpect.TIMEOUT, "(.*)\n"])
+                i = self.hcitool.expect([pexpect.TIMEOUT, pexpect.EOF, "(.*)\n"])
                 if i == 0:
                     print "hcitool: no devices (timeout)"
+                elif i ==1 :
+                    print "HCI TOOL EOF - retry in  3..2..1.."
+                    time.sleep(3)
+                    continue
                 else:
                     # print "hci:" + self.hcitool.after
                     timeNow = int(time.time())
@@ -100,12 +109,10 @@ class BLE_Manager:
                 logging.exception('hci_worker')
                 self.startHCITool()
 
-    def __init__(self, mac, hci='hci0'):
-        self.hciDevice = hci
-        self.hcitool = 0
+
 
     def startScanning(self):
-        self.stopScanning()
+        #self.stopScanning()
         self.keepRunning = True
         self.startHCITool()
         self.hcitoolThread = Thread(target=self.hci_worker)
@@ -114,11 +121,13 @@ class BLE_Manager:
         self.hcitoolThread.start()
 
     def stopScanning(self):
+        self.keepRunning = False
         if self.hcitool:
-            self.keepRunning = False
             time.sleep(1)
             self.hcitool.close()
             print "HCI TOOL EXIT: " + str(self.hcitool.exitstatus)
+            self.hcitool = 0
+
 
 
 class BLE_UART:
@@ -136,11 +145,13 @@ class BLE_UART:
 
         self.enqueString('connect')
         # Start the RX listener
+        time.sleep(1)
         self.enqueString('char-write-req 0x000f 0100')
 
     def closeGattTool(self):
         print "Killing gatttool child"
         if self.child:
+            self.keepRunning = False
             self.child.close()
             #self.child.terminate()
             print "GATTTOOL TOOL EXIT: " + str(self.child.exitstatus)
@@ -154,8 +165,9 @@ class BLE_UART:
     def rx_worker(self):
         while self.keepRunning:
             self.queueLock.acquire()
-            i = self.child.expect("Notification handle = 0x000e value:\s(.*)\n")
-            if self.rxListener:
+            i = self.child.expect([pexpect.TIMEOUT, "Notification handle = 0x000e value:\s(.*)\n"])
+
+            if i>0 and self.rxListener:
                 self.rxListener(self, self.child.after.split("value: ", 1)[1].rstrip().replace(" ", "").decode("hex"))
             self.queueLock.release()
 
@@ -191,11 +203,11 @@ class BLE_UART:
         self.enqueString(cmd)
 
     def enqueString(self, str):
-        if self.queueLock.locked():
-            return
-        self.queueLock.acquire()
+        #if self.queueLock.locked():
+        #    return
+        #self.queueLock.acquire()
         self.q.put(str)
-        self.queueLock.release()
+        #self.queueLock.release()
 
 
     def _send(self, msg):
@@ -218,9 +230,13 @@ class BLE_UART:
 
 
 class BLE:
-    def __init__(self, hci="hci0", name='BLEThread'):
-        self.bleManager = BLE_Manager(hci)
-        self.bleManager.startScanning()
+    def __init__(self, hci="hci0", name='BLEThread', bleManager=False):
+        if not bleManager:
+            self.bleManager = BLE_Manager(hci)
+            self.bleManager.startScanning()
+        else:
+            self.bleManager = bleManager
+
 
     def findNearest(self):
         deviceAddress = ''
@@ -231,7 +247,7 @@ class BLE:
             time.sleep(1)
 
         print  "CONNECT TO: " + deviceAddress
-        self.bleManager.stopScanning()
+        #self.bleManager.stopScanning()
 
         bleDevice = BLE_UART(mac=deviceAddress)
         return bleDevice
@@ -251,7 +267,7 @@ class BLE:
             time.sleep(1)
 
         print  "CONNECT TO: " + deviceAddress
-        self.bleManager.stopScanning()
+        #self.bleManager.stopScanning()
 
         bleDevice = BLE_UART(mac=deviceAddress)
         return bleDevice
@@ -259,6 +275,9 @@ class BLE:
 
     def devicesInRange(self):
         return self.bleManager.devices
+
+    def stopScanning(self):
+        self.bleManager.stopScanning()
 		
 
 

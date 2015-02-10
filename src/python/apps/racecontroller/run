@@ -1,0 +1,6 @@
+killall -9 hcitool
+killall -9 gatttool
+hciconfig hci0 down
+hciconfig hci0 up
+./racecontroller.py $*
+
