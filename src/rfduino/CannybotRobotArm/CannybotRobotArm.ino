@@ -8,88 +8,190 @@
 //
 // Version:   1.0  -  19.11.2014  -  Inital Version  (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
+#define SERIAL_DEBUG
 
 #define BOT_NAME "RobotArm"                   // custom name (16 chars max)
 
 #include <RFduinoBLE.h>
-
 // Can't include GZLL, interferes with Servos (SDK v.2.1.2)
-
-void radio_debug(char *fmt, ... );
 
 #include <Servo.h>
 
+void radio_send_formatted(char *fmt, ... );
+
+#define NUM_SERVOS   4
+
 // PIN ASSIGNEMENT
-// total of 7 pins available of which any 4 can be defined as PWM
-// Infrared sensors
+
+#define MAX 180
+
 #define SERVO1_PIN 2
 #define SERVO2_PIN 3
 #define SERVO3_PIN 4
-Servo servos[3];
+#define SERVO4_PIN 6
 
-// DEFINITIONS & ITIALISATION
-#define JOYPAD_AXIS_DEADZONE 20 //this is to eleminate jitter in 0 position
+const int servoPins[NUM_SERVOS] = { SERVO1_PIN, SERVO2_PIN, SERVO3_PIN, SERVO4_PIN};
 
-// Joypad
-volatile int16_t  xAxisValue    = 0;              // (left) -255 .. 255 (right)
-volatile int16_t  yAxisValue    = 0;              // (down) -255 .. 255 (up)
-volatile int16_t  zAxisValue    = 0;
-volatile int8_t   buttonPressed = 0;              // 0 = not pressed, 1 = pressed
-
-
-
-// READ INPUT FROM JOYPAD
-void joypad_update(int x, int y, int z, int b) {
-  // If the axis readings are small, in the 'deadzone', set them to 0
-  if ( abs(x) < JOYPAD_AXIS_DEADZONE)  x = 0;
-  if ( abs(y) < JOYPAD_AXIS_DEADZONE)  y = 0;
-  if ( abs(z) < JOYPAD_AXIS_DEADZONE)  z = 0;
-
-  xAxisValue = x;
-  yAxisValue = y;
-  zAxisValue = z;
-  buttonPressed = b;
-
-  //radio_debug("%d,%d,%d,%d = %d,%d,%d,%d", x,y,z,b, xAxisValue,yAxisValue,zAxisValue,buttonPressed);
-}
+Servo servos[NUM_SERVOS];
 
 
 void setup() {
+#if defined(SERIAL_DEBUG)
   Serial.begin(9600);
+  
+  Serial.print("Max servos:");
+  Serial.println(MAX_SERVOS);
+
+#else
+  Serial.end();
+#endif  
+
   radio_setup();
   attachServos();
 }
 
 void attachServos() {
-  servos[0].attach(SERVO1_PIN);
-  servos[1].attach(SERVO2_PIN);
-  servos[2].attach(SERVO3_PIN);
+  for (int i = 0; i < NUM_SERVOS; i++)
+    servos[i].attach(servoPins[i]);
 }
 void detachServos() {
-  servos[0].detach();
-  servos[1].detach();
-  servos[2].detach();
+  for (int i = 0; i < NUM_SERVOS; i++)
+    servos[i].detach();
 }
 
-#define MAX 255
 
 void loop() {
-  radio_loop(); //read radio input
-  
-  if (buttonPressed & 1) {
-    servos[0].write(map(xAxisValue, -255, 255, 0, MAX));
-  }
-  if (buttonPressed & 2) {
-    servos[1].write(map(xAxisValue, -255, 255, 0, MAX));
-  }
-  if (buttonPressed & 4) {
-    servos[2].write(map(xAxisValue, -255, 255, 0, MAX));
-  }
-  //servos[0].write(map(xAxisValue, -255, 255, 0, 179));
-  //servos[1].write(map(yAxisValue, -255, 255, 0, 179));
-  //servos[2].write(map(zAxisValue, -255, 255, 0, 179));
+  radio_loop(); //read radio input                                                                                 b
+  //for (int i = 0; i< NUM_SERVOS; i++)
+  //    servos[i].write(MAX/2);
+  firmata_check_command_queue();
+  return;
+  servos[0].write(45);
+  servos[1].write(45);
+  servos[2].write(45);
+  servos[3].write(45);
 
-  Serial.println(buttonPressed);
+  int servoPos1 = analogRead(0);
+  int servoPos2 = analogRead(1);
+  int servoPos3 = analogRead(5);
+  Serial.print("SPOS:");
+  Serial.print(servoPos1);
+  Serial.print(",");
+  Serial.print(servoPos2);
+  Serial.print(",");
+  Serial.println(servoPos3);
 }
 
+
+
+void received_client_disconnect () {
+}
+
+
+
+
+////////////////
+
+
+// Command statuses
+#define RC_OK                             0
+#define RC_UNKNOWN_COMMAND                1
+#define RC_COMMAND_UNIMPLEMENTED          2
+#define RC_COMMAND_TOO_SHORT              3
+#define RC_COMMAND_NOT_ENOUGH_PARAMS      4
+
+// Command processing state
+enum command_state_t {COMMAND_IDLE, COMMAND_READY, COMMAND_RUNNING} ;
+
+// Comman processing
+uint8_t  commandProcessingState = COMMAND_IDLE;
+char     nextCommandBuffer[20 + 1];
+int16_t  nextCommandLength = 0;
+
+
+
+// do as little in here as possible as it's called under an interrupt.
+void received_client_data(char *data, int len)  {
+  if (commandProcessingState != COMMAND_IDLE)
+    return;
+  memcpy( nextCommandBuffer, data, min(sizeof(nextCommandBuffer) - 1, len));
+  nextCommandLength = len;
+  commandProcessingState = COMMAND_READY;
+}
+
+void firmata_check_command_queue() {
+  if ( commandProcessingState == COMMAND_READY ) {
+    commandProcessingState = COMMAND_RUNNING;
+#if defined(SERIAL_DEBUG)
+    Serial.write((const uint8_t*)nextCommandBuffer, nextCommandLength);
+#endif
+    uint8_t rc = firmata_run_command(nextCommandBuffer, nextCommandLength);
+    send_command_status(rc);
+    commandProcessingState = COMMAND_IDLE;
+  }
+}
+
+
+void send_command_status(uint8_t rc) {
+  char* msg = "??";
+  switch (rc) {
+    case RC_OK: msg = "OK"; break;
+    case RC_UNKNOWN_COMMAND: msg = "CMD?"; break;
+    case RC_COMMAND_UNIMPLEMENTED: msg = "UNIMPLEMENTED!"; break;
+    case RC_COMMAND_TOO_SHORT: msg = "CMD_TOO_SHORT"; break;
+    case RC_COMMAND_NOT_ENOUGH_PARAMS: msg = "NOT_ENOUGH_PARAMS"; break;
+    default:
+      msg = "STATUS?";
+  }
+#if defined(SERIAL_DEBUG)
+  Serial.print("RC=");
+  Serial.print(rc,DEC);
+  Serial.print(", ");
+  Serial.println(msg);
+#endif
+  radio_send(msg);
+}
+
+
+uint8_t firmata_run_command(char *data, int len) {
+  if (len < 3) {
+    return RC_COMMAND_TOO_SHORT;
+  }
+  uint8_t rc = RC_UNKNOWN_COMMAND;
+  uint8_t command = data[2];
+
+#if defined(SERIAL_DEBUG)
+  Serial.print("Command type, len=");
+  Serial.print(command);
+  Serial.print(",");
+  Serial.println(len);
+#endif
+
+  switch (command) {
+    case '1': rc = cmd_set_servo_positions(0, data + 3, len - 3); break;
+    case '2': rc = cmd_set_servo_positions(1, data + 3, len - 3); break;
+    case '3': rc = cmd_set_servo_positions(2, data + 3, len - 3); break;
+    case '4': rc = cmd_set_servo_positions(3, data + 3, len - 3); break;
+    default:  rc = RC_UNKNOWN_COMMAND; break;
+  }
+  return rc;
+}
+
+uint8_t cmd_set_servo_positions(int servo, char *data, int len) {
+
+  if (len < 1 ) { //NUM_SERVOS) {
+    return RC_COMMAND_NOT_ENOUGH_PARAMS;
+  }
+#if defined(SERIAL_DEBUG)
+  Serial.print("Servo Speeds: ");
+  for (int i = 0; i < NUM_SERVOS; i++) {
+    Serial.print(data[i], DEC); 
+    Serial.print(", "); 
+  }
+  Serial.println("");
+#endif
+  servos[servo].write(data[1]);
+
+  return RC_OK;
+}
 

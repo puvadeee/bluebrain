@@ -9,6 +9,20 @@ rm ./attrib/gatttool; make; sudo ./attrib/gatttool -t random --primary -I -b FB:
 
 
 
+see: http://stackoverflow.com/questions/15657007/bluetooth-low-energy-listening-for-notifications-indications-in-linux
+
+* get list of 
+
+char-read-uuid 2902
+
+handle: 0x000b 	 value: 00 00 
+handle: 0x000f 	 value: 00 00 
+
+* You can try setting them all to 0100 to get notifications, 0200 for indications, 0300 for both, or 0000 for everything off.
+
+* turn on notifications for one of above:
+
+char-write-req 0x000f 0100
 
 
 

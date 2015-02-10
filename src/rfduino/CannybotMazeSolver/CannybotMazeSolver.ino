@@ -9,6 +9,9 @@
 // Version:   1.0  -  23.10.2014  -  Inital Version  (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SERIAL_DEBUG
+#define GZLL_HOST_ADDRESS 0x99ACB010    // MAZE
+//#define GZLL_HOST_ADDRESS 0x88ACB010    // TURTLE
+
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
 void radio_send_formatted(char *fmt, ... );
