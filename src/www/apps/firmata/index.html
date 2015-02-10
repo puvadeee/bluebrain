@@ -1,0 +1,88 @@
+<html>
+    <head>
+        <title>CannbotsWebSocketServer</title>
+        
+        
+        <script src="/js/require.js"></script>
+        <script>
+            requirejs.config({
+                baseUrl: "lib",
+                paths: {
+                jquery:    "/js/jquery/jquery-1.11.2.min",
+                BlueBrain: "/js/cannybots/BlueBrain",
+                firmata:     "firmata",
+                serialport:    "serialport4BlueBrain",
+                'browser-serialport':    "serialport4BlueBrain"
+                },
+                waitSeconds: 2
+                });
+        
+        require(['jquery', 'BlueBrain', 'firmata' ], function(jquery, bluebrain, firmata) {
+            //This function will be called when all the dependencies
+            //listed above are loaded. Note that this function could
+            //be called before the page is loaded.
+            //This callback is optional.
+            jQuery(function ($) {
+                bluebrain.startLib();
+            });
+            
+            
+            
+            var blink = function blink() {
+                console.log("blink start ...");
+                
+                var ledPin = 1;
+                
+                var board = new firmata.Board("websocket", function(err) {
+                    if (err) {
+                        console.log("ERROR:" + err);
+                        return;
+                    }
+                    console.log("blink: connected");
+                    
+                    console.log("Firmware: "
+                        + board.firmware.name
+                        + "-" + board.firmware.version.major
+                        + "." + board.firmware.version.minor);
+                    
+                    var ledOn = true;
+                    board.pinMode(ledPin, board.MODES.OUTPUT);
+                    
+                    setInterval(function() {
+                        
+                        if (ledOn) {
+                            console.log("+");
+                            board.digitalWrite(ledPin, board.HIGH);
+                        } else {
+                            console.log("-");
+                            board.digitalWrite(ledPin, board.LOW);
+                        }
+                        
+                        ledOn = !ledOn;
+                        
+                    }, 500);
+                    
+                });
+            }; // blink
+            
+            $('#blinkButton').click(function(){
+                blink();
+                return false;
+            });
+            
+            
+        });
+        
+            </script>
+        
+    </head>
+    <body bgcolor="#FFFFFF">
+        <a href="javascript:WebSocketTest()">Does my browser support WebSockets?</a><br/>
+        <br/>
+        
+        <p>
+        <button id="blinkButton">Run Blink</button>
+        </p>
+        <div id="cannybotsDebugPane"/>
+    </body>
+</html>

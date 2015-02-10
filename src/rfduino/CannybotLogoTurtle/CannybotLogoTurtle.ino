@@ -13,6 +13,7 @@
 // WArning: enabling serial debug will cause the motors to rotate only one way.
 //#define   SERIAL_DEBUG
 //#define   SERIAL_DEBUG_DETAILED       // Show encoder counts
+#define GZLL_HOST_ADDRESS 0x88ACB010    // TURTLE
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>

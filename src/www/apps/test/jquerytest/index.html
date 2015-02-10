@@ -1,0 +1,53 @@
+<html>
+    <head>
+        <title>CannbotsWebSocketServer</title>
+        <meta name="viewport" content="width=device-width, initial-scale=1"/>
+        
+        <!--
+        <link rel="stylesheet" href="/js/jquery/jquery.mobile-1.4.5.min.css" />
+        
+        <script type="text/javascript" src="/js/jquery/jquery-1.11.2.min.js"></script>
+        <script type="text/javascript" src="/js/jquery/jquery.mobile-1.4.5.min.js"></script>
+        -->
+        
+        <link rel="stylesheet" href="http://code.jquery.com/mobile/1.2.0/jquery.mo bile-1.2.0.min.css" />
+        <script src="http://code.jquery.com/jquery-1.9.1.min.js"></script>
+        <script src="http://code.jquery.com/ui/1.9.2/jquery-ui.min.js"></script>
+        <script src="http://code.jquery.com/mobile/1.2.0/jquery.mobile-1.2.0.min.js"></script>
+        
+        <script type="text/javascript" src="/js/cannybots/CannybotsLib.js"></script>
+        
+        
+        <script>
+            $(document).ready(function () {
+                              $("#amount_slider").slider({
+                                                         orientation: "horizontal",
+                                                         range: false, animate: false,
+                                                         min: 0,  max: 180, step: 1,value: 90,
+                                                         
+                                                         change: function (event, ui) {},
+                                                         slide: function (event, ui) {
+                                                         $("#amountDisp").text(ui.value);
+                                                         }
+                                                         });
+                              });
+                              
+                              
+            </script>
+    </head>
+    <body bgcolor="#FFFFFF">
+        <div data-role="page">
+            <div data-role="header">
+                <h1>Range Slider</h1>
+                
+            </div>
+            <div data-role="main" class="content">
+                <div data-role="rangeslider">
+                    <div id="amount_slider"></div>
+                    <p>Time: <span name="amountDisp" id="amountDisp">7</span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </body>
+</html>

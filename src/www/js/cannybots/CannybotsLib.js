@@ -47,6 +47,7 @@ var cannybots = new function() {
     self.byteQueue = new Queue();
     self.useQueues = true;
     self.okToSend = true;
+    self.recvDelegate = function() {};
 
     // Queuing
     // Alternative webworkers, see: http://code.tutsplus.com/tutorials/getting-started-with-web-workers--net-27667
@@ -63,7 +64,7 @@ var cannybots = new function() {
         //setInterval(self.processQueue, 500);
     }
     
-    self.sendBytes = function(message) {
+    self.sendBytes = function(bytesArray) {
         var message = {
             "rawBytes":bytesArray
         };
@@ -96,6 +97,7 @@ var cannybots = new function() {
     self.receiveBytes = function (bytesArray) {
         self.okToSend = true;
          console.log("DEBUG: receiveBytes: " + bytesArray);
+        self.recvDelegate(bytesArray);
     }
     
     self.sendDebug = function(msg) {
@@ -156,6 +158,7 @@ var cannybots = new function() {
             console.log("INFO: Using WebSocket API");
             self.websocket = cannybotsWebSocket();
             self.sendNativeMessage =     function (message){
+                //console.log("Cannybots.sendWS msg:" + JSON.stringify(message) );
                 self.websocket.send(JSON.stringify(message));
             }
         } catch (err) {
