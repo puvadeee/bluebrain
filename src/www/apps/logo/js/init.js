@@ -37,6 +37,8 @@ function init(canvas_id, turtle_id, form_id, oldcode_id, textoutput_id) {
 
 function run(speed, drawbits) {
     turtle.stop();
+    cannybots.clearQueue();
+    
     if (speed !== fast) {
         fast = speed;
         var newturtle = null;

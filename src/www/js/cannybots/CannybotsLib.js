@@ -59,9 +59,13 @@ var cannybots = new function() {
             self.sendNativeMessage(message);
         }
     }
+    self.clearQueue = function() {
+        self.commandQueue = new Queue();
+        self.okToSend = true
+    }
     
     self.startQueueWorker=function () {
-        //setInterval(self.processQueue, 500);
+        setInterval(self.processQueue, 500);
     }
     
     self.sendBytes = function(bytesArray) {

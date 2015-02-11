@@ -212,7 +212,8 @@
       window.LoopTrap = 1000;
       Blockly.JavaScript.INFINITE_LOOP_TRAP =
           'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
-      var code = Blockly.JavaScript.workspaceToCode();
+      var code =
+      code = "cannybots.clearQueue(); " + Blockly.JavaScript.workspaceToCode();
       Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
       try {
         eval(code);

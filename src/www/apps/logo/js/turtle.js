@@ -2,7 +2,7 @@
 
 
 function sendTurtleCommand(_cmd, _param) {
-    cannybots.sendCommand(_cmd,_param);
+    cannybots.sendCommand(_cmd.toLowerCase().charAt(0),_param);
 }
 
 
