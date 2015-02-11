@@ -1,5 +1,30 @@
-wget http://node-arm.herokuapp.com/node_latest_armhf.deb 
+mkdir -p /opt/cannybots/runtime/nodered 
+sudo chown -R pi.users /opt/cannybots/runtime/nodered
+sudo chmod -R g+w /opt/cannybots/runtime/nodered
+cd  /opt/cannybots/runtime/nodered
+
+#wget http://node-arm.herokuapp.com/node_latest_armhf.deb 
+cp /opt/cannybots/nfs/setup/nodered/node_latest_armhf.deb .
 sudo dpkg -i node_latest_armhf.deb
+
+cp -r /opt/cannybots/nfs/development/bluebrain/src/nodejs/cannybox .
+cd /opt/cannybots/runtime/nodered/cannybox
+
+tar zxf /opt/cannybots/nfs/setup/nodered/node_modules.tar.gz
+OR
+npm install
+
+
+cp -r /opt/cannybots/nfs/development/bluebrain/src/www public
+cp nodered/flows_raspberrypi.json nodered/flows_`hostname`.json
+./bin/www
+
+
+
+
+————————
+
+
 node -v
 sudo npm install -g noble
 sudo npm install -g express
@@ -9,15 +34,6 @@ http://cwbuecheler.com/web/tutorials/2013/node-express-mongo/
 
 sudo node ws-slave.js
 
+ 
 
 
--- 
-End user isntall steps
-
-cp /src/nodejs/cannybox /opt/cannybots/runtime/nodejs/server
-
-cd 
-npm install
-
-sudo  mkdir /opt/cannybots/runtime/nodejs
-sudo chown pi /opt/cannybots/runtime/nodejs
