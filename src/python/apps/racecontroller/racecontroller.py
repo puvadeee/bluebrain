@@ -50,14 +50,19 @@ class PlayerTimes(gui.Table):
         self.currentLapTimeLabel.value = formatTime(lapTime)
         #print self.currentLapTimeLabel.value + "\n"
 
+    def reset(self):
+        self.setCurrentLapTime(0)
+        self.timerStarted=False
+        self.startTime=time.time()
+
 
 class LapTimeScoreBoard(gui.Table):
     def __init__(self, **params):
-        gui.Table.__init__(self, width=640, height=600, **params)
+        gui.Table.__init__(self, width=640, height=600, hpadding=8,**params)
         fg = (0, 0, 0)
         sty = {'font': roboticaMediumFont}
         self.placeTitle = ['1st', '2nd', '3rd', '4th', '5th']
-        self.placeDriver = ['----', '----', '----', '----', '----']
+        self.placeDriver = ['-----', '-----', '-----', '-----', '-----']
         self.placeTimes = [0.0, 0.0, 0.0, 0.0, 0.0]
         self.placeTimeLabels = []
         self.placeDriverLabels = []
@@ -97,6 +102,10 @@ class LapTimeScoreBoard(gui.Table):
                 self.updateLabels()
                 break
 
+    def reset(self):
+        self.placeDriver = ['----', '----', '----', '----', '----']
+        self.placeTimes = [0.0, 0.0, 0.0, 0.0, 0.0]
+        self.updateLabels()
 
 class RenderWidget(gui.Widget):
     def __init__(this, width=800, height=640):
@@ -121,15 +130,19 @@ class RaceController():
     """ RaceController """
 
     def __init__(self):
+        self.player1Stats = 0
+        self.player2Stats = 0
+        self.mainScoreBoard = 0
 
+        self.bleInit()
         self.lastUpdateTime = time.time()
         self.running = True
-        self.display = Display(windowed=1, windowWidth=1280, windowHeight=1024)
+        self.display = Display(windowed=1, windowWidth=1280, windowHeight=800)
         self.screen = self.display.screen
         self.clock = pygame.time.Clock()
 
         self.appInit()
-        self.bleInit()
+
 
     def appInit(self):
         self.app = gui.App()
@@ -149,7 +162,10 @@ class RaceController():
             self.mainScoreBoard.newTime("Two",self.player2Stats.currentLapTime)
 
     def resetBoard(self, value):
-        pass
+        self.mainScoreBoard.reset()
+        self.player1Stats.reset()
+        self.player2Stats.reset()
+
 
     def createIcon(self, imageFile, text, callback, value):
         e = Obj()
@@ -239,10 +255,11 @@ class RaceController():
         pygame.display.flip()
 
     def update(self):
-        if self.player1Stats.timerStarted:
-            self.player1Stats.setCurrentLapTime(time.time() - self.player1Stats.startTime)
-        if self.player2Stats.timerStarted:
-            self.player2Stats.setCurrentLapTime(time.time() - self.player2Stats.startTime)
+        pass
+        #if self.player1Stats.timerStarted:
+        #    self.player1Stats.setCurrentLapTime(time.time() - self.player1Stats.startTime)
+        #if self.player2Stats.timerStarted:
+        #    self.player2Stats.setCurrentLapTime(time.time() - self.player2Stats.startTime)
 
     def run(self):
         while self.running:
@@ -254,18 +271,26 @@ class RaceController():
 
     def bleRacer1ReceviedData(self, bleuart, message):
         print "p1: " + str (message)
-        if message.startswith("LAP"):
-            print "Player1 Lap Start!"
-            self.mainScoreBoard.newTime("One", self.player1Stats.currentLapTime)
+        if not self.player1Stats:
+            return
+        if message.startswith("LAP_START"):
+            print "Player1 Lap!"
+            if self.player1Stats.timerStarted:
+                self.player1Stats.setCurrentLapTime(time.time() - self.player1Stats.startTime)
+                self.mainScoreBoard.newTime("One", self.player1Stats.currentLapTime)
             self.player1Stats.currentLapTime = 0
             self.player1Stats.timerStarted=True
             self.player1Stats.startTime=time.time()
 
     def bleRacer2ReceviedData(self, bleuart, message):
         print "p2: " + str (message)
-        if message.startswith("LAP"):
+        if not self.player2Stats:
+            return
+        if message.startswith("LAP_START"):
             print "Player2 Lap Start!"
-            self.mainScoreBoard.newTime("Two", self.player2Stats.currentLapTime)
+            if self.player2Stats.timerStarted:
+                self.player2Stats.setCurrentLapTime(time.time() - self.player2Stats.startTime)
+                self.mainScoreBoard.newTime("Two", self.player2Stats.currentLapTime)
             self.player2Stats.currentLapTime = 0
             self.player2Stats.timerStarted=True
             self.player2Stats.startTime=time.time()

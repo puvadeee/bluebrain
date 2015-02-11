@@ -168,7 +168,11 @@ class BLE_UART:
             i = self.child.expect([pexpect.TIMEOUT, "Notification handle = 0x000e value:\s(.*)\n"])
 
             if i>0 and self.rxListener:
-                self.rxListener(self, self.child.after.split("value: ", 1)[1].rstrip().replace(" ", "").decode("hex"))
+                print "BLE_UART recv: " + str(self.child.after)
+                try:
+                    self.rxListener(self, self.child.after.split("value: ", 1)[1].rstrip().replace(" ", "").decode("hex"))
+                except TypeError as e:
+                    print "Failed to decode notification, " + str(e)
             self.queueLock.release()
 
 
