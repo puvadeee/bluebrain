@@ -98,26 +98,26 @@ int speedB = 0;
 #define LINE_STATUS_UNKNOWN           -1
 #define LINE_STATUS_NO_LINE           0
 #define LINE_STATUS_FOLLOWING_LINE    1
-#define LINE_STATUS_RIGHT_TURN        2
-#define LINE_STATUS_LEFT_TURN         3
-#define LINE_STATUS_T_JUNCTION        4
+#define LINE_STATUS_LAPMARKER         2
 
 // Scale factor to apply to IRmax values detected during calibration; result is used to set the whitethreshold level individually for each IR sensor.
-#define IR1_SCALING 0.98
+#define IR1_SCALING 0.8
 #define IR2_SCALING 0.90
-#define IR3_SCALING 0.98
+#define IR3_SCALING 0.8
 
 
 // Helper Macros
 #define IS_ON_LINE(x) ( (average[(x)-1])>=IRwhiteThreshold[(x)-1] )
 #define NOT_ON_LINE(x) (!IS_ON_LINE(x))
 
+#define IS_ON_MARKER(x) ( (average[(x)-1])<=IRwhiteThreshold[(x)-1] )
+
 
 //set IR initial reading to zero
 int IRvals[3] = {0};
 int IRvalMin[3] = {0};
 int IRvalMax[3] = {0};
-int IRwhiteThreshold[3] = {IR_WHITE_THRESHOLD_DEFAULT , IR_WHITE_THRESHOLD_DEFAULT, IR_WHITE_THRESHOLD_DEFAULT};
+int IRwhiteThreshold[3] = {0};// IR_WHITE_THRESHOLD_DEFAULT , IR_WHITE_THRESHOLD_DEFAULT, IR_WHITE_THRESHOLD_DEFAULT};
 
 int counterMax = 20; 
 // Analog smoothing
@@ -143,8 +143,11 @@ void setup() {
   pinMode(MOTOR_B2_PIN, OUTPUT);
   setup_smoothing();
   radio_setup();
+  radio_loop();
   delay(500);
+  radio_loop();
   calibrateIRSensors();
+  sendIRStats();
 }
 
 void loop() {
@@ -163,7 +166,7 @@ void loop() {
 
     int cornerType = detectCornerType();
 
-    if (cornerType ==  LINE_STATUS_T_JUNCTION)                // T-Junction
+    if (cornerType ==  LINE_STATUS_LAPMARKER)                // T-Junction
     {
       counterT++;
       if (counterT > counterMax) {
@@ -181,6 +184,13 @@ void loop() {
     isLineFollowingMode = false;
     userSpeed = 0;
     correction = 0;
+  }
+  
+  static long int nextSend = millis() + 1000;
+  if (millis() > nextSend) {
+      nextSend = millis() + 1000;
+      radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
+      //sendIRStats();
   }
 
   speedA = (userSpeed + correction) + (yAxisValue / 2 - xAxisValue / 2);
@@ -211,6 +221,8 @@ void readIRSensors() {
     IRvals[2] = 1000;
 
   calculate_smoothing();
+ 
+
 }
 
 // CALCULATE PID
@@ -283,7 +295,7 @@ void calibrateIRSensors() {
   IRvalMin[1] = IRvalMax[1] = IRvals[1];
   IRvalMin[2] = IRvalMax[2] = IRvals[2];
   for (int i = -1; i <= 1; i += 1) {
-    motorSpeed( i * DEFAULT_CRUISE_SPEED / 2, -(i * DEFAULT_CRUISE_SPEED / 2));
+    motorSpeed( i * DEFAULT_CRUISE_SPEED , -(i * DEFAULT_CRUISE_SPEED ));
     for (int i = 0; i < 100; i++) {
 
       readIRSensors();
@@ -345,17 +357,9 @@ void calculate_smoothing() {
 
 int detectCornerType() {
 
-  if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
+  if (IS_ON_MARKER(1) && IS_ON_MARKER(3) )                // T-Junction
   {
-    return LINE_STATUS_T_JUNCTION;
-  }
-  else if (IS_ON_LINE(1) &&  NOT_ON_LINE(3) )          // Left Corner
-  {
-    return LINE_STATUS_LEFT_TURN;
-  }
-  else if (NOT_ON_LINE(1) &&  IS_ON_LINE(3) )         // Right Corner
-  {
-    return LINE_STATUS_RIGHT_TURN;
+    return LINE_STATUS_LAPMARKER;
   }
   else if ( NOT_ON_LINE(1) && IS_ON_LINE(2) && NOT_ON_LINE(3))   // On the line
   {
@@ -382,6 +386,9 @@ void sendIRStats() {
   radio_send_formatted("--------Motor State");
   delay(150);
   radio_send_formatted("A,B=%d,%d  ", speedA, speedB);
+  delay(150);
+  radio_send_formatted("WT:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
+
 }
 
 
