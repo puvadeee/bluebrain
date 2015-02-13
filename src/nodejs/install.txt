@@ -37,3 +37,9 @@ sudo node ws-slave.js
  
 
 
+autostart in browser
+
+sudo nano /etc/xdg/lxsession/LXDE-pi/autostart
+
+@epiphany -n http://localhost:3141/red
+
