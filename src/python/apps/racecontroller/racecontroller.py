@@ -296,6 +296,9 @@ class RaceController():
             self.player2Stats.startTime=time.time()
 
     def bleInit(self):
+        if sys.platform == 'darwin':
+            return
+
         self.bleManager =  BLE_Manager("hci0")
         self.ble        =  BLE(bleManager=self.bleManager)
 

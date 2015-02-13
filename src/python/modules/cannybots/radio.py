@@ -18,8 +18,8 @@ from threading import Thread, Lock
 import logging
 import atexit
 
-
 import pexpect
+
 
 # runs in background:  sudo hcitool lescan --duplicates --passive
 #outputs:     		 FF:C3:F0:EC:C3:D9 CB_1f73956a95eb
@@ -201,6 +201,11 @@ class BLE_UART:
 
     def addListener(self, func):
         self.rxListener = func
+
+    def sendBytes(self, bytes):
+        byteStr = ''.join(chr(x) for x in bytes)
+        self.sendHexString(byteStr)
+
 
     def sendHexString(self, hexString):
         cmd = 'char-write-cmd 0x0011 ' + hexString
