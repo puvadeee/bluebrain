@@ -17,11 +17,11 @@
 #define SENSOR_GND_PIN 3
 #define SENSOR_VCC_PIN 4
 #define INT_NUM 0
-#else
+#else  // Arduino UNO
 #define SENSOR_SIG_PIN 7
 #define SENSOR_GND_PIN 8
 #define SENSOR_VCC_PIN 9
-#define INT_NUM 4
+#define INT_NUM 3
 #endif
 
 
