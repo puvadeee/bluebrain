@@ -1,12 +1,14 @@
 #!/usr/bin/python
 
-botName = "CannyBot1"
+botName = "Cannybot1"
 
 zMultiplier = 1
 
 import sys
 import os
 basedir = os.path.abspath(os.path.dirname(__file__))
+
+sys.path.insert(0, basedir+"/../../modules")
 #basedir = os.path.dirname(__file__)
 import time
 import pygame
