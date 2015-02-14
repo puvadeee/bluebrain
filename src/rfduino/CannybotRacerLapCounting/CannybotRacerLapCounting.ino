@@ -14,8 +14,8 @@
 // Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define BOT_NAME "Cannybot3"                   // custom name (16 chars max)
-#define GZLL_HOST_ADDRESS 0x12ACB010           // this needs to match the Joypad sketch value
+#define BOT_NAME "Cannybot2"                   // custom name (16 chars max)
+#define GZLL_HOST_ADDRESS 0x24ACB020           // this needs to match the Joypad sketch value
 
 
 #include <RFduinoGZLL.h>
@@ -39,7 +39,7 @@ void radio_send_formatted(char *fmt, ... );
 
 
 // DEFINITIONS & ITIALISATION
-#define DEFAULT_CRUISE_SPEED 70
+#define DEFAULT_CRUISE_SPEED 120
 
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 #define JOYPAD_AXIS_DEADZONE 20 //this is to eleminate jitter in 0 position
@@ -110,7 +110,7 @@ int speedB = 0;
 #define IS_ON_LINE(x) ( (average[(x)-1])>=IRwhiteThreshold[(x)-1] )
 #define NOT_ON_LINE(x) (!IS_ON_LINE(x))
 
-#define IS_ON_MARKER(x) ( (average[(x)-1])<=IRwhiteThreshold[(x)-1] )
+#define IS_ON_MARKER(x) ( (IRvals[(x)-1])<=IRwhiteThreshold[(x)-1] )
 
 
 //set IR initial reading to zero
@@ -189,7 +189,7 @@ void loop() {
   static long int nextSend = millis() + 1000;
   if (millis() > nextSend) {
       nextSend = millis() + 1000;
-      radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
+      //radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
       //sendIRStats();
   }
 

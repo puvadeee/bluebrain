@@ -23,14 +23,15 @@
 // 00?00
 // Quit:   CTRL-A  X
 
-#define GZLL_HOST_ADDRESS 0x99ACB010           // this needs to match the Bot sketch value
-//#define GZLL_HOST_ADDRESS 0x88ACB010           // this needs to match the Bot sketch value
+//#define GZLL_HOST_ADDRESS 0x99ACB010           // this needs to match the MazeSolver sketch value
+//#define GZLL_HOST_ADDRESS 0x88ACB010           // this needs to match the Turtle sketch value
 
+#define GZLL_HOST_ADDRESS 0x12ACB010
 //#define SERIAL_DEBUG
 
 #define GZLL_MAX_MSG_SIZE 20      // keep it the same a BLE, otherwise could be 32
 
-//#define USE_DEFUALT_UART_PINS
+#define USE_DEFUALT_UART_PINS
 
 #if defined(USE_DEFUALT_UART_PINS)
 #define RX_PIN 0

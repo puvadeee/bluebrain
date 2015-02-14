@@ -9,12 +9,14 @@
 // Version:   1.0  -  23.10.2014  -  Inital Version  (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 //#define SERIAL_DEBUG
+
 #define GZLL_HOST_ADDRESS 0x99ACB010    // MAZE
 //#define GZLL_HOST_ADDRESS 0x88ACB010    // TURTLE
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
 void radio_send_formatted(char *fmt, ... );
+void send_status(int status, bool force=false);
 //#define   SERIAL_DEBUG            // enablign this will print message to serial and also disable the motors.
 
 // Notes:
@@ -71,13 +73,13 @@ void radio_send_formatted(char *fmt, ... );
 #define PID_SAMPLE_TIME 5                       //determine how fast the loop is executed (millis seconds)
 
 
-int counterMax = 20;                            // number of samples (loop() cycles) to take before IR corner detection decides it's found a corner match
+int counterMax = 30;                            // number of samples (loop() cycles) to take before IR corner detection decides it's found a corner match
 // or put another way, how far 'into' the corner to stop, ideally stop half over the intesection way
 // so turing left or right lines results in IR2 being on the center of the line, ideally...s
 
 
-#define DEFAULT_CRUISE_SPEED 40                // default speed when line following (calibration speed uses 50% of this)
-#define DEFAULT_TURN_SPEED   40
+#define DEFAULT_CRUISE_SPEED 50                // default speed when line following (calibration speed uses 50% of this)
+#define DEFAULT_TURN_SPEED   65
 #define MOTOR_IDLE_TIME 1000                   // number of samples (loop() cycles) to wait to determine if bot is halted, on halt detection the bot sends corner type 
 
 
@@ -143,7 +145,7 @@ int counterR = 0;
 int counterT = 0;
 
 int lastStatus = LINE_STATUS_UNKNOWN;
-
+int lastTurn = LINE_STATUS_UNKNOWN;
 
 // PID working parameters
 int Kp = PID_P;
@@ -238,31 +240,10 @@ void motorSpeed(int _speedA, int _speedB) {
 // Movement
 
 
-bool idleTimerTriggered = false;
-int idleCount = 0;
-
-void updateIdleTimer() {
-  if ( (speedA == 0) && (speedB == 0) ) {
-    idleCount++;
-  } else {
-    idleCount = 0;
-    idleTimerTriggered = false;
-    return;
-  }
-
-  if (idleTimerTriggered)
-    return;
-
-  if (idleCount > MOTOR_IDLE_TIME) {
-    idleTimerTriggered = true;
-    send_status(detectCornerType());
-    delay(150);
-  }
-}
-
-
 void turn_left() {
-  motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
+  //motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
+  motorSpeed(DEFAULT_TURN_SPEED,0);
+  readIRSensors();
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
   }
@@ -270,7 +251,9 @@ void turn_left() {
 }
 
 void turn_right() {
-  motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
+  //motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
+  motorSpeed(0, DEFAULT_TURN_SPEED);
+  readIRSensors();
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
   }
@@ -288,6 +271,19 @@ void move_forward() {
   motorSpeed(0, 0);
 }
 
+
+void spin() {
+  if (lastTurn == LINE_STATUS_RIGHT_TURN)
+    motorSpeed(-DEFAULT_TURN_SPEED, DEFAULT_TURN_SPEED );
+  else
+    motorSpeed(DEFAULT_TURN_SPEED, -DEFAULT_TURN_SPEED );
+  
+  while (  (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) ) {
+     readIRSensors();
+  }
+  
+  motorSpeed(0, 0);
+}
 
 
 
@@ -328,6 +324,7 @@ bool turnLeftFlag = false;
 bool turnRightFlag = false;
 bool goForwardFlag = false;
 bool haltFlag = false;
+bool spinFlag = false;
 bool calibrateIRFlag = false;
 
 // do as little in here as possible (e..g just set flags)
@@ -342,6 +339,7 @@ void received_client_data(char *data, int len)  {
       case 'r':  turnRightFlag = true; break;
       case 'f':  goForwardFlag = true; break;      
       case 's':  haltFlag = true; break;
+      case 'p':  spinFlag = true; break;
       case 'c':  calibrateIRFlag = true; break;
       default:
         radio_send("CMD?");
@@ -351,56 +349,61 @@ void received_client_data(char *data, int len)  {
   }
 }
 
+#define radio_send_stat(x) 
 void run_commands() {
   if (sendIRStatsFlag) {
     sendIRStatsFlag = false;
     sendIRStats();
-    radio_send("OK");
   }
 
   if (turnLeftFlag) {
     turnLeftFlag = false;
     turn_left();
-    radio_send("OK");
+    send_status(detectCornerType());
 
   }
 
   if (turnRightFlag) {
     turnRightFlag = false;
     turn_right();
-    radio_send("OK");
+    send_status(detectCornerType());
 
   }
 
   if (goForwardFlag) {
     goForwardFlag = false;
     move_forward();
-    radio_send("OK");
+    send_status(detectCornerType());
   }
   if (haltFlag) {
     haltFlag = false;
     motorSpeed(0, 0);
-    radio_send("OK");
+    send_status(detectCornerType());
+  }
+  if (spinFlag) {
+    spinFlag = false;
+    spin();
+    send_status(detectCornerType());
   }
 
   if (calibrateIRFlag) {
     calibrateIRFlag = false;
     calibrateIRSensors();
-    radio_send("OK");
+    send_status(detectCornerType());
   }
 }
 
 
-void send_status(int status) {
+void send_status(int status, bool force) {
   char c = '?';
-  if (status != lastStatus) {
+  if (force || status != lastStatus) {
     lastStatus = status;
     switch (status) {
       case LINE_STATUS_UNKNOWN: c = '?';  break;
       case LINE_STATUS_NO_LINE: c = 'N';  break;
       case LINE_STATUS_FOLLOWING_LINE: c = 'O';  break;
-      case LINE_STATUS_RIGHT_TURN: c = 'R';  break;
-      case LINE_STATUS_LEFT_TURN: c = 'L';  break;
+      case LINE_STATUS_RIGHT_TURN: c = 'R';  lastTurn = LINE_STATUS_RIGHT_TURN; break;
+      case LINE_STATUS_LEFT_TURN: c = 'L'; lastTurn= LINE_STATUS_LEFT_TURN; break;
       case LINE_STATUS_T_JUNCTION: c = 'T';  break;
       default: c = 'x';  break;
     }
@@ -419,6 +422,7 @@ void loop() {
   time_Now = millis(); //record time at start of loop
   radio_loop(); //read radio input
   readIRSensors(); //read IR sensors
+  run_commands();  
 
 
   if ( IS_ON_LINE(2) )
@@ -432,6 +436,7 @@ void loop() {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
+        send_status(LINE_STATUS_T_JUNCTION);
       }
     }
     else if ( cornerType == LINE_STATUS_LEFT_TURN  )          // Left Corner
@@ -441,6 +446,7 @@ void loop() {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
+        send_status(LINE_STATUS_LEFT_TURN);
       }
     }
 
@@ -451,17 +457,18 @@ void loop() {
         counterT = counterR = counterL = 0;
         correction = 0;
         lineSpeed = 0;
+        send_status(LINE_STATUS_RIGHT_TURN);
       }
     } else {                                            // Line Following
       correction = calculatePID();
       lineSpeed = DEFAULT_CRUISE_SPEED;
       send_status(LINE_STATUS_FOLLOWING_LINE);
     }
-  } else
+  } 
+  else
   {
     correction = 0;
     lineSpeed = 0;
-    send_status(LINE_STATUS_NO_LINE);                    // Off the line
   }
 
   //if speeds are 0 (or a 'cotner found flag set) then check line status and send thestat just here instead, seems the status is ok after stopping!
@@ -469,10 +476,38 @@ void loop() {
   speedB = (lineSpeed - correction);
   motorSpeed(speedA, speedB);
 
-  updateIdleTimer();
+  /*if ( (speedA == 0) && (speedB == 0) ) {
+    delay(200);
+    send_status(LINE_STATUS_NO_LINE, true);
+    delay(200);
+  }*/
 
-  run_commands();
+  updateIdleTimer();
 }
+
+bool idleTimerTriggered = false;
+int idleCount = 0;
+//unsigned long 
+
+void updateIdleTimer() {
+  if ( (speedA == 0) && (speedB == 0) ) {
+    idleCount++;
+  } else {
+    idleCount = 0;
+    idleTimerTriggered = false;
+    return;
+  }
+
+  if (idleTimerTriggered)
+    return;
+
+  if (idleCount > MOTOR_IDLE_TIME) {
+    idleTimerTriggered = true;
+    delay(150);
+    send_status(LINE_STATUS_NO_LINE, true);
+  }
+}
+
 
 
 ///////////////////////////////////////////////////////////////////////////////////////
@@ -487,7 +522,7 @@ void calibrateIRSensors() {
   IRvalMin[1] = IRvalMax[1] = IRvals[1];
   IRvalMin[2] = IRvalMax[2] = IRvals[2];
   for (int i = -1; i <= 1; i += 1) {
-    motorSpeed( i * DEFAULT_CRUISE_SPEED / 2, -(i * DEFAULT_CRUISE_SPEED / 2));
+    motorSpeed( i * DEFAULT_CRUISE_SPEED , -(i * DEFAULT_CRUISE_SPEED ));
     for (int i = 0; i < 100; i++) {
 
       readIRSensors();
@@ -549,7 +584,11 @@ void calculate_smoothing() {
 
 int detectCornerType() {
 
-  if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
+  if ( NOT_ON_LINE(1) && NOT_ON_LINE(2) && NOT_ON_LINE(3))  // No line
+  {
+    return LINE_STATUS_NO_LINE;
+  }
+  else if (IS_ON_LINE(1) && IS_ON_LINE(3) )                // T-Junction
   {
     return LINE_STATUS_T_JUNCTION;
   }
@@ -565,27 +604,24 @@ int detectCornerType() {
   {
     return LINE_STATUS_FOLLOWING_LINE;
   }
-  else if ( NOT_ON_LINE(1) && NOT_ON_LINE(2) && NOT_ON_LINE(3))  // No line
-  {
-    return LINE_STATUS_NO_LINE;
-  }
+
   else {
     return LINE_STATUS_UNKNOWN;
   }
 }
 
 void sendIRStats() {
-  radio_send_formatted("--------IR State");
-  delay(150);
-  radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
-  delay(150);
-  radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
-  delay(150);
-  radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
-  delay(150);
-  radio_send_formatted("--------Motor State");
-  delay(150);
-  radio_send_formatted("A,B,Idle:%d,%d,%d  ", speedA, speedB, idleCount);
+  delay(250);
+  radio_send_formatted("raw:%d,%d,%d", IRvals[0], IRvals[1], IRvals[2]);
+  delay(250);
+  radio_send_formatted("ave:%d,%d,%d", average[0], average[1], average[2]);
+  delay(250);
+  radio_send_formatted("ol?:%d,%d,%d=%d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
+  delay(250);
+  radio_send_formatted("WT:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
+  delay(250);
+  radio_send_formatted("A,B,Idle:%d,%d", speedA, speedB);
+  delay(250);
 }
 
 

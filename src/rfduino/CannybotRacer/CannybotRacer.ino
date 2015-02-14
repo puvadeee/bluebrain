@@ -14,7 +14,7 @@
 // Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define BOT_NAME "CannyBot3"                   // custom name (16 chars max)
+#define BOT_NAME "Cannybot3"                   // custom name (16 chars max)
 #define GZLL_HOST_ADDRESS 0x12ACB010           // this needs to match the Joypad sketch value
 
 
