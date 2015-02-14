@@ -18,8 +18,8 @@ from threading import Thread, Lock
 import logging
 import atexit
 
-
 import pexpect
+
 
 # runs in background:  sudo hcitool lescan --duplicates --passive
 #outputs:     		 FF:C3:F0:EC:C3:D9 CB_1f73956a95eb
@@ -202,6 +202,11 @@ class BLE_UART:
     def addListener(self, func):
         self.rxListener = func
 
+    def sendBytes(self, bytes):
+        byteStr = ''.join(chr(x) for x in bytes)
+        self.sendHexString(byteStr)
+
+
     def sendHexString(self, hexString):
         cmd = 'char-write-cmd 0x0011 ' + hexString
         self.enqueString(cmd)
@@ -218,11 +223,12 @@ class BLE_UART:
         self.child.sendline(msg)
         i = self.child.expect([pexpect.TIMEOUT, 'command failed', '\[LE\]>'])
         if i == 0:
-            die(self.child, 'gatttool timed out. detail:')
+            print "gatt timeout"
+            #die(self.child, 'gatttool timed out. detail:')
         elif i == 1:
             print "Wake up, time to die"
-            self.keepRunning = False
-            die(self.child, 'command failed, detail:')
+            #self.keepRunning = False
+            #die(self.child, 'command failed, detail:')
         #disconnection error:
         #ERROR: command failed, detail:
         # char-write-cmd 0x0011 89810080
