@@ -105,7 +105,10 @@ class LapTimer():
         self.bleInit()
         self.lastUpdateTime = time.time()
         self.running = True
-        self.display = Display(windowed=1, windowWidth=1776, windowHeight=952)
+        #self.display = Display(windowed=1, windowWidth=1776, windowHeight=952)
+        self.display = Display(windowed=0, windowWidth=1920, windowHeight=1080)  #HDMIPI: 1920x1080
+
+        #self.display = Display(windowed=1, windowWidth=1280, windowHeight=800)
         self.screen = self.display.screen
         self.clock = pygame.time.Clock()
 
@@ -229,8 +232,8 @@ class LapTimer():
 
         self.bleManager.startScanning()
 
-        self.ble1 = self.ble.findByName(sys.argv[1])
-        self.ble2 = self.ble.findByName(sys.argv[2])
+        self.ble1 = self.ble.findByName(sys.argv[1], gattOpts="-j 0")
+        self.ble2 = self.ble.findByName(sys.argv[2], gattOpts="-j 1")
 
         self.bleManager.stopScanning()
 

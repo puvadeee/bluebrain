@@ -84,8 +84,8 @@ class BLE_Manager:
                 if i == 0:
                     print "hcitool: no devices (timeout)"
                 elif i ==1 :
-                    print "HCI TOOL EOF - retry in  3..2..1.."
-                    time.sleep(3)
+                    #print "HCI TOOL EOF - retry in  3..2..1.."
+                    time.sleep(5)
                     continue
                 else:
                     # print "hci:" + self.hcitool.after
@@ -135,7 +135,7 @@ class BLE_UART:
 
     def startGattTool(self):
         # os.system("killall gatttool")
-        cmd = 'gatttool -b ' + self.mac + '  -t random -I'
+        cmd = 'gatttool -b ' + self.mac + '  -t random -I ' + self.gattOpts
         self.child = pexpect.spawn(cmd)
         atexit.register(self.closeGattTool)
 
@@ -143,10 +143,10 @@ class BLE_UART:
         if i == 0:
             die(self.child, 'gatttool timed out. Here is what gatttool said:')
 
-        self.enqueString('connect')
+        #self.enqueString('connect')
         # Start the RX listener
-        time.sleep(1)
-        self.enqueString('char-write-req 0x000f 0100')
+        #time.sleep(1)
+        #self.enqueString('char-write-req 0x000f 0100')
 
     def closeGattTool(self):
         print "Killing gatttool child"
@@ -164,22 +164,23 @@ class BLE_UART:
 
     def rx_worker(self):
         while self.keepRunning:
-            self.queueLock.acquire()
+            #self.queueLock.acquire()
             i = self.child.expect([pexpect.TIMEOUT, "Notification handle = 0x000e value:\s(.*)\n"])
 
             if i>0 and self.rxListener:
-                print "BLE_UART recv: " + str(self.child.after)
+                #print "BLE_UART recv: " + str(self.child.after)
                 try:
                     self.rxListener(self, self.child.after.split("value: ", 1)[1].rstrip().replace(" ", "").decode("hex"))
                 except TypeError as e:
                     print "Failed to decode notification, " + str(e)
-            self.queueLock.release()
+            #self.queueLock.release()
 
 
-    def __init__(self, mac, name='BLE_UART'):
+    def __init__(self, mac, name='BLE_UART', gattOpts=""):
         self.mac = mac
         self.keepRunning = True
         self.onDisconnectDelegate = False
+        self.gattOpts = gattOpts
 
         self.queueLock = Lock()
         self.q = Queue.Queue(maxsize=MAX_TX_QUEUE_SIZE)
@@ -190,7 +191,7 @@ class BLE_UART:
         self.tx = Thread(target=self.tx_worker)
         self.tx.daemon = True
         self.tx.name = name
-        self.tx.start()
+        #self.tx.start()
 
         self.rx = Thread(target=self.rx_worker)
         self.rx.daemon = True
@@ -241,6 +242,7 @@ class BLE_UART:
 
 class BLE:
     def __init__(self, hci="hci0", name='BLEThread', bleManager=False):
+
         if not bleManager:
             self.bleManager = BLE_Manager(hci)
             self.bleManager.startScanning()
@@ -248,7 +250,7 @@ class BLE:
             self.bleManager = bleManager
 
 
-    def findNearest(self):
+    def findNearest(self, gattOpts=""):
         deviceAddress = ''
         while not deviceAddress:
             devices = self.devicesInRange()
@@ -259,11 +261,11 @@ class BLE:
         print  "CONNECT TO: " + deviceAddress
         #self.bleManager.stopScanning()
 
-        bleDevice = BLE_UART(mac=deviceAddress)
+        bleDevice = BLE_UART(mac=deviceAddress, gattOpts=gattOpts)
         return bleDevice
 
 
-    def findByName(self, name):
+    def findByName(self, name, gattOpts=""):
         deviceAddress = ''
         while not deviceAddress:
             devices = self.devicesInRange()
@@ -279,7 +281,7 @@ class BLE:
         print  "CONNECT TO: " + deviceAddress
         #self.bleManager.stopScanning()
 
-        bleDevice = BLE_UART(mac=deviceAddress)
+        bleDevice = BLE_UART(mac=deviceAddress, gattOpts=gattOpts)
         return bleDevice
 
 
