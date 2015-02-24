@@ -78,8 +78,8 @@ int counterMax = 30;                            // number of samples (loop() cyc
 // so turing left or right lines results in IR2 being on the center of the line, ideally...s
 
 
-#define DEFAULT_CRUISE_SPEED 50                // default speed when line following (calibration speed uses 50% of this)
-#define DEFAULT_TURN_SPEED   65
+#define DEFAULT_CRUISE_SPEED 80                // default speed when line following (calibration speed uses 50% of this)
+#define DEFAULT_TURN_SPEED   80
 #define MOTOR_IDLE_TIME 1000                   // number of samples (loop() cycles) to wait to determine if bot is halted, on halt detection the bot sends corner type 
 
 
@@ -133,7 +133,7 @@ int IRwhiteThreshold[3] = {0};
 
 // Analog smoothing
 
-const int numReadings = 5;
+const int numReadings = 10;
 int readings[3][numReadings] = {0};      // the readings from the analog input
 int sindex[3] = {0};                  // the index of the current reading
 int total[3] = {0};                  // the running total
@@ -241,8 +241,9 @@ void motorSpeed(int _speedA, int _speedB) {
 
 
 void turn_left() {
-  //motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
-  motorSpeed(DEFAULT_TURN_SPEED,0);
+  motorSpeed(DEFAULT_TURN_SPEED * 1.5, -DEFAULT_TURN_SPEED / 2);
+  //motorSpeed(DEFAULT_TURN_SPEED,0);
+  //motorSpeed(DEFAULT_TURN_SPEED, -DEFAULT_TURN_SPEED);
   readIRSensors();
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
@@ -251,8 +252,9 @@ void turn_left() {
 }
 
 void turn_right() {
-  //motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
-  motorSpeed(0, DEFAULT_TURN_SPEED);
+   motorSpeed(-DEFAULT_TURN_SPEED / 2, DEFAULT_TURN_SPEED * 1.5);
+  //motorSpeed(0, DEFAULT_TURN_SPEED);
+  //motorSpeed(-DEFAULT_TURN_SPEED, DEFAULT_TURN_SPEED);
   readIRSensors();
   while (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) {
     readIRSensors();
@@ -277,9 +279,10 @@ void spin() {
     motorSpeed(-DEFAULT_TURN_SPEED, DEFAULT_TURN_SPEED );
   else
     motorSpeed(DEFAULT_TURN_SPEED, -DEFAULT_TURN_SPEED );
-  
-  while (  (detectCornerType() != LINE_STATUS_FOLLOWING_LINE) ) {
+  int counter = 3;
+  while (  (detectCornerType() < LINE_STATUS_FOLLOWING_LINE) && counter>0 ) {
      readIRSensors();
+     counter--; 
   }
   
   motorSpeed(0, 0);
@@ -476,11 +479,11 @@ void loop() {
   speedB = (lineSpeed - correction);
   motorSpeed(speedA, speedB);
 
-  /*if ( (speedA == 0) && (speedB == 0) ) {
-    delay(200);
+  if ( (speedA == 0) && (speedB == 0) ) {
+    delay(50);
     send_status(LINE_STATUS_NO_LINE, true);
-    delay(200);
-  }*/
+    delay(50);
+  }
 
   updateIdleTimer();
 }

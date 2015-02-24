@@ -13,7 +13,7 @@
 // WArning: enabling serial debug will cause the motors to rotate only one way.
 //#define   SERIAL_DEBUG
 //#define   SERIAL_DEBUG_DETAILED       // Show encoder counts
-#define GZLL_HOST_ADDRESS 0x88ACB010    // TURTLE
+#define GZLL_HOST_ADDRESS 0x99ACB010    // TURTLE
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>
@@ -21,8 +21,8 @@
 void radio_send_formatted(char *fmt, ... );
 
 // configure depending on physical characteristics
-#define COUNTS_PER_REVOLUTION 352
-#define WHEEL_DIAMETER        32      // mm
+#define COUNTS_PER_REVOLUTION 430
+#define WHEEL_DIAMETER        38      // mm
 
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
@@ -252,7 +252,7 @@ void motorSpeed(int _speedA, int _speedB) {
 #endif
   _speedA = constrain(_speedA, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
   _speedB = constrain(_speedB, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
-  digitalWrite(MOTOR_A1_PIN, _speedA >= 0 ? LOW : HIGH) ;
+  digitalWrite(MOTOR_A1_PIN, _speedA >= 0 ? HIGH : LOW) ;
   analogWrite (MOTOR_A2_PIN, abs(_speedA));
   digitalWrite(MOTOR_B1_PIN, _speedB >= 0 ? HIGH : LOW);
   analogWrite (MOTOR_B2_PIN, abs(_speedB));
@@ -271,7 +271,7 @@ uint8_t cmd_stop(int16_t p1) {
 
 #if defined(USE_DELAYS_FOR_MOVEMENT)
 
-// used as a fallback, this is a very poor approximation method, no good for drawing, only navigating a bit
+// used as a fallback, this is a very poor approximation method, no good for drawing just debug, maybe only navigating a bit
 uint8_t cmd_forward(int16_t p1) {
   motorSpeed(MAX_TURTLE_MOTOR_SPEED, MAX_TURTLE_MOTOR_SPEED);
   delay(p1 * MOTION_DELAY_MULTIPLIER);

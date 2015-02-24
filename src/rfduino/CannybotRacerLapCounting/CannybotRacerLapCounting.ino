@@ -14,8 +14,9 @@
 // Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define BOT_NAME "Cannybot2"                   // custom name (16 chars max)
-#define GZLL_HOST_ADDRESS 0x24ACB020           // this needs to match the Joypad sketch value
+#define BOT_NAME "Lotus"                   // custom name (16 chars max)
+//#define BOT_NAME "Cannybot1"                   // custom name (16 chars max)
+#define GZLL_HOST_ADDRESS 0x20ACB020           // this needs to match the Joypad sketch value
 
 
 #include <RFduinoGZLL.h>
@@ -39,10 +40,11 @@ void radio_send_formatted(char *fmt, ... );
 
 
 // DEFINITIONS & ITIALISATION
-#define DEFAULT_CRUISE_SPEED 120
+#define DEFAULT_CRUISE_SPEED 0
+#define DEFAULT_CALIBRATION_SPEED 40
 
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
-#define JOYPAD_AXIS_DEADZONE 20 //this is to eleminate jitter in 0 position
+#define JOYPAD_AXIS_DEADZONE 40 //this is to eleminate jitter in 0 position
 #define IR_WHITE_THRESHOLD_DEFAULT 750 //to determinie on line or not 
 
 //IR sensor bias
@@ -119,7 +121,7 @@ int IRvalMin[3] = {0};
 int IRvalMax[3] = {0};
 int IRwhiteThreshold[3] = {0};// IR_WHITE_THRESHOLD_DEFAULT , IR_WHITE_THRESHOLD_DEFAULT, IR_WHITE_THRESHOLD_DEFAULT};
 
-int counterMax = 20; 
+int counterMax = 10;
 // Analog smoothing
 
 const int numReadings = 5;
@@ -143,9 +145,6 @@ void setup() {
   pinMode(MOTOR_B2_PIN, OUTPUT);
   setup_smoothing();
   radio_setup();
-  radio_loop();
-  delay(500);
-  radio_loop();
   calibrateIRSensors();
   sendIRStats();
 }
@@ -160,7 +159,7 @@ void loop() {
   {
     isLineFollowingMode = true;
     calculatePID();
-    
+
     if (userSpeed <= 0)
       userSpeed = 0;
 
@@ -171,10 +170,10 @@ void loop() {
       counterT++;
       if (counterT > counterMax) {
         counterT =  0;
-        static int nextSend = millis()+ 2000;
+        static int nextSend = millis() + 2000;
         if (millis() > nextSend) {
           radio_send("LAP_START");
-          nextSend = millis()+ 2000;
+          nextSend = millis() + 2000;
         }
       }
     }
@@ -185,16 +184,12 @@ void loop() {
     userSpeed = 0;
     correction = 0;
   }
-  
-  static long int nextSend = millis() + 1000;
-  if (millis() > nextSend) {
-      nextSend = millis() + 1000;
-      //radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
-      //sendIRStats();
-  }
 
-  speedA = (userSpeed + correction) + (yAxisValue / 2 - xAxisValue / 2);
-  speedB = (userSpeed - correction) + (yAxisValue / 2 + xAxisValue / 2);
+  sendIRStats();
+
+
+  speedA = (userSpeed + correction) + (yAxisValue / 3 - xAxisValue / 3);
+  speedB = (userSpeed - correction) + (yAxisValue / 3 + xAxisValue / 3);
   motorSpeed(speedA, speedB);
 
 
@@ -204,24 +199,24 @@ void loop() {
 // READ & PROCESS IR VALUES
 void readIRSensors() {
 
-  //analogRead(IR1_PIN);
+  analogRead(IR1_PIN);
   //delay(20);
   IRvals[0] = analogRead(IR1_PIN) ; //left looking from behind
   if (IRvals[0] >= 1000)
     IRvals[0] = 1000;
 
-  //analogRead(IR2_PIN);
+  analogRead(IR2_PIN);
   IRvals[1] = analogRead(IR2_PIN) ; //centre
   if (IRvals[1] >= 1000)
     IRvals[1] = 1000;
 
-  //analogRead(IR3_PIN);
+  analogRead(IR3_PIN);
   IRvals[2] = analogRead(IR3_PIN) ; //right
   if (IRvals[2] >= 1000)
     IRvals[2] = 1000;
 
   calculate_smoothing();
- 
+
 
 }
 
@@ -250,7 +245,6 @@ void calculatePID() {
 
 // MOTOR DRIVER
 void motorSpeed(int _speedA, int _speedB) {
-
   _speedA = constrain(_speedA, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
   _speedB = constrain(_speedB, -MOTOR_MAX_SPEED, MOTOR_MAX_SPEED);
 
@@ -295,15 +289,14 @@ void calibrateIRSensors() {
   IRvalMin[1] = IRvalMax[1] = IRvals[1];
   IRvalMin[2] = IRvalMax[2] = IRvals[2];
   for (int i = -1; i <= 1; i += 1) {
-    motorSpeed( i * DEFAULT_CRUISE_SPEED , -(i * DEFAULT_CRUISE_SPEED ));
+    motorSpeed( i * DEFAULT_CALIBRATION_SPEED , -(i * DEFAULT_CALIBRATION_SPEED ));
     for (int i = 0; i < 100; i++) {
-
+      delay(30);
       readIRSensors();
       for (int j = 0; j < 3; j++) {
         // find min/max
         if (IRvals[j]  < IRvalMin[j]) IRvalMin[j] = IRvals[j];
         if (IRvals[j]  > IRvalMax[j]) IRvalMax[j] = IRvals[j];
-        delay(10);
       }
 
     }
@@ -375,20 +368,14 @@ int detectCornerType() {
 }
 
 void sendIRStats() {
-  radio_send_formatted("--------IR State");
-  delay(150);
-  radio_send_formatted("raw:%d,%d,%d  ", IRvals[0], IRvals[1], IRvals[2]);
-  delay(150);
-  radio_send_formatted("ave:%d,%d,%d  ", average[0], average[1], average[2]);
-  delay(150);
-  radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
-  delay(150);
-  radio_send_formatted("--------Motor State");
-  delay(150);
-  radio_send_formatted("A,B=%d,%d  ", speedA, speedB);
-  delay(150);
-  radio_send_formatted("WT:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
-
+  static long int nextSend = millis() + 1000;
+  if (millis() > nextSend) {
+    nextSend = millis() + 250;
+    radio_send_formatted("raw:%d,%d,%d", IRvals[0], IRvals[1], IRvals[2]);
+    //radio_send_formatted("WTH:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
+    //radio_send_formatted("ave:%d,%d,%d", average[0], average[1], average[2]);
+    //radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());
+  }
 }
 
 

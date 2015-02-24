@@ -4,8 +4,8 @@
 
 // Choose one of:
 //#define  RADIO_ONLY_GZLL 
-//#define  RADIO_ONLY_BLE 
-#define RADIO_TOGGLE 
+#define  RADIO_ONLY_BLE 
+//#define RADIO_TOGGLE 
 //#define RADIO_NONE
 
 // don't change these
@@ -154,7 +154,7 @@ void RFduinoBLE_onReceive(char *data, int len) {
 }
 
 void RFduinoBLE_onConnect() {
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
   bleConnected = true;
 #endif
 #ifdef DEBUG
@@ -163,7 +163,7 @@ void RFduinoBLE_onConnect() {
 }
 
 void RFduinoBLE_onDisconnect() {
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
   bleConnected = false;
 #endif
   client_disconnected();

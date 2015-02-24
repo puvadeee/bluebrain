@@ -11,6 +11,7 @@
 
 #define BOT_NAME "PingEchoBot"                   // custom name (16 chars max)
 //#define GZLL_HOST_ADDRESS 0x12ABCD00           // this needs to match the Joypad sketch value
+#define GZLL_HOST_ADDRESS 0x99ACB010    // TURTLE
 
 #include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
