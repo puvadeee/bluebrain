@@ -16,7 +16,7 @@ app.get('/js/cannybots/CannybotsLib.js', function(req, res) {
 	
 })
 
-app.use("/",express.static("public"));
+app.use("/",express.static("www"));
 module.exports = app;
 
 
