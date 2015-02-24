@@ -53,6 +53,7 @@ var cannybots = new function() {
     // Alternative webworkers, see: http://code.tutsplus.com/tutorials/getting-started-with-web-workers--net-27667
     self.processQueue = function () {
         var qLength = self.commandQueue.getLength();
+	//console.log("Proc Q");
         if ( (self.okToSend) && (qLength>0)) {
             self.okToSend = false;
             var message = self.commandQueue.dequeue();
@@ -182,6 +183,8 @@ var cannybots = new function() {
 		// if okToSend taking longer then 15 seconds
 			self.sendNativeMessage(self.createMessagePayloadForCommand('?',0),0);
 		}
+
+		window.setInterval(cannybots.processQueue, 500);
 		//window.setInterval(self.ping, 2000);
 
     }
@@ -189,7 +192,6 @@ var cannybots = new function() {
 }
 
 
-window.setInterval(cannybots.processQueue, 500);
 
 // run once DOM is loaded
 if(window.attachEvent) {
