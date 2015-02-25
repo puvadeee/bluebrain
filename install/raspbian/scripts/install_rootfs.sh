@@ -7,3 +7,5 @@ chown -R pi  /opt/cannybots/runtime
 sudo update-rc.d avahi-daemon defaults
 update-rc.d xboxdrv defaults
 update-rc.d xboxdrv start
+
+svc -du /etc/service/*

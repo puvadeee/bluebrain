@@ -1,3 +1,4 @@
 #!/bin/sh
-exec /usr/sbin/bluetoothd
+exec /lib/bluetooth/bluetoothd
+
 
