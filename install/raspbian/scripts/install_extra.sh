@@ -4,8 +4,8 @@
 sudo apt-get install x11vnc -y
 x11vnc -storepasswd
 touch ~/.xsessionrc
-echo "x11vnc -bg -nevershared -forever -tightfilexfer -usepw -display :0" >> ~/.xsessionrc
-chmod 775 ~/.xsessionrc
+echo "x11vnc -bg -nevershared -forever -tightfilexfer -usepw -display :0" >> /home/pi/.xsessionrc
+chmod 775 /home/pi/.xsessionrc
 
 
 # Bonjour for simpler network access

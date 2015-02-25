@@ -6,7 +6,7 @@ if [[ $EUID -ne 0 ]]; then
 fi
 
 apt-get update
-apt-get upgrade
+apt-get upgrade -y
 
 # python deps
 
@@ -26,10 +26,10 @@ apt-get install xboxdrv jstest-gtk -y
 
 # deamon tools
 
-apt-get install daemontools daemontools-run
+apt-get install daemontools daemontools-run -y
 
 
 # mjpgstreamer for Camera
 
-apt-get install libv4l-dev libjpeg8-dev imagemagick cmake
+apt-get install libv4l-dev libjpeg8-dev imagemagick cmake -y
 
