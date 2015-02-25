@@ -1,6 +1,7 @@
 see: http://the-hitchhikers-guide-to-packaging.readthedocs.org/en/latest/quickstart.html
 
 python setup.py sdist
+python setup.py regsiter
 python setup.py sdist bdist upload
 
 
