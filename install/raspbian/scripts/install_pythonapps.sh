@@ -1,3 +1,3 @@
 #!/bin/bash 
 
-cp -r  ../../src/python/apps/*  /opt/cannybots/runtime/apps/
+cp -rv  ../../src/python/apps/*  /opt/cannybots/runtime/apps/

@@ -1,0 +1,5 @@
+#!/bin/sh
+cd /opt/cannybots/runtime/camera/
+exec ./start.sh
+
+

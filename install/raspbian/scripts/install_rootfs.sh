@@ -1,7 +1,7 @@
 #!/bin/bash 
 
-cp -r  rootfs/* /
-cp -r  ../../src/python/apps/*  /opt/cannybots/runtime/apps/
+cp -rv  rootfs/* /
+cp -rv  ../../src/python/apps/*  /opt/cannybots/runtime/apps/
 chown -R pi  /opt/cannybots/runtime
 
 sudo update-rc.d avahi-daemon defaults

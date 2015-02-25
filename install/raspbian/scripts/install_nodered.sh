@@ -9,11 +9,11 @@ mkdir -p $INSTALL_DIR
 cd $INSTALL_DIR
 
 sudo dpkg -i $INSTALL_BIN_FILES/node_latest_armhf.deb
-cp -r $INSTALL_SRC_DIR/nodejs/cannybox  /opt/cannybots/runtime/nodered/
+cp -rv $INSTALL_SRC_DIR/nodejs/cannybox  /opt/cannybots/runtime/nodered/
 
 cd $INSTALL_DIR/cannybox
 tar zxf $INSTALL_BIN_FILES/node_modules.tar.gz
-cp -r $INSTALL_SRC_DIR/www .
+cp -rv $INSTALL_SRC_DIR/www .
 cp nodered/flows_default.json nodered/flows_`hostname`.json
 
 chown pi $INSTALL_DIR

@@ -27,3 +27,9 @@ apt-get install xboxdrv jstest-gtk -y
 # deamon tools
 
 apt-get install daemontools daemontools-run
+
+
+# mjpgstreamer for Camera
+
+apt-get install libv4l-dev libjpeg8-dev imagemagick cmake
+

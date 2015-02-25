@@ -9,4 +9,4 @@ cd vendor/bluez/bluez-5.28
 make install && ln -svf ../libexec/bluetooth/bluetoothd /usr/sbin
 install -v -dm755 /etc/bluetooth && install -v -m644 src/main.conf /etc/bluetooth/main.conf
 install -v -dm755 /usr/share/doc/bluez-5.28 && install -v -m644 doc/*.txt /usr/share/doc/bluez-5.28
-cp attrib/gatttool /usr/local/bin/
+cp -v attrib/gatttool /usr/local/bin/
