@@ -191,13 +191,13 @@ class BLE_UART:
         self.tx = Thread(target=self.tx_worker)
         self.tx.daemon = True
         self.tx.name = name
-        #self.tx.start()
+        self.tx.start()
 
         self.rx = Thread(target=self.rx_worker)
         self.rx.daemon = True
         self.rx.name = name
 
-        self.rx.start()
+        #self.rx.start()
 
 
     def addListener(self, func):
@@ -213,11 +213,11 @@ class BLE_UART:
         self.enqueString(cmd)
 
     def enqueString(self, str):
-        #if self.queueLock.locked():
-        #    return
-        #self.queueLock.acquire()
+        if self.queueLock.locked():
+            return
+        self.queueLock.acquire()
         self.q.put(str)
-        #self.queueLock.release()
+        self.queueLock.release()
 
 
     def _send(self, msg):
