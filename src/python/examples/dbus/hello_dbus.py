@@ -55,6 +55,9 @@ adapter.StartDiscovery()
 
 """
 
+see:  http://i-miss-erin.blogspot.co.uk/2010/12/gatt-related-dbus-api.html
+
+
 https://github.com/bbirand/python-dbus-gatt
 
 
