@@ -191,13 +191,14 @@ class BLE_UART:
         self.tx = Thread(target=self.tx_worker)
         self.tx.daemon = True
         self.tx.name = name
-        self.tx.start()
+        if 0:
+			self.tx.start()
 
         self.rx = Thread(target=self.rx_worker)
         self.rx.daemon = True
         self.rx.name = name
 
-        #self.rx.start()
+        self.rx.start()
 
 
     def addListener(self, func):
