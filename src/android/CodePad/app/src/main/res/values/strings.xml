@@ -2,9 +2,9 @@
 <resources>
 
     <string name="app_name">CodePad</string>
-    <string name="title_section1">Section 1</string>
-    <string name="title_section2">Section 2</string>
-    <string name="title_section3">Section 3</string>
+    <string name="title_section1">Code</string>
+    <string name="title_section2">Settings</string>
+    <string name="title_section3">Connection</string>
     <string name="hello_world">Hello world!</string>
     <string name="action_settings">Settings</string>
 

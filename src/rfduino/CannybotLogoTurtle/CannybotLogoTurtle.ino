@@ -103,6 +103,9 @@ void setup() {
   attachPinInterrupt(ENCODER2A_PIN, encoderCallbackSensor2A, HIGH);
   attachPinInterrupt(ENCODER2B_PIN, encoderCallbackSensor2B, HIGH);
 
+  digitalWrite(MOTOR_A1_PIN,HIGH) ;
+  digitalWrite(MOTOR_B1_PIN,HIGH) ;
+
   radio_setup();
 }
 

@@ -280,7 +280,7 @@ void spin() {
   else
     motorSpeed(DEFAULT_TURN_SPEED, -DEFAULT_TURN_SPEED );
   int counter = 3;
-  while (  (detectCornerType() < LINE_STATUS_FOLLOWING_LINE) && counter>0 ) {
+  while (  (detectCornerType() < LINE_STATUS_FOLLOWING_LINE)  ) {
      readIRSensors();
      counter--; 
   }

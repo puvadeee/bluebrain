@@ -43,6 +43,8 @@ import com.cannybots.views.joystick.*;
 import com.cannybots.views.web.CBWebViewClient;
 
 import android.util.Log;
+import android.view.Window;
+import android.view.WindowManager;
 import android.webkit.SslErrorHandler;
 import android.webkit.WebChromeClient;
 import android.webkit.WebSettings;
@@ -422,7 +424,13 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
         super.onCreate(savedInstanceState);
         this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
 
+        View decorView = getWindow().getDecorView();
+        int uiOptions = View.SYSTEM_UI_FLAG_FULLSCREEN;
+        decorView.setSystemUiVisibility(uiOptions);
+
+
         setContentView(R.layout.activity_main);
+
 
         // Set up the action bar.
         final ActionBar actionBar = getSupportActionBar();
@@ -723,7 +731,7 @@ public class MainActivity extends ActionBarActivity implements ActionBar.TabList
             webView.getSettings().setJavaScriptEnabled(true);
 
 
-            //webView.loadUrl("http://www.google.com/");
+            //webView.loadUrl("http://onCreate.google.com/");
             webView.setWebChromeClient(new WebChromeClient());
             webView.setWebViewClient(new WebViewClient() {
 
