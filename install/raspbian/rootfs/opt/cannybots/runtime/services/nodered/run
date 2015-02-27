@@ -1,0 +1,4 @@
+#!/bin/sh
+cd /opt/cannybots/runtime/nodered/cannybox/
+exec /usr/local/bin/node --max-old-space-size=128 ./bin/www
+

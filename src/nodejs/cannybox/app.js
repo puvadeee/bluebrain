@@ -6,7 +6,7 @@ var fs  = require('fs');
 
 
 app.get('/js/cannybots/CannybotsLib.js', function(req, res) {
-	var file = 'public/js/cannybots/CannybotsLib.js';
+	var file = 'www/js/cannybots/CannybotsLib.js';
 	fs.readFile(file, function (err, data) {
 		if (err) throw err;
 		var str = data.toString('utf-8');
@@ -16,7 +16,7 @@ app.get('/js/cannybots/CannybotsLib.js', function(req, res) {
 	
 })
 
-app.use("/",express.static("public"));
+app.use("/",express.static("www"));
 module.exports = app;
 
 

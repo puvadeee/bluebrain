@@ -22,11 +22,18 @@
 	<link rel="stylesheet" href="js/jquery/jquery.mobile.css"/>
 	<script src="js/jquery/jquery.js"></script>
 	<script src="js/jquery/jquery.mobile.js"></script>
+<script>
+$( document ).ready( function() { 
+init('canvas','turtle', 'input','oldcode', 'textOutput'); 
+clearcanvas(); 
+cannybots.startLib();
+}
+);
 
+</script>
 
 </head>
-<body onload="init('canvas','turtle', 'input','oldcode', 'textOutput'); clearcanvas(); cannybots.startLib(); ">
-    
+<body >    
 <div id="main">
 
 <form id="input" action="/" method="post" onSubmit="this.img.value = canvas.toDataURL().replace('data:image/png;base64,','')">
@@ -56,8 +63,8 @@ DrawSquare 100
         </div>
         <div style="margin: 5px;">
         <!--<input type="button" onClick="run(25,true);" value="Run slowly" />-->
-        <input type="button" onClick="run(5,false);" value="Run normally" style="font-weight: bold;"/>
-        <input type="button" onClick="run(1,false);" value="Run fast" />
+        <input type="button" onClick="cannybots.clearQueue(); run(5,false);" value="Run normally" style="font-weight: bold;"/>
+        <input type="button" onClick="cannybots.clearQueue(); run(1,false);" value="Run fast" />
         <input type="button" onClick="stop();" value="Stop program" />
         <input type="hidden" name="img" />
         </div>

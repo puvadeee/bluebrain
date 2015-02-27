@@ -1,6 +1,7 @@
 #!/usr/bin/python
 
 botName = "Cannybot1"
+#botName= ""
 
 zMultiplier = 1
 
@@ -9,7 +10,7 @@ import os
 basedir = os.path.abspath(os.path.dirname(__file__))
 
 sys.path.insert(0, basedir+"/../../modules")
-#basedir = os.path.dirname(__file__)
+
 import time
 import pygame
 
@@ -46,8 +47,10 @@ class Joypad:
     
     def connectBot(self):
         self.ble   = BLE() 
-        #self.myBot = self.ble.findNearest()   
-        self.myBot = self.ble.findByName(botName)   
+        if botName != "":
+            self.myBot = self.ble.findNearest()   
+        else:
+            self.myBot = self.ble.findByName(botName)   
         self.joypadClient = SimpleJoypadClient(self.myBot)
 
     def updateJoypad(self, (newX,newY), force):   

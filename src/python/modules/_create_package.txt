@@ -1,0 +1,16 @@
+see: http://the-hitchhikers-guide-to-packaging.readthedocs.org/en/latest/quickstart.html
+
+python setup.py sdist
+python setup.py regsiter
+python setup.py sdist bdist upload
+
+
+for installer:
+
+cp dist/Cannybots-0.1dev.tar.gz ../../../install/raspbian/vendor/cannybots/
+
+
+
+published to : http://pypi.python.org/pypi/Cannybots
+
+

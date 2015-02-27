@@ -232,8 +232,8 @@ class LapTimer():
 
         self.bleManager.startScanning()
 
-        self.ble1 = self.ble.findByName(sys.argv[1], gattOpts="-j 0")
-        self.ble2 = self.ble.findByName(sys.argv[2], gattOpts="-j 1")
+        self.ble1 = self.ble.findByName(sys.argv[1], gattOpts="-j 1")
+        self.ble2 = self.ble.findByName(sys.argv[2], gattOpts="-j 2")
 
         self.bleManager.stopScanning()
 
