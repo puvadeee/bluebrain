@@ -18,14 +18,15 @@ function cannybotsWebSocket()
 {
     if ("WebSocket" in window)
     {
-        var ws = new WebSocket("%%WEBSOCKET_URL%%");
+        var ws = new WebSocket("%%WEBSOCKET_URL%%");  // this tempalte string will be replaced by the Web Server hosting this file
         ws.onopen = function()
         {
             console.log("WS.onOpen");
         };
         ws.onmessage = function(evt) {
             //console.log("WS.onMessage");
-            cannybots.receiveBytes(evt.data);
+            var decoded = atob(evt.data);
+            cannybots.receiveBytes(decoded);
         };
         ws.onclose = function() {
             console.log("WS.onClose");
@@ -62,29 +63,67 @@ var cannybots = new function() {
     }
     self.clearQueue = function() {
         self.commandQueue = new Queue();
-        self.okToSend = true
+        self.okToSend = true;
     }
     
     self.startQueueWorker=function () {
         setInterval(self.processQueue, 500);
     }
     
+    self.stringToByteArray = function (str) {
+        var b = [], i, unicode;
+        for(i = 0; i < str.length; i++) {
+            unicode = str.charCodeAt(i);
+            // 0x00000000 - 0x0000007f -> 0xxxxxxx
+            if (unicode <= 0x7f) {
+                b.push(String.fromCharCode(unicode));
+                // 0x00000080 - 0x000007ff -> 110xxxxx 10xxxxxx
+            } else if (unicode <= 0x7ff) {
+                b.push(String.fromCharCode((unicode >> 6) | 0xc0));
+                b.push(String.fromCharCode((unicode & 0x3F) | 0x80));
+                // 0x00000800 - 0x0000ffff -> 1110xxxx 10xxxxxx 10xxxxxx
+            } else if (unicode <= 0xffff) {
+                b.push(String.fromCharCode((unicode >> 12) | 0xe0));
+                b.push(String.fromCharCode(((unicode >> 6) & 0x3f) | 0x80));
+                b.push(String.fromCharCode((unicode & 0x3f) | 0x80));
+                // 0x00010000 - 0x001fffff -> 11110xxx 10xxxxxx 10xxxxxx 10xxxxxx
+            } else {
+                b.push(String.fromCharCode((unicode >> 18) | 0xf0));
+                b.push(String.fromCharCode(((unicode >> 12) & 0x3f) | 0x80));
+                b.push(String.fromCharCode(((unicode >> 6) & 0x3f) | 0x80));
+                b.push(String.fromCharCode((unicode & 0x3f) | 0x80));
+            }
+        }
+        
+        return b;
+    }
+    
+    self.sendStringAsBytes = function(str) {
+        self.debug("sendStringAsBytes= " + str);
+        
+        var bytes= self.stringToByteArray(str);
+        self.debug("bytes= " + bytes);
+        self.sendBytes(bytes);
+        
+    }
+    //  01634 720182  3557  sue
     self.sendBytes = function(bytesArray) {
         var message = {
             "rawBytes":bytesArray
         };
         
         if (self.useQueues)
-            self.byteQueue.enqueue(message);
+            self.commandQueue.enqueue(message);
         else
             self.sendNativeMessage(message);
     }
+    
     self.createMessagePayloadForCommand = function(cmd, param) {
 		
          return {  
 			 "command":cmd,
             "p1":param,
-            "rawBytes":self.createByteMessage(cmd,param),
+            "rawBytes":self.createByteMessage(cmd,param)
         };
 	}
 	
@@ -92,30 +131,37 @@ var cannybots = new function() {
         var message = self.createMessagePayloadForCommand(cmd,param);
         
         if (self.useQueues) {
-            console.log("INFO: sendCommand(Q): " + JSON.stringify(message));
+            self.debug("INFO: sendCommand(Q): " + JSON.stringify(message));
             self.commandQueue.enqueue(message);
         } else {
+            self.debug("INFO: sendCommand(NoQ): " + JSON.stringify(message));
             self.sendNativeMessage(message);
         }
     }
 
     self.receiveBytes = function (bytesArray) {
         self.okToSend = true;
-         console.log("DEBUG: receiveBytes: " + bytesArray);
+        msg = "DEBUG: receiveBytes: " + bytesArray;
+        self.debug(msg);
         self.recvDelegate(bytesArray);
     }
     
     self.sendDebug = function(msg) {
-        console.log("DEBUG: " + msg);
+        self.debug("DEBUG: " + msg);
         self.sendNativeMessage({"debug":msg});
     }
     self.sendError = function(msg) {
-        console.log("ERROR: " + msg);
+        self.debug("ERROR: " + msg);
         self.sendNativeMessage({"error":msg});
     }
     
     self.debug = function (msg){
-        document.querySelector("#cannybotsDebugPane").innerHTML = msg;
+        console.log(msg);
+        dbgTextArea = document.querySelector("#cannybotsDebugPane")
+        if (dbgTextArea) {
+            dbgTextArea.innerHTML = dbgTextArea.innerHTML + "\n" + msg;
+            dbgTextArea.scrollTop = dbgTextArea.scrollHeight;
+        }
     }
     self.sendNativeMessage = undefined; // setup in start
 
@@ -124,19 +170,19 @@ var cannybots = new function() {
 
         // iOS
         if(typeof window.webkit != 'undefined') {
-            console.log("INFO: on webkit");
+            self.debug("INFO: on webkit");
             if(typeof window.webkit.messageHandlers != 'undefined') {   // iOS check
                 try {
-                        console.log('INFO: setting up JavaScript native bridge for iOS');
+                        self.debug('INFO: setting up JavaScript native bridge for iOS');
                         self.sendNativeMessage =     function (message){
                         window.webkit.messageHandlers.interOp.postMessage(message);
                     }
                     return;
                 } catch (err) {3
-                    console.log('ERROR: The native context does not exist yet');
+                    self.debug('ERROR: The native context does not exist yet');
                 }
             } else {
-                console.log("WARN: iOS native bridge not found.");
+                self.debug("WARN: iOS native bridge not found.");
             }
         }
 
@@ -147,27 +193,27 @@ var cannybots = new function() {
 
                self.sendNativeMessage =     function (message){
                 var msgStr = JSON.stringify(message);
-                   console.log('INFO: sending:' + msgStr);
+                   self.debug('INFO: sending:' + msgStr);
 
                    JsHandler.jsFnCall(msgStr);
                }
                return;
            } catch (err) {
-               console.log('ERROR: The Android JS Handler does not exist yet');
+               self.debug('ERROR: The Android JS Handler does not exist yet');
            }
         }
         console.log("WARN: Android JavaScript native bridge not found.");
 
         // Fallback to WebSocket
         try {
-            console.log("INFO: Using WebSocket API");
+            self.debug("INFO: Using WebSocket API");
             self.websocket = cannybotsWebSocket();
             self.sendNativeMessage =     function (message){
-                console.log("Cannybots.sendWS msg:" + JSON.stringify(message) );
+                self.debug("Cannybots.sendWS msg:" + JSON.stringify(message) );
                 self.websocket.send(JSON.stringify(message));
             }
         } catch (err) {
-            console.log("ERROR: Couldnt fallback to WebSockets" + err.message);
+            self.debug("ERROR: Couldnt fallback to WebSockets" + err.message);
         }
 
     }

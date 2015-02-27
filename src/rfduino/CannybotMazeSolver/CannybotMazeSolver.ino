@@ -80,7 +80,7 @@ int counterMax = 30;                            // number of samples (loop() cyc
 
 #define DEFAULT_CRUISE_SPEED 80                // default speed when line following (calibration speed uses 50% of this)
 #define DEFAULT_TURN_SPEED   80
-#define MOTOR_IDLE_TIME 1000                   // number of samples (loop() cycles) to wait to determine if bot is halted, on halt detection the bot sends corner type 
+#define MOTOR_IDLE_TIME 500                   // time (seconds) to wait to determine if bot is halte (both motors speeds 0) 
 
 
 // BLE name and Gazelle ID
@@ -474,42 +474,47 @@ void loop() {
     lineSpeed = 0;
   }
 
-  //if speeds are 0 (or a 'cotner found flag set) then check line status and send thestat just here instead, seems the status is ok after stopping!
+  //if speeds are 0 (or a 'corner found flag set) then check line status and send thestat just here instead, seems the status is ok after stopping!
   speedA = (lineSpeed + correction);
   speedB = (lineSpeed - correction);
   motorSpeed(speedA, speedB);
 
+  /*
   if ( (speedA == 0) && (speedB == 0) ) {
     delay(50);
     send_status(LINE_STATUS_NO_LINE, true);
     delay(50);
   }
+  */
 
   updateIdleTimer();
 }
 
 bool idleTimerTriggered = false;
-int idleCount = 0;
-//unsigned long 
+unsigned long idleTime = 0;
 
 void updateIdleTimer() {
+  static unsigned long lastIdleTime = millis();
   if ( (speedA == 0) && (speedB == 0) ) {
-    idleCount++;
+    idleTime += time_Now - lastIdleTime;
   } else {
-    idleCount = 0;
+    idleTime = 0;
     idleTimerTriggered = false;
     return;
   }
+  lastIdleTime = time_Now;
 
   if (idleTimerTriggered)
     return;
 
-  if (idleCount > MOTOR_IDLE_TIME) {
+  if (idleTime > MOTOR_IDLE_TIME) {
     idleTimerTriggered = true;
-    delay(150);
+    delay(50);
     send_status(LINE_STATUS_NO_LINE, true);
+    delay(50);
   }
 }
+
 
 
 
