@@ -162,7 +162,7 @@ var cannybots = new function() {
             console.log("INFO: Using WebSocket API");
             self.websocket = cannybotsWebSocket();
             self.sendNativeMessage =     function (message){
-                //console.log("Cannybots.sendWS msg:" + JSON.stringify(message) );
+                console.log("Cannybots.sendWS msg:" + JSON.stringify(message) );
                 self.websocket.send(JSON.stringify(message));
             }
         } catch (err) {
@@ -172,7 +172,7 @@ var cannybots = new function() {
     }
     var rChar = "\r".charCodeAt(0);
     self.createByteMessage = function(cmd, p1) {
-        return [0,0,cmd.charCodeAt(0), p1>>8, p1 &0xFF,rChar];
+        return [0,0, cmd.charCodeAt(0), p1>>8, p1 & 0xFF];
         
     }
     
