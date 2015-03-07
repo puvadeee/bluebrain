@@ -14,6 +14,39 @@
 define(function () {
     
     
+    function d2h(d) {
+        return d.toString(16);
+    }
+    function h2d (h) {
+        return parseInt(h, 16);
+    }
+    function stringToHex (tmp) {
+        var str = '',
+        i = 0,
+        tmp_len = tmp.length,
+        c;
+        
+        for (; i < tmp_len; i += 1) {
+            c = tmp.charCodeAt(i);
+            str += d2h(c) + ' ';
+        }
+        return str;
+    }
+    function hexToString (tmp) {
+        var arr = tmp.split(' '),
+        str = '',
+        i = 0,
+        arr_len = arr.length,
+        c;
+        
+        for (; i < arr_len; i += 1) {
+            c = String.fromCharCode( h2d( arr[i] ) );
+            str += c;
+        }
+        
+        return str;
+    }
+    
     //Queue class: code.stephenmorley.org
     function Queue(){var a=[],b=0;this.getLength=function(){return a.length-b};this.isEmpty=function(){return 0==a.length};this.enqueue=function(b){a.push(b)};this.dequeue=function(){if(0!=a.length){var c=a[b];2*++b>=a.length&&(a=a.slice(b),b=0);return c}};this.peek=function(){return 0<a.length?a[b]:void 0}};
     
@@ -108,11 +141,13 @@ define(function () {
             }
         }
         
-        self.receiveBytes = function (bytesArray) {
+        self.receiveBytes = function (bytesStr) {
             self.okToSend = true;
-            //console.log("BB.DEBUG: receiveBytes: " + self.bytesToHex(bytesArray));
-            console.log("BB.DEBUG: receiveBytes (base64): " + bytesArray);
-            self.recvDelegate(atob(bytesArray));
+            var decoded = atob(bytesStr);
+            var hexStr = stringToHex(decoded);
+            
+            self.debug("BB.DEBUG: receiveBytes (base64): " + bytesStr + " = =" + hexStr);
+            self.recvDelegate(decoded);
         }
         
         self.sendDebug = function(msg) {
@@ -125,8 +160,15 @@ define(function () {
         }
         
         self.debug = function (msg){
-            document.querySelector("#cannybotsDebugPane").innerHTML = msg;
+            console.log(msg);
+            dbgTextArea = document.querySelector("#cannybotsDebugPane")
+            if (dbgTextArea) {
+                dbgTextArea.innerHTML = dbgTextArea.innerHTML + "\n" + msg;
+                dbgTextArea.scrollTop = dbgTextArea.scrollHeight;
+            }
         }
+        
+        
         self.sendNativeMessage = undefined; // setup in start
         
         
@@ -142,7 +184,7 @@ define(function () {
                             window.webkit.messageHandlers.interOp.postMessage(message);
                         }
                         return;
-                    } catch (err) {3
+                    } catch (err) {
                         console.log('ERROR: The native context does not exist yet');
                     }
                 } else {
@@ -173,7 +215,7 @@ define(function () {
                 console.log("INFO: Using WebSocket API");
                 self.websocket = cannybotsWebSocket();
                 self.sendNativeMessage =     function (message){
-                    //console.log("Cannybots.sendWS msg:" + JSON.stringify(message) );
+                    self.debug("Cannybots.sendWS msg:" + JSON.stringify(message) );
                     try {
                         if (self.useBinary) {/*
                             var len =message.rawBytes.length;
@@ -199,18 +241,19 @@ define(function () {
         }
         var rChar = "\r".charCodeAt(0);
         self.createByteMessage = function(cmd, p1) {
-            return [0,0,cmd.charCodeAt(0), p1>>8, p1 &0xFF,rChar];
+            return [0,0,cmd.charCodeAt(0), p1>>8, p1 &0xFF];
             
         }
+        //DecimalNumber.toString(16);
+
         
-        /*
-         self.bytesToHex= function (bytes) {
-         for (var hex = [], i = 0; i < bytes.length; i++) {
-         hex.push((bytes[i] >>> 4).toString(16));
-         hex.push((bytes[i] & 0xF).toString(16));
-         }
+         self.stringToHex= function (str) {
+             for (var hex = [], i = 0; i < str.length; i++) {
+                 hex.push(str.charCodeAt[i].toString(16));
+                 hex.push(" ");
+             }
          return hex.join("");
-         };*/
+         };
         
         self.startLib = function () {
             self.setupSendNativeMessage();
@@ -222,6 +265,6 @@ define(function () {
             window.setInterval(cannybots.processQueue, 500);
         }
     }
-    
+    window.cannybots = cannybots;
     return cannybots;
 });

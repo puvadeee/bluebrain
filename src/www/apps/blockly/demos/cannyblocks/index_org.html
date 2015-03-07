@@ -1,0 +1,555 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="utf-8">
+  <title>Cannyblocks</title>
+  <script src="../../blockly_compressed.js"></script>
+  <script src="../../blocks_compressed.js"></script>
+  <script src="../../javascript_compressed.js"></script>
+  <script src="../../msg/js/en.js"></script>
+  <script src="blocks.js"></script>
+  <script src="/js/cannybots/CannybotsLib.js"></script>
+  <script src="/js/cannybots/CannybotsTurtle.js"></script>
+  <style>
+    body {
+      background-color: #fff;
+      font-family: sans-serif;
+    }
+    h1 {
+      font-weight: normal;
+      font-size: 140%;
+    }
+  
+  #main {
+      width: 1000px;
+      margin: 0 auto;
+  }
+  #blocklyDiv    {
+      position: absolute;
+      width: 600px;
+      height: 480px;
+      background: red;
+  }
+  
+  #codeAreaDiv  {
+      position: relative;
+      width: 380px;
+      height: 480px;
+      background: #ffffff;
+      margin: 30 auto;
+      float:right;
+  }
+  
+  textarea {
+      width: 100%;
+      height: 100%;
+      -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+      -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+      box-sizing: border-box;         /* Opera/IE 8+ */
+      font-size: 10pt;
+      font-family: "Lucida Console", Monaco, monospace;
+  }
+  
+  </style>
+</head>
+<body>
+  <h1>Cannyblocks</h1>
+ 
+  <p>
+  <button onclick="runCode()">Run</button>
+  <button onclick="logoEx1()">Logo Example</button>
+  <button onclick="mazeEx1()">Maze Example</button>
+  <button onclick="showXML()">Show XML (dev only)</button>
+  <button onclick="importXML(document.getElementById('codeArea').value)">Import XML (dev only)</button>
+  </p>
+  
+  <div id="main">
+      <div id="blocklyDiv" style="height: 480px; width: 600px; float:left;"></div>
+      <div id="codeAreaDiv"><textarea id="codeArea" wrap="off"></textarea></div>
+  </div>
+
+<!--
+    <div id="blocklyDiv" style="height: 480px; width: 600px;">
+        <div id="codeWindow"><textarea wrap="off"></textarea></div>
+    </div>
+-->
+
+  <xml id="toolbox" style="display: none">
+      <category name="Logic">
+          <category name="If">
+              <block type="controls_if"></block>
+              <block type="controls_if">
+                  <mutation else="1"></mutation>
+              </block>
+              <block type="controls_if">
+                  <mutation elseif="1" else="1"></mutation>
+              </block>
+          </category>
+          <category name="Boolean">
+              <block type="logic_compare"></block>
+              <block type="logic_operation"></block>
+              <block type="logic_negate"></block>
+              <block type="logic_boolean"></block>
+              <block type="logic_null"></block>
+              <block type="logic_ternary"></block>
+          </category>
+      </category>
+      <category name="Loops">
+          <block type="controls_repeat_ext">
+              <value name="TIMES">
+                  <block type="math_number">
+                      <field name="NUM">10</field>
+                  </block>
+              </value>
+          </block>
+          <block type="controls_whileUntil"></block>
+          <block type="controls_for">
+              <field name="VAR">i</field>
+              <value name="FROM">
+                  <block type="math_number">
+                      <field name="NUM">1</field>
+                  </block>
+              </value>
+              <value name="TO">
+                  <block type="math_number">
+                      <field name="NUM">10</field>
+                  </block>
+              </value>
+              <value name="BY">
+                  <block type="math_number">
+                      <field name="NUM">1</field>
+                  </block>
+              </value>
+          </block>
+          <block type="controls_forEach"></block>
+          <block type="controls_flow_statements"></block>
+      </category>
+      <category name="Math">
+          <block type="math_number"></block>
+          <block type="math_arithmetic"></block>
+          <block type="math_single"></block>
+          <block type="math_trig"></block>
+          <block type="math_constant"></block>
+          <block type="math_number_property"></block>
+          <block type="math_change">
+              <value name="DELTA">
+                  <block type="math_number">
+                      <field name="NUM">1</field>
+                  </block>
+              </value>
+          </block>
+          <block type="math_round"></block>
+          <block type="math_on_list"></block>
+          <block type="math_modulo"></block>
+          <block type="math_constrain">
+              <value name="LOW">
+                  <block type="math_number">
+                      <field name="NUM">1</field>
+                  </block>
+              </value>
+              <value name="HIGH">
+                  <block type="math_number">
+                      <field name="NUM">100</field>
+                  </block>
+              </value>
+          </block>
+          <block type="math_random_int">
+              <value name="FROM">
+                  <block type="math_number">
+                      <field name="NUM">1</field>
+                  </block>
+              </value>
+              <value name="TO">
+                  <block type="math_number">
+                      <field name="NUM">100</field>
+                  </block>
+              </value>
+          </block>
+          <block type="math_random_float"></block>
+      </category>
+      <category name="Text">
+          <block type="text"></block>
+          <block type="text_join"></block>
+          <block type="text_append">
+              <value name="TEXT">
+                  <block type="text"></block>
+              </value>
+          </block>
+          <block type="text_length"></block>
+          <block type="text_isEmpty"></block>
+          <block type="text_indexOf">
+              <value name="VALUE">
+                  <block type="variables_get">
+                      <field name="VAR" class="textVar">...</field>
+                  </block>
+              </value>
+          </block>
+          <block type="text_charAt">
+              <value name="VALUE">
+                  <block type="variables_get">
+                      <field name="VAR" class="textVar">...</field>
+                  </block>
+              </value>
+          </block>
+          <block type="text_getSubstring">
+              <value name="STRING">
+                  <block type="variables_get">
+                      <field name="VAR" class="textVar">...</field>
+                  </block>
+              </value>
+          </block>
+          <block type="text_changeCase"></block>
+          <block type="text_trim"></block>
+          <block type="text_print"></block>
+          <block type="text_prompt_ext">
+              <value name="TEXT">
+                  <block type="text"></block>
+              </value>
+          </block>
+      </category>
+      <category name="Lists">
+          <block type="lists_create_empty"></block>
+          <block type="lists_create_with"></block>
+          <block type="lists_repeat">
+              <value name="NUM">
+                  <block type="math_number">
+                      <field name="NUM">5</field>
+                  </block>
+              </value>
+          </block>
+          <block type="lists_length"></block>
+          <block type="lists_isEmpty"></block>
+          <block type="lists_indexOf"></block>
+          <block type="lists_getIndex"></block>
+          <block type="lists_setIndex"></block>
+      </category>
+      <category name="Variables" custom="VARIABLE"></category>
+      <category name="Functions" custom="PROCEDURE"></category>
+      <hr/>
+      <category name="Cannybots">
+          <block type="cannyblocks_cannybots_receive_message"></block>
+          <block type="cannyblocks_cannybots_send_message"></block>
+      </category>
+      <hr/>
+    <category name="Turtle">
+        <block type="cannyblocks_turtle_forward"></block>
+        <block type="cannyblocks_turtle_backward"></block>
+        <block type="cannyblocks_turtle_left"></block>
+        <block type="cannyblocks_turtle_right"></block>
+    </category>
+    
+  </xml>
+
+  <xml id="startBlocks" style="display: none">
+       </xml>
+  
+  <xml id="logoExample1Blocks" style="display: none">
+      <block type="controls_repeat_ext" id="10" inline="true" x="38" y="27">
+          <value name="TIMES">
+              <block type="math_number" id="11">
+                  <field name="NUM">4</field>
+              </block>
+          </value>
+          <statement name="DO">
+              <block type="cannyblocks_turtle_forward" inline="false">
+                  <value name="Distance">
+                      <block type="math_number">
+                          <field name="NUM">100</field>
+                      </block>
+                  </value>
+                  <next>
+                      <block type="cannyblocks_turtle_right" inline="false">
+                          <value name="Angle">
+                              <block type="math_number">
+                                  <field name="NUM">90</field>
+                              </block>
+                          </value>
+                      </block>
+                  </next>
+              </block>
+              
+          </statement>
+      </block>
+  </xml>
+  
+  <xml id="mazeExample1Blocks" style="display: none">
+
+          <block type="cannyblocks_cannybots_receive_message" id="1" x="1" y="1">
+              <field name="Message">msg</field>
+              <next>
+                  <block type="variables_set" id="2" inline="true">
+                      <field name="VAR">lineStatus</field>
+                      <value name="VALUE">
+                          <block type="text_charAt" id="3" inline="true">
+                              <mutation at="false"></mutation>
+                              <field name="WHERE">LAST</field>
+                              <value name="VALUE">
+                                  <block type="variables_get" id="4">
+                                      <field name="VAR">msg</field>
+                                  </block>
+                              </value>
+                          </block>
+                      </value>
+                      <next>
+                          <block type="controls_if" id="6" inline="false">
+                              <mutation elseif="3" else="1"></mutation>
+                              <value name="IF0">
+                                  <block type="logic_compare" id="7" inline="true">
+                                      <field name="OP">EQ</field>
+                                      <value name="A">
+                                          <block type="variables_get" id="8">
+                                              <field name="VAR">lineStatus</field>
+                                          </block>
+                                      </value>
+                                      <value name="B">
+                                          <block type="text" id="9">
+                                              <field name="TEXT">R</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </value>
+                              <statement name="DO0">
+                                  <block type="cannyblocks_cannybots_send_message" id="10" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="11">
+                                              <field name="TEXT">r</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                              <value name="IF1">
+                                  <block type="logic_compare" id="12" inline="true">
+                                      <field name="OP">EQ</field>
+                                      <value name="A">
+                                          <block type="variables_get" id="13">
+                                              <field name="VAR">lineStatus</field>
+                                          </block>
+                                      </value>
+                                      <value name="B">
+                                          <block type="text" id="14">
+                                              <field name="TEXT">L</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </value>
+                              <statement name="DO1">
+                                  <block type="cannyblocks_cannybots_send_message" id="15" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="16">
+                                              <field name="TEXT">l</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                              <value name="IF2">
+                                  <block type="logic_compare" id="17" inline="true">
+                                      <field name="OP">EQ</field>
+                                      <value name="A">
+                                          <block type="variables_get" id="18">
+                                              <field name="VAR">lineStatus</field>
+                                          </block>
+                                      </value>
+                                      <value name="B">
+                                          <block type="text" id="19">
+                                              <field name="TEXT">T</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </value>
+                              <statement name="DO2">
+                                  <block type="procedures_callnoreturn" id="20">
+                                      <mutation name="Handle T Junction"></mutation>
+                                  </block>
+                              </statement>
+                              <value name="IF3">
+                                  <block type="logic_compare" id="21" inline="true">
+                                      <field name="OP">EQ</field>
+                                      <value name="A">
+                                          <block type="variables_get" id="22">
+                                              <field name="VAR">lineStatus</field>
+                                          </block>
+                                      </value>
+                                      <value name="B">
+                                          <block type="text" id="23">
+                                              <field name="TEXT">N</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </value>
+                              <statement name="DO3">
+                                  <block type="cannyblocks_cannybots_send_message" id="24" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="25">
+                                              <field name="TEXT">p</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                              <statement name="ELSE">
+                                  <block type="cannyblocks_cannybots_send_message" id="26" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="27">
+                                              <field name="TEXT">p</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                          </block>
+                      </next>
+                  </block>
+              </next>
+          </block>
+          <block type="math_number" id="5" x="471" y="39">
+              <field name="NUM">0</field>
+          </block>
+          <block type="procedures_defnoreturn" id="28" x="13" y="513">
+              <mutation></mutation>
+              <field name="NAME">Handle T Junction</field>
+              <statement name="STACK">
+                  <block type="variables_set" id="29" inline="true">
+                      <field name="VAR">randomNum</field>
+                      <value name="VALUE">
+                          <block type="math_random_int" id="30" inline="true">
+                              <value name="FROM">
+                                  <block type="math_number" id="31">
+                                      <field name="NUM">1</field>
+                                  </block>
+                              </value>
+                              <value name="TO">
+                                  <block type="math_number" id="32">
+                                      <field name="NUM">100</field>
+                                  </block>
+                              </value>
+                          </block>
+                      </value>
+                      <next>
+                          <block type="controls_if" id="33" inline="false">
+                              <mutation else="1"></mutation>
+                              <value name="IF0">
+                                  <block type="logic_compare" id="34" inline="true">
+                                      <field name="OP">LT</field>
+                                      <value name="A">
+                                          <block type="variables_get" id="35">
+                                              <field name="VAR">randomNum</field>
+                                          </block>
+                                      </value>
+                                      <value name="B">
+                                          <block type="math_number" id="36">
+                                              <field name="NUM">50</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </value>
+                              <statement name="DO0">
+                                  <block type="cannyblocks_cannybots_send_message" id="37" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="38">
+                                              <field name="TEXT">r</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                              <statement name="ELSE">
+                                  <block type="cannyblocks_cannybots_send_message" id="39" inline="true">
+                                      <value name="message">
+                                          <block type="text" id="40">
+                                              <field name="TEXT">l</field>
+                                          </block>
+                                      </value>
+                                  </block>
+                              </statement>
+                          </block>
+                      </next>
+                  </block>
+              </statement>
+          </block>
+      </xml>
+  <script>
+    Blockly.inject(document.getElementById('blocklyDiv'),
+        {toolbox: document.getElementById('toolbox')});
+  
+    Blockly.Xml.domToWorkspace(Blockly.mainWorkspace,
+        document.getElementById('startBlocks'));
+
+    function showCode() {
+      // Generate JavaScript code and display it.
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      var code = Blockly.JavaScript.workspaceToCode();
+      var codeArea = document.getElementById('codeArea');
+      if (codeArea)
+        codeArea.value = code;
+      //cannybots.sendDebug(code);
+      
+      // check if the code expects message from the bot
+      if (code.indexOf("cannybotsGetMessage")>0) {
+          cannybots.debug("Block for receive event found");
+          cannybots.recvDelegate = cbEventHandler;
+      } else {
+          cannybots.debug("Block for receive event NOT found");
+          cannybots.recvDelegate = function(msg){};
+      }
+    }
+
+    function logoEx1() {
+        Blockly.mainWorkspace.clear();
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace,
+            document.getElementById('logoExample1Blocks'));
+    }
+  
+    function mazeEx1() {
+        Blockly.mainWorkspace.clear();
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace,
+            document.getElementById('mazeExample1Blocks'));
+    }
+
+    function runCode() {
+      // Generate JavaScript code and run it.
+      window.LoopTrap = 1000;
+      Blockly.JavaScript.INFINITE_LOOP_TRAP =
+          'if (--window.LoopTrap == 0) throw "Infinite loop.";\n';
+      var code = "";
+      code =  "cannybots.clearQueue();\n";
+      code += "cannybotsSendMessage= function(msg){cannybots.sendStringAsBytes(msg);};\n";
+      //code += 'cannybotsGetMessage = function () { return "";};'; // no-op if sketch is run by users web interface
+      code += Blockly.JavaScript.workspaceToCode();
+      //cannybots.debug(code);
+      Blockly.JavaScript.INFINITE_LOOP_TRAP = null;
+      try {
+        eval(code);
+      } catch (e) {
+          console.log(e.message);
+        cannybots.sendError(e.message);
+      }
+    }
+
+    function showXML() {
+        var xml = Blockly.Xml.workspaceToDom(Blockly.mainWorkspace);
+        //var xml_text = Blockly.Xml.domToText(xml);
+        var xml_text = Blockly.Xml.domToPrettyText(xml);
+
+        var codeArea = document.getElementById('codeArea');
+        if (codeArea)
+            codeArea.value = xml_text;
+    }
+
+    function importXML(xml_text) {
+        var xml = Blockly.Xml.textToDom(xml_text);
+        Blockly.mainWorkspace.clear();
+        Blockly.Xml.domToWorkspace(Blockly.mainWorkspace, xml);
+    }
+
+    function cbEventHandler(bytes) {
+          //document.getElementById('codeArea').value = bytes;
+          cannybots.debug("cbEventHandler, recv="+bytes);
+          cannybotsGetMessage = function () { return bytes;};
+          runCode();
+    }
+
+
+      Blockly.addChangeListener(showCode);
+      
+      </script>
+  <textarea id="cannybotsDebugPane" class="content" wrap="off"></textarea>
+  
+</body>
+</html>

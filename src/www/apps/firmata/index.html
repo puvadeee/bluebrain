@@ -1,6 +1,34 @@
 <html>
     <head>
-        <title>CannbotsWebSocketServer</title>
+        <title>Firmata</title>
+        <style>
+            textarea{
+                margin: 0;
+                position: absolute;
+                top: 75%;
+                bottom: 0;
+                left: 0;
+                right: 0;
+            }
+        .textareacontainer{
+            padding-right: 8px; /* 1 + 3 + 3 + 1 */
+        }
+            </style>
+        
+        <!-- ACE editor -->
+        <style type="text/css" media="screen">
+            body {
+                overflow: hidden;
+            }
+        #editor {
+            margin: 0;
+            position: absolute;
+            top: 32;
+            bottom: 25%;
+            left: 0;
+            right: 0;
+        }
+        </style>
         
         
         <script src="/js/require.js"></script>
@@ -8,65 +36,73 @@
             requirejs.config({
                 baseUrl: "lib",
                 paths: {
-                jquery:    "/js/jquery/jquery-1.11.2.min",
-                BlueBrain: "/js/cannybots/BlueBrain",
-                firmata:     "firmata",
-                serialport:    "serialport4BlueBrain",
-                'browser-serialport':    "serialport4BlueBrain"
+                    jquery:    "/js/jquery/jquery-1.11.2.min",
+                    BlueBrain: "/js/cannybots/BlueBrain",
+                    firmata:     "firmata",
+                    serialport:    "serialport4BlueBrain",
+                    'browser-serialport':    "serialport4BlueBrain",
+                    ace: "/js/ace"
                 },
-                waitSeconds: 2
+                waitSeconds: 10
                 });
         
-        require(['jquery', 'BlueBrain', 'firmata' ], function(jquery, bluebrain, firmata) {
+        require(['jquery', 'BlueBrain', 'firmata', 'ace/ace' ], function(jquery, cannybots, firmata, ace) {
             //This function will be called when all the dependencies
             //listed above are loaded. Note that this function could
             //be called before the page is loaded.
             //This callback is optional.
+            
+            var editor;
             jQuery(function ($) {
-                bluebrain.startLib();
+                cannybots.startLib();
+                editor = ace.edit("editor");
+                //editor.setTheme("ace/theme/clouds");
+                editor.setTheme("ace/theme/solarized_light");
+                editor.getSession().setMode("ace/mode/javascript");
+
             });
             
             
-            
-            var blink = function blink() {
-                console.log("blink start ...");
+            function startTimer(name, func, ms) {
+                name = "CB_TIMER_"+ name;
+                // clear any previous timers
+                if (document[name])
+                clearInterval(document[name]);
                 
-                var ledPin = 1;
-                
-                var board = new firmata.Board("websocket", function(err) {
-                    if (err) {
-                        console.log("ERROR:" + err);
-                        return;
-                    }
-                    console.log("blink: connected");
-                    
-                    console.log("Firmware: "
-                        + board.firmware.name
-                        + "-" + board.firmware.version.major
-                        + "." + board.firmware.version.minor);
-                    
-                    var ledOn = true;
-                    board.pinMode(ledPin, board.MODES.OUTPUT);
-                    
-                    setInterval(function() {
-                        
-                        if (ledOn) {
-                            console.log("+");
-                            board.digitalWrite(ledPin, board.HIGH);
-                        } else {
-                            console.log("-");
-                            board.digitalWrite(ledPin, board.LOW);
-                        }
-                        
-                        ledOn = !ledOn;
-                        
-                    }, 500);
-                    
-                });
-            }; // blink
+                document[name]=setInterval(func, ms);
+            }
             
-            $('#blinkButton').click(function(){
-                blink();
+          
+            
+            
+            
+            
+            $('#runButton').click(function(){
+                try
+                {
+                    document.getElementById( "cannybotsDebugPane" ).innerHTML = "";
+                    eval( "function runUserCode(items) { "
+                        + "var board = new firmata.Board('BlueBrain', function(err) {"
+                        + "if (err) {"
+                        + "     cannybots.debug('ERROR:' + err);"
+                        + "     return;}"
+                        + "var OUTPUT = board.MODES.OUTPUT;"
+                        + "var INPUT  = board.MODES.INPUT;"
+                        + "var HIGH   = board.HIGH;"
+                        + "var LOW    = board.LOW;"
+                        + "function pinMode(p,m) {  board.pinMode(p,m); }"
+                        + "function digitalWrite(p,s) {  board.digitalWrite(p,s); }"
+                        + editor.getSession().getValue()
+                        + "});}"
+                        + "; runUserCode();");
+                    
+                    editor.focus();
+                }
+                catch( e )
+                {
+                    cannybots.debug(e.message);
+                    editor.focus();
+                }
                 return false;
             });
             
@@ -77,12 +113,36 @@
         
     </head>
     <body bgcolor="#FFFFFF">
-        <a href="javascript:WebSocketTest()">Does my browser support WebSockets?</a><br/>
-        <br/>
-        
         <p>
-        <button id="blinkButton">Run Blink</button>
+        <button id="runButton">Run</button>
         </p>
-        <div id="cannybotsDebugPane"/>
+        <pre id="editor">
+// Script:      Blink.js
+// Description: The classic blinky LED
+// Author:      Wayne Keenan (wayne@cannybots.com)
+// Date:        03.03.2015
+
+var ledPin     = 2;
+var blinkDelay = 1000;  //ms
+var ledOn      = false;
+
+pinMode(ledPin, OUTPUT);
+
+function blink() {
+
+    if (ledOn)
+        digitalWrite(ledPin, HIGH);
+    else
+        digitalWrite(ledPin, LOW);
+
+    ledOn = !ledOn;
+}
+
+startTimer("myBlink", blink, blinkDelay);
+</pre>
+        <div class="textareacontainer">
+            <textarea id="cannybotsDebugPane" wrap="off"></textarea>
+        </div>
+
     </body>
 </html>

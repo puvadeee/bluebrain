@@ -14,7 +14,7 @@
 // Version:   1.4  -  02.12.2014  -  Added ability to update threshold over the air (wayne@cannybots.com)
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define BOT_NAME "Lotus"                   // custom name (16 chars max)
+#define BOT_NAME "CannybotL2"                   // custom name (16 chars max)
 //#define BOT_NAME "Cannybot1"                   // custom name (16 chars max)
 #define GZLL_HOST_ADDRESS 0x20ACB020           // this needs to match the Joypad sketch value
 
@@ -371,7 +371,7 @@ void sendIRStats() {
   static long int nextSend = millis() + 1000;
   if (millis() > nextSend) {
     nextSend = millis() + 250;
-    radio_send_formatted("raw:%d,%d,%d", IRvals[0], IRvals[1], IRvals[2]);
+    //radio_send_formatted("raw:%d,%d,%d", IRvals[0], IRvals[1], IRvals[2]);
     //radio_send_formatted("WTH:%d,%d,%d", IRwhiteThreshold[0], IRwhiteThreshold[1], IRwhiteThreshold[2]);
     //radio_send_formatted("ave:%d,%d,%d", average[0], average[1], average[2]);
     //radio_send_formatted("ol?:%d,%d,%d = %d", IS_ON_LINE(1), IS_ON_LINE(2), IS_ON_LINE(3), detectCornerType());

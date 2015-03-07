@@ -3,6 +3,9 @@
 #include <Adafruit_NeoPixel.h>
 #include <Adafruit_TCS34725.h>
 
+
+//#define USE_NEOPIXEL 1
+
 // set to false if using a common cathode LED
 #define commonAnode true
 
@@ -30,11 +33,10 @@ Adafruit_NeoPixel strip = Adafruit_NeoPixel(1, PIN, NEO_GRB + NEO_KHZ800);
    Connect GROUND to common ground */
    
 /* Initialise with default values (int time = 2.4ms, gain = 1x) */
-// Adafruit_TCS34725 tcs = Adafruit_TCS34725();
+//Adafruit_TCS34725 tcs = Adafruit_TCS34725();
 
 /* Initialise with specific int time and gain values */
-
-Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_700MS, TCS34725_GAIN_1X);
+Adafruit_TCS34725 tcs = Adafruit_TCS34725(TCS34725_INTEGRATIONTIME_2_4MS, TCS34725_GAIN_1X);
 
 // our RGB -> eye-recognized gamma color
 byte gammatable[256];
@@ -56,7 +58,7 @@ void setup() {
     } else {
       gammatable[i] = x;      
     }
-    //Serial.println(gammatable[i]);
+    Serial.println(gammatable[i]);
   }
   
   
@@ -73,29 +75,39 @@ void setup() {
   pinMode(2, INPUT);
   digitalWrite(2, LOW);
   
-  //strip.begin();
-  //strip.show(); // Initialize all pixels to 'off'
+#ifdef  USE_NEOPIXEL
+  strip.begin();
+  strip.show(); // Initialize all pixels to 'off'
+#endif  
 }
 
 void loop() {
-  uint16_t r, g, b, c, colorTemp, lux;
+  uint16_t red, green, blue, clear, colorTemp, lux;
+
+  delay(10);
+  tcs.getRawData(&red, &green, &blue, &clear);
+  colorTemp = tcs.calculateColorTemperature(red, green, blue);
+  lux = tcs.calculateLux(red, green, blue);
   
-  tcs.getRawData(&r, &g, &b, &c);
-  colorTemp = tcs.calculateColorTemperature(r, g, b);
-  lux = tcs.calculateLux(r, g, b);
+  uint32_t sum = clear;
+  float r, g, b;
+  r = red; r /= sum;
+  g = green; g /= sum;
+  b = blue; b /= sum;
+  r *= 256; g *= 256; b *= 256;
   
 #ifdef USE_NEOPIXEL  
   uint32_t colour = strip.Color(gammatable[(int)r], gammatable[(int)g], gammatable[(int)b]);
-  strip.setPixelColor(1, c);
+  strip.setPixelColor(1, colour);
   strip.show();
 #endif  
   
   Serial.print("Color Temp: "); Serial.print(colorTemp, DEC); Serial.print(" K - ");
   Serial.print("Lux: "); Serial.print(lux, DEC); Serial.print(" - ");
-  Serial.print("R: "); Serial.print(r, DEC); Serial.print(" ");
-  Serial.print("G: "); Serial.print(g, DEC); Serial.print(" ");
-  Serial.print("B: "); Serial.print(b, DEC); Serial.print(" ");
-  Serial.print("C: "); Serial.print(c, DEC); Serial.print(" ");
+  Serial.print("R: "); Serial.print(red, DEC); Serial.print(" ");
+  Serial.print("G: "); Serial.print(green, DEC); Serial.print(" ");
+  Serial.print("B: "); Serial.print(blue, DEC); Serial.print(" ");
+  Serial.print("C: "); Serial.print(clear, DEC); Serial.print(" ");
 
   Serial.print("R: "); Serial.print( gammatable[(int)r], DEC); Serial.print(" ");
   Serial.print("G: "); Serial.print( gammatable[(int)g], DEC); Serial.print(" ");

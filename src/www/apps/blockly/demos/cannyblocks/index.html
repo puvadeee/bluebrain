@@ -26,9 +26,9 @@
   }
   #blocklyDiv    {
       position: absolute;
-      width: 600px;
-      height: 480px;
-      background: red;
+      width: 99%;
+      height: 80%;
+      background: white;
   }
   
   #codeAreaDiv  {
@@ -57,22 +57,10 @@
  
   <p>
   <button onclick="runCode()">Run</button>
-  <button onclick="logoEx1()">Logo Example</button>
-  <button onclick="mazeEx1()">Maze Example</button>
-  <button onclick="showXML()">Show XML (dev only)</button>
-  <button onclick="importXML(document.getElementById('codeArea').value)">Import XML (dev only)</button>
   </p>
   
-  <div id="main">
-      <div id="blocklyDiv" style="height: 480px; width: 600px; float:left;"></div>
-      <div id="codeAreaDiv"><textarea id="codeArea" wrap="off"></textarea></div>
-  </div>
 
-<!--
-    <div id="blocklyDiv" style="height: 480px; width: 600px;">
-        <div id="codeWindow"><textarea wrap="off"></textarea></div>
-    </div>
--->
+      <div id="blocklyDiv"></div>
 
   <xml id="toolbox" style="display: none">
       <category name="Logic">
@@ -237,234 +225,231 @@
         <block type="cannyblocks_turtle_left"></block>
         <block type="cannyblocks_turtle_right"></block>
     </category>
-    
+    <hr/>
+    <category name="Examples">
+        <category name="Turtle">
+            <block type="controls_repeat_ext" id="10" inline="true" x="38" y="27">
+                <value name="TIMES">
+                    <block type="math_number" id="11">
+                        <field name="NUM">4</field>
+                    </block>
+                </value>
+                <statement name="DO">
+                    <block type="cannyblocks_turtle_forward" inline="false">
+                        <value name="Distance">
+                            <block type="math_number">
+                                <field name="NUM">100</field>
+                            </block>
+                        </value>
+                        <next>
+                            <block type="cannyblocks_turtle_right" inline="false">
+                                <value name="Angle">
+                                    <block type="math_number">
+                                        <field name="NUM">90</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </next>
+                    </block>
+                    
+                </statement>
+            </block>
+        </category>
+        <category name="PiMazing">
+            <block type="cannyblocks_cannybots_receive_message" id="1" x="1" y="1">
+                <field name="Message">msg</field>
+                <next>
+                    <block type="variables_set" id="2" inline="true">
+                        <field name="VAR">lineStatus</field>
+                        <value name="VALUE">
+                            <block type="text_charAt" id="3" inline="true">
+                                <mutation at="false"></mutation>
+                                <field name="WHERE">LAST</field>
+                                <value name="VALUE">
+                                    <block type="variables_get" id="4">
+                                        <field name="VAR">msg</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
+                        <next>
+                            <block type="controls_if" id="6" inline="false">
+                                <mutation elseif="3" else="1"></mutation>
+                                <value name="IF0">
+                                    <block type="logic_compare" id="7" inline="true">
+                                        <field name="OP">EQ</field>
+                                        <value name="A">
+                                            <block type="variables_get" id="8">
+                                                <field name="VAR">lineStatus</field>
+                                            </block>
+                                        </value>
+                                        <value name="B">
+                                            <block type="text" id="9">
+                                                <field name="TEXT">R</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <statement name="DO0">
+                                    <block type="cannyblocks_cannybots_send_message" id="10" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="11">
+                                                <field name="TEXT">r</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                                <value name="IF1">
+                                    <block type="logic_compare" id="12" inline="true">
+                                        <field name="OP">EQ</field>
+                                        <value name="A">
+                                            <block type="variables_get" id="13">
+                                                <field name="VAR">lineStatus</field>
+                                            </block>
+                                        </value>
+                                        <value name="B">
+                                            <block type="text" id="14">
+                                                <field name="TEXT">L</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <statement name="DO1">
+                                    <block type="cannyblocks_cannybots_send_message" id="15" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="16">
+                                                <field name="TEXT">l</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                                <value name="IF2">
+                                    <block type="logic_compare" id="17" inline="true">
+                                        <field name="OP">EQ</field>
+                                        <value name="A">
+                                            <block type="variables_get" id="18">
+                                                <field name="VAR">lineStatus</field>
+                                            </block>
+                                        </value>
+                                        <value name="B">
+                                            <block type="text" id="19">
+                                                <field name="TEXT">T</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <statement name="DO2">
+                                    <block type="procedures_callnoreturn" id="20">
+                                        <mutation name="Handle T Junction"></mutation>
+                                    </block>
+                                </statement>
+                                <value name="IF3">
+                                    <block type="logic_compare" id="21" inline="true">
+                                        <field name="OP">EQ</field>
+                                        <value name="A">
+                                            <block type="variables_get" id="22">
+                                                <field name="VAR">lineStatus</field>
+                                            </block>
+                                        </value>
+                                        <value name="B">
+                                            <block type="text" id="23">
+                                                <field name="TEXT">N</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <statement name="DO3">
+                                    <block type="cannyblocks_cannybots_send_message" id="24" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="25">
+                                                <field name="TEXT">p</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                                <statement name="ELSE">
+                                    <block type="cannyblocks_cannybots_send_message" id="26" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="27">
+                                                <field name="TEXT">p</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                            </block>
+                        </next>
+                    </block>
+                </next>
+            </block>
+
+            <block type="procedures_defnoreturn" id="28" x="13" y="513">
+                <mutation></mutation>
+                <field name="NAME">Handle T Junction</field>
+                <statement name="STACK">
+                    <block type="variables_set" id="29" inline="true">
+                        <field name="VAR">randomNum</field>
+                        <value name="VALUE">
+                            <block type="math_random_int" id="30" inline="true">
+                                <value name="FROM">
+                                    <block type="math_number" id="31">
+                                        <field name="NUM">1</field>
+                                    </block>
+                                </value>
+                                <value name="TO">
+                                    <block type="math_number" id="32">
+                                        <field name="NUM">100</field>
+                                    </block>
+                                </value>
+                            </block>
+                        </value>
+                        <next>
+                            <block type="controls_if" id="33" inline="false">
+                                <mutation else="1"></mutation>
+                                <value name="IF0">
+                                    <block type="logic_compare" id="34" inline="true">
+                                        <field name="OP">LT</field>
+                                        <value name="A">
+                                            <block type="variables_get" id="35">
+                                                <field name="VAR">randomNum</field>
+                                            </block>
+                                        </value>
+                                        <value name="B">
+                                            <block type="math_number" id="36">
+                                                <field name="NUM">50</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </value>
+                                <statement name="DO0">
+                                    <block type="cannyblocks_cannybots_send_message" id="37" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="38">
+                                                <field name="TEXT">r</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                                <statement name="ELSE">
+                                    <block type="cannyblocks_cannybots_send_message" id="39" inline="true">
+                                        <value name="message">
+                                            <block type="text" id="40">
+                                                <field name="TEXT">l</field>
+                                            </block>
+                                        </value>
+                                    </block>
+                                </statement>
+                            </block>
+                        </next>
+                    </block>
+                </statement>
+            </block>
+        </category>
+    </category>
   </xml>
 
   <xml id="startBlocks" style="display: none">
        </xml>
-  
-  <xml id="logoExample1Blocks" style="display: none">
-      <block type="controls_repeat_ext" id="10" inline="true" x="38" y="27">
-          <value name="TIMES">
-              <block type="math_number" id="11">
-                  <field name="NUM">4</field>
-              </block>
-          </value>
-          <statement name="DO">
-              <block type="cannyblocks_turtle_forward" inline="false">
-                  <value name="Distance">
-                      <block type="math_number">
-                          <field name="NUM">100</field>
-                      </block>
-                  </value>
-                  <next>
-                      <block type="cannyblocks_turtle_right" inline="false">
-                          <value name="Angle">
-                              <block type="math_number">
-                                  <field name="NUM">90</field>
-                              </block>
-                          </value>
-                      </block>
-                  </next>
-              </block>
-              
-          </statement>
-      </block>
-  </xml>
-  
-  <xml id="mazeExample1Blocks" style="display: none">
-
-          <block type="cannyblocks_cannybots_receive_message" id="1" x="1" y="1">
-              <field name="Message">msg</field>
-              <next>
-                  <block type="variables_set" id="2" inline="true">
-                      <field name="VAR">lineStatus</field>
-                      <value name="VALUE">
-                          <block type="text_charAt" id="3" inline="true">
-                              <mutation at="false"></mutation>
-                              <field name="WHERE">LAST</field>
-                              <value name="VALUE">
-                                  <block type="variables_get" id="4">
-                                      <field name="VAR">msg</field>
-                                  </block>
-                              </value>
-                          </block>
-                      </value>
-                      <next>
-                          <block type="controls_if" id="6" inline="false">
-                              <mutation elseif="3" else="1"></mutation>
-                              <value name="IF0">
-                                  <block type="logic_compare" id="7" inline="true">
-                                      <field name="OP">EQ</field>
-                                      <value name="A">
-                                          <block type="variables_get" id="8">
-                                              <field name="VAR">lineStatus</field>
-                                          </block>
-                                      </value>
-                                      <value name="B">
-                                          <block type="text" id="9">
-                                              <field name="TEXT">R</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </value>
-                              <statement name="DO0">
-                                  <block type="cannyblocks_cannybots_send_message" id="10" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="11">
-                                              <field name="TEXT">r</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                              <value name="IF1">
-                                  <block type="logic_compare" id="12" inline="true">
-                                      <field name="OP">EQ</field>
-                                      <value name="A">
-                                          <block type="variables_get" id="13">
-                                              <field name="VAR">lineStatus</field>
-                                          </block>
-                                      </value>
-                                      <value name="B">
-                                          <block type="text" id="14">
-                                              <field name="TEXT">L</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </value>
-                              <statement name="DO1">
-                                  <block type="cannyblocks_cannybots_send_message" id="15" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="16">
-                                              <field name="TEXT">l</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                              <value name="IF2">
-                                  <block type="logic_compare" id="17" inline="true">
-                                      <field name="OP">EQ</field>
-                                      <value name="A">
-                                          <block type="variables_get" id="18">
-                                              <field name="VAR">lineStatus</field>
-                                          </block>
-                                      </value>
-                                      <value name="B">
-                                          <block type="text" id="19">
-                                              <field name="TEXT">T</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </value>
-                              <statement name="DO2">
-                                  <block type="procedures_callnoreturn" id="20">
-                                      <mutation name="Handle T Junction"></mutation>
-                                  </block>
-                              </statement>
-                              <value name="IF3">
-                                  <block type="logic_compare" id="21" inline="true">
-                                      <field name="OP">EQ</field>
-                                      <value name="A">
-                                          <block type="variables_get" id="22">
-                                              <field name="VAR">lineStatus</field>
-                                          </block>
-                                      </value>
-                                      <value name="B">
-                                          <block type="text" id="23">
-                                              <field name="TEXT">N</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </value>
-                              <statement name="DO3">
-                                  <block type="cannyblocks_cannybots_send_message" id="24" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="25">
-                                              <field name="TEXT">p</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                              <statement name="ELSE">
-                                  <block type="cannyblocks_cannybots_send_message" id="26" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="27">
-                                              <field name="TEXT">p</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                          </block>
-                      </next>
-                  </block>
-              </next>
-          </block>
-          <block type="math_number" id="5" x="471" y="39">
-              <field name="NUM">0</field>
-          </block>
-          <block type="procedures_defnoreturn" id="28" x="13" y="513">
-              <mutation></mutation>
-              <field name="NAME">Handle T Junction</field>
-              <statement name="STACK">
-                  <block type="variables_set" id="29" inline="true">
-                      <field name="VAR">randomNum</field>
-                      <value name="VALUE">
-                          <block type="math_random_int" id="30" inline="true">
-                              <value name="FROM">
-                                  <block type="math_number" id="31">
-                                      <field name="NUM">1</field>
-                                  </block>
-                              </value>
-                              <value name="TO">
-                                  <block type="math_number" id="32">
-                                      <field name="NUM">100</field>
-                                  </block>
-                              </value>
-                          </block>
-                      </value>
-                      <next>
-                          <block type="controls_if" id="33" inline="false">
-                              <mutation else="1"></mutation>
-                              <value name="IF0">
-                                  <block type="logic_compare" id="34" inline="true">
-                                      <field name="OP">LT</field>
-                                      <value name="A">
-                                          <block type="variables_get" id="35">
-                                              <field name="VAR">randomNum</field>
-                                          </block>
-                                      </value>
-                                      <value name="B">
-                                          <block type="math_number" id="36">
-                                              <field name="NUM">50</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </value>
-                              <statement name="DO0">
-                                  <block type="cannyblocks_cannybots_send_message" id="37" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="38">
-                                              <field name="TEXT">r</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                              <statement name="ELSE">
-                                  <block type="cannyblocks_cannybots_send_message" id="39" inline="true">
-                                      <value name="message">
-                                          <block type="text" id="40">
-                                              <field name="TEXT">l</field>
-                                          </block>
-                                      </value>
-                                  </block>
-                              </statement>
-                          </block>
-                      </next>
-                  </block>
-              </statement>
-          </block>
-      </xml>
-  <script>
+   <script>
     Blockly.inject(document.getElementById('blocklyDiv'),
         {toolbox: document.getElementById('toolbox')});
   
@@ -549,7 +534,6 @@
       Blockly.addChangeListener(showCode);
       
       </script>
-  <textarea id="cannybotsDebugPane" class="content" wrap="off"></textarea>
   
 </body>
 </html>
