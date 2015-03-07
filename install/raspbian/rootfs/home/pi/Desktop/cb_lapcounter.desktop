@@ -1,0 +1,10 @@
+[Desktop Entry]
+Name=Cannybots Lap Counter
+Comment=
+Icon=/usr/share/pixmaps/openbox.xpm
+Exec=lxterminal -t "Cannybots Lap Counter" --working-directory=/opt/cannybots/runtime/apps/racecontroller -e ./start_laptimer.sh	
+Type=Application
+Encoding=UTF-8
+Terminal=false
+Catageories=none;
+
