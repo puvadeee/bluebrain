@@ -18,6 +18,7 @@ export LDFLAGS="`sdl-config --libs` -lrt"
   --localstatedir=/var \
   --libexecdir=/lib \
   --enable-experimental \
+  --enable-library \
   --disable-systemd $*
 
 make
