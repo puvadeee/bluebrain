@@ -1,4 +1,5 @@
 #!/bin/sh
+sleep2
 exec /lib/bluetooth/bluetoothd
 
 

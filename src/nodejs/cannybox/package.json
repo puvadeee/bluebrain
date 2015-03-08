@@ -13,7 +13,9 @@
     "express.io": "^1.1.13",
     "jade": "~1.9.0",
     "morgan": "~1.5.1",
+    "noble": "^0.3.10",
     "node-red": "^0.9.1-nocolors",
+    "node-red-contrib-noble": "^0.1.1",
     "serialport": "^1.4.10",
     "serve-favicon": "~2.2.0",
     "stylus": "0.42.3"
