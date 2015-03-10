@@ -106,7 +106,7 @@ var cannybots = new function() {
         self.sendBytes(bytes);
         
     }
-    //  01634 720182  3557  sue
+    
     self.sendBytes = function(bytesArray) {
         var message = {
             "rawBytes":bytesArray

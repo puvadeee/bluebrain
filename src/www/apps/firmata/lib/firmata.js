@@ -430,6 +430,7 @@ define(['encoder7bit', 'onewireutils', 'serialport', 'events', 'BlueBrain'], fun
         var board = this;
         var defaults = {
         reportVersionTimeout: 3000,
+        //skipCapabilities: 1,
         serialport: {
         baudRate: 57600,
         bufferSize: 1
@@ -615,7 +616,7 @@ define(['encoder7bit', 'onewireutils', 'serialport', 'events', 'BlueBrain'], fun
                     cannybots.debug("settings.skipCapabilities");
                     ready();
                 } else {
-                    cannybots.debug("NOT settings.skipCapabilities");
+                    cannybots.debug("finding Capabilities");
 
                     this.queryCapabilities(function() {
                         cannybots.debug("queryAnalogMapping");
