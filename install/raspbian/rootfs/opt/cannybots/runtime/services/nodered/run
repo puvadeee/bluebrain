@@ -6,8 +6,8 @@ hciconfig hci0 down
 sleep 2
 hciconfig hci0 up
 if [ -e /usr/bin/node ]; then
-exec /usr/bin/node --max-old-space-size=128 ./bin/www >> $LOG
+exec /usr/bin/node --max-old-space-size=128 ./bin/www >> $LOG 2>&1
 else
-exec /usr/local/bin/node --max-old-space-size=128 ./bin/www >> $LOG
+exec /usr/local/bin/node --max-old-space-size=128 ./bin/www >> $LOG 2>&1
 fi
 

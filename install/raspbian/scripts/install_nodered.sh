@@ -27,6 +27,6 @@ cd $INSTALL_DIR/cannybox
 cp -rv $INSTALL_SRC_DIR/www .
 cp nodered/flows_default.json nodered/flows_`hostname`.json
 
-chown pi $INSTALL_DIR
-chmod g+w $INSTALL_DIR
+chown -R pi $INSTALL_DIR
+chmod -R g+w $INSTALL_DIR
 npm install
