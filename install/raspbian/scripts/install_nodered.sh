@@ -4,7 +4,7 @@ INSTALL_DIR=/opt/cannybots/runtime/nodered
 INSTALL_SRC_DIR=$PWD/../../src
 INSTALL_BIN_FILES=$PWD/vendor/nodered
 
-if [ "$(grep -c processor /proc/cpuinfo)" = "1" ]; then
+if [ "$(grep -c ^processor /proc/cpuinfo)" = "1" ]; then
 
 echo Pi v1 install
 sudo dpkg -i $INSTALL_BIN_FILES/node_0.10.36_armhf.deb

@@ -1,5 +1,7 @@
 #!/bin/bash 
 
+sudo apt-get update
+
 #install X11 VNC
 sudo apt-get install x11vnc -y
 x11vnc -storepasswd

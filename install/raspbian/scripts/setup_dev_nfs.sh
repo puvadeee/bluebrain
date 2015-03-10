@@ -10,6 +10,6 @@ mkdir -p /opt/cannybots/nfs
 chown root.users /opt/cannybots/nfs
 chmod g+w /opt/cannybots/nfs
 
-echo '192.168.1.41:/volume1/rpi/cannybots /opt/cannybots/nfs nfs nouser,atime,auto,rw,dev,exec,suid,nolock,auto 0 0' >> /etc/fstab
+echo 'slimstation.local:/volume1/rpi/cannybots /opt/cannybots/nfs nfs nouser,atime,auto,rw,dev,exec,suid,nolock,auto 0 0' >> /etc/fstab
 mount -a
 
