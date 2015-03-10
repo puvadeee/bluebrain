@@ -33,3 +33,5 @@ apt-get install daemontools daemontools-run -y
 
 apt-get install libv4l-dev libjpeg8-dev imagemagick cmake -y
 
+# nodered deps 
+apt-get install python-rpi.gpio python-dev -y

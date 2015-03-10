@@ -28,9 +28,10 @@ var settings = {
     httpAdminRoot:"/red",
     httpNodeRoot: "/api",
     userDir: __dirname+"/../nodered",
+    nodesDir: __dirname+"/../nodered/nodes",
     functionGlobalContext: { }    // enables global context
 };
-
+console.log("dir: " + __dirname);
 RED.init(server,settings);
 app.use(settings.httpAdminRoot,RED.httpAdmin);
 app.use(settings.httpNodeRoot,RED.httpNode);
