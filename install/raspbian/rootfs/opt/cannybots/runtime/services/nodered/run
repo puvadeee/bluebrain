@@ -1,11 +1,13 @@
 #!/bin/sh
+LOG=/var/log/node-red.log
+touch LOG
 cd /opt/cannybots/runtime/nodered/cannybox/
 hciconfig hci0 down
 sleep 2
 hciconfig hci0 up
 if [ -e /usr/bin/node ]; then
-exec /usr/bin/node --max-old-space-size=128 ./bin/www
+exec /usr/bin/node --max-old-space-size=128 ./bin/www >> $LOG
 else
-exec /usr/local/bin/node --max-old-space-size=128 ./bin/www
+exec /usr/local/bin/node --max-old-space-size=128 ./bin/www >> $LOG
 fi
 
