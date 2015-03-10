@@ -516,7 +516,7 @@ define(['encoder7bit', 'onewireutils', 'serialport', 'events', 'BlueBrain'], fun
             //cannybots.debug("Firmata, on data len=" +data.length);
             //cannybots.debug("Firmata, on data[0]: '" + data[0] + "'");
             if (!this.versionReceived && data[0] != REPORT_VERSION) {  // chage from object equality !==
-                canybots.debug("Firmata, bail");
+                cannybots.debug("Firmata, bail");
                 return;
             } else {
                 //cannybots.debug("Firmata, version received");
