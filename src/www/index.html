@@ -1,39 +1,46 @@
 
 <html>
     <head>
+		<style>
+			#menu{
+				float:top;
+				width:100%;
+				height:50%;
+				//border-bottom:none;
+				//border-top:red 30px;
+				}
+			#menu img{
+				    //display: block;
+					margin-left: 25%;
+					margin-right: 25%;
+					max-width: 50%;
+					//width:auto; 
+					height:auto;
+			}
+			
+			td{
+				border:red 30px;
+			}
+		</style>
     </head>
     <body>
-        <h1><img src="images/Cannybots_Logo_med.png" width="30%"/></h1>
-        <h2>Over The Air programming</h2>
-        <a href="upload.html">Upload Application</a><br/>
-        <h2>Apps</h2>
-        <a href="apps/firmata/">Firmata</a><br/>
-        <br/>
-        <a href="apps/firmata/eval.html">Firmata (eval test)</a><br/>
-        <br/>
-        <a href="apps/logo/">Logo Turtle</a><br/>
-        <br/>
-        <a href="apps/blockly/demos/cannyblocks/">Cannyblocks</a><br/>
-        <br/>
-        <a href="apps/blockly/demos/cannyblocks2/">Cannyblocks2</a><br/>
-        <br/>
-        <a href="apps/blockly/demos/blockfactory/">Block Factory</a><br/>
-        <br/>
-        <h2>Tests</h2>
-        <a href="apps/test/cbjoypad/">Cannybots Joypad</a><br/>
-        <br/>
-        <a href="apps/test/jquerytest/">JQueryTest</a><br/>
-        <br/>
-        <a href="apps/test/jstest/">JavaScript</a><br/>
-        <br/>
-        <a href="apps/test/wstest/">Basic WebSocket</a><br/>
-        <br/>
-        <a href="apps/test/cbwstest/">Cannybot WebSocket</a><br/>
-        <br/>
-        <a href="apps/test/joypad/">Joypad</a><br/>
-        <br/>
-        <a href="apps/test/upload/">File Upload</a><br/>
-
+        <h1><center><img src="images/Cannybots_Logo_med.png" width="30%"/></center></h1>
+        
+        <hr/>
+        <table id="menu" cellspacing="0">
+			<tr>
+				<td class="item"><a href="apps/blockly/demos/cannyblocks2/"><img src="images/logos/blockly.png"/></a></td>
+				<td class="item"><a href="apps/logo/"><img src="images/logos/logo.png"/></a></td>
+				<td class="item"><a href="apps/firmata"><img src="images/logos/javascript.png"/></a></td>
+			</tr>
+			<tr>
+				<td class="item"><a href="red"><img src="images/logos/node-red.png"/></a></td>
+				<td class="item"><a href="https://developer.mbed.org/teams/Cannybots/"><img src="images/logos/mbed.png"/></a></td>
+				<td class="item"><a href="upload.html"><img src="images/logos/python.png"/></a></td>
+			</tr>
+		
+		</table>
+		<hr/>
     </body>
 </html>
 
