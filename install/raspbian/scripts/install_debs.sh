@@ -13,7 +13,7 @@ apt-get upgrade -y
 apt-get install python-pexpect
 
 # BlueZ building and runtime
-apt-get install automake build-essential libtool glib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev
+apt-get install automake build-essential libtool glib2.0 libdbus-1-dev libudev-dev libical-dev libreadline-dev -y
 
 # SDL
 apt-get install libsdl-dev -y
