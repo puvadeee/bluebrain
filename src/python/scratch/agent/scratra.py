@@ -92,7 +92,8 @@ class runClass(threading.Thread):
         self.msg = msg
         self.console = console
         threading.Thread.__init__(self)
-
+        self.daemon=True
+        
     def run(self):
         host = self.host
         poll = self.poll
