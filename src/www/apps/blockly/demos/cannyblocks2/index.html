@@ -3,7 +3,7 @@
 <head>
   <meta charset="utf-8">
   <meta name="google" value="notranslate">
-  <title>Blockly Demo:</title>
+  <title>Cannyblocks Demo</title>
   <link rel="stylesheet" href="style.css">
   <script src="/storage.js"></script>
   <script src="../../blockly_compressed.js"></script>
@@ -20,8 +20,7 @@
   <table width="100%" height="100%">
     <tr>
       <td>
-        <h1><a href="https://developers.google.com/blockly/">Blockly</a> &gt;
-          <a href="../index.html">Demos</a> &gt;
+        <h1>Cannyblocks
           <span id="title">...</span>
         </h1>
       </td>
@@ -272,8 +271,23 @@
     <category id="catVariables" custom="VARIABLE"></category>
     <category id="catFunctions" custom="PROCEDURE"></category>
     <sep></sep>
-    <category name="Library">
-        <category name="Turtle">
+    <hr/>
+
+    <category name="Cannybots">
+
+    <category name="Messaging">
+          <block type="cannyblocks_cannybots_receive_message"></block>
+          <block type="cannyblocks_cannybots_send_message"></block>
+      </category>
+    <category name="Turtle">
+        <block type="cannyblocks_turtle_forward"></block>
+        <block type="cannyblocks_turtle_backward"></block>
+        <block type="cannyblocks_turtle_left"></block>
+        <block type="cannyblocks_turtle_right"></block>
+    </category>
+    </category>
+    <category name="Examples">
+        <category name="Turtle - Square">
             <block type="controls_repeat_ext" id="10" inline="true" x="38" y="27">
                 <value name="TIMES">
                     <block type="math_number" id="11">
@@ -427,9 +441,7 @@
                     </block>
                 </next>
             </block>
-            <block type="math_number" id="5" x="471" y="39">
-                <field name="NUM">0</field>
-            </block>
+
             <block type="procedures_defnoreturn" id="28" x="13" y="513">
                 <mutation></mutation>
                 <field name="NAME">Handle T Junction</field>
@@ -493,7 +505,6 @@
             </block>
         </category>
     </category>
-
   </xml>
 
 <script>
