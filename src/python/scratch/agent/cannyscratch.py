@@ -4,14 +4,24 @@
 # By Wayne Keenan 02/12/2014
 # www.cannybots.com 
 import sys
-import thread
+from threading import Thread
 import json
+import base64
 
-sys.path.insert(0, "../../modules")
+#sys.path.insert(0, "../../modules")
 
 import websocket
 from scratra import *
 
+keepRunning = True
+import signal
+def signal_handler(signal, frame):
+        print('Exit due to Ctrl+C')
+        keepRunning=False
+        sys.exit(0)
+signal.signal(signal.SIGINT, signal_handler)
+        
+        
 ws = None
 wsConnected = False
 scratchInterface = None
@@ -31,8 +41,8 @@ def send2turtle(cmd, p1):
     #msg = "{'rawBytes': [ " + str(ord('f')) + ", " + str(0) + ", "  + str(10) + "]}"
     #[0,0,cmd.charCodeAt(0), p1>>8, p1 &0xFF,rChar];
 
-    msg = '{"rawBytes":[0,0,' + str(ord('f')) + "," + str(0) + ","  + str(10) + ",13]}"
-
+    msg = '{"rawBytes":[0,0,' + str(ord('f')) + "," + str(0) + ","  + str(10) + "]}"
+    #msg = base64.b64encode(msg)
 
     #msg =  chr(0) +  chr(0) + 'f' + chr(0) + chr(10) + '\r'
     print "WS send " + str(msg)
@@ -108,6 +118,7 @@ def forward(scratch):
 # Web Socket
 
 def on_message(ws, message):
+    message = base64.b64decode(message)
     print "WS recv: " + str(message)
     jsonObj = json.loads(message)
     #print jsonObj
@@ -145,6 +156,12 @@ if __name__ == "__main__":
         ws.close()
         print "thread terminating..."
 
-    thread.start_new_thread(runWs, ())
+    #thread.start_new_thread(runWs, ())
+    wst = Thread(target=runWs)
+    wst.daemon = True
+    wst.name = "WS Thread"
+    wst.start()
 
     run(console=False)
+    while keepRunning:           
+        signal.pause()    
