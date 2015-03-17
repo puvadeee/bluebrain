@@ -11,9 +11,13 @@
 ////////////////////////////////////////////////////////////////////////////////////////// ///////
 
 // WArning: enabling serial debug will cause the motors to rotate only one way.
-//#define   SERIAL_DEBUG
+#define   SERIAL_DEBUG
 //#define   SERIAL_DEBUG_DETAILED       // Show encoder counts
+
 #define GZLL_HOST_ADDRESS 0x99ACB010    // TURTLE
+//#define GZLL_HOST_ADDRESS 0x88ACB010    // TURTLE
+//#define GZLL_HOST_ADDRESS 0x12ACB010
+
 
 #define BOT_NAME "Turtle"                   // custom name (16 chars max)
 #include <RFduinoGZLL.h>
@@ -27,7 +31,7 @@ void radio_send_formatted(char *fmt, ... );
 #define MOTOR_MAX_SPEED 250 // max speed (0..255)
 
 // Time based hacks! (for dev use without encoders)
-//#define USE_DELAYS_FOR_MOVEMENT
+#define USE_DELAYS_FOR_MOVEMENT
 #define MAX_TURTLE_MOTOR_SPEED  80
 #define MOTION_DELAY_MULTIPLIER 60
 #define TURN_DELAY_MULTIPLIER 3

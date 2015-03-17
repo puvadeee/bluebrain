@@ -31,7 +31,7 @@
 #define BOT_NAME "CBFirmata"                   // custom name (16 chars max)
 #include <RFduinoBLE.h>
 #include <RFduinoGZLL.h>
-#define GZLL_HOST_ADDRESS 0x99ACB010 
+//#define GZLL_HOST_ADDRESS 0x99ACB010 
 
 #include <CircularBuffer.h>
 
@@ -662,7 +662,7 @@ void received_client_data(char *data, int len)  {
 void loop() 
 {
     radio_loop();
-
+    BLE_Firmata.sendPendingTX();
   // Onto the Firmata main loop
   
   byte pin, analogPin;

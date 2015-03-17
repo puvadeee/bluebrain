@@ -1,26 +1,31 @@
-#include <RFduinoGZLL.h>
 #include <RFduinoBLE.h>
+#include <stdarg.h>
 
 // Choose one of:
-//#define  RADIO_ONLY_GZLL
-//#define  RADIO_ONLY_BLE
-#define RADIO_TOGGLE
+//#define  RADIO_ONLY_GZLL 
+//#define  RADIO_ONLY_BLE 
+#define RADIO_TOGGLE 
 //#define RADIO_NONE
+
+
 
 // don't change these
 #define GZLL_MAX_MSG_SIZE 32
-char  gzllDebugBuf[GZLL_MAX_MSG_SIZE] = {0};
+char  gzllDebugBuf[GZLL_MAX_MSG_SIZE+1] = {0};
 char* gzllDebug=NULL;
 
 // don't change these
 #define BLE_MAX_MSG_SIZE 20
 #define BLE_UUID                   "7e400001-b5a3-f393-e0a9-e50e24dcca9e"
+
 #define BLE_ADVERTISEMENT_DATA_MAX 16
 
 // might want to alter these
-#define BLE_TX_POWER_LEVEL         0
+#define BLE_TX_POWER_LEVEL                 0
 #define TOGGLE_MILLIS                   1500
-#define TOGGLE_GZLL_CONNECTION_TIMEOUT   250
+#define TOGGLE_GZLL_CONNECTION_TIMEOUT  1000
+
+
 
 void radio_setup() {
 
@@ -41,19 +46,23 @@ void radio_setup() {
 ////////////////////////////////////////////////////////////////////////////////////////
 // Radio toggling
 
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) 
 volatile bool startGZLL = true;
-volatile bool bleConnected = false;
 volatile unsigned long nextRadioToggleTime = millis();
 #endif
 
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
+volatile bool bleConnected = false;
+#endif
+
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)
 volatile bool gzllConnected = false;
 volatile unsigned long gzllConnectionTimeout = millis();
+volatile bool gzllTriggerConnect= false;
+#endif
 
-volatile unsigned long timeNow = millis();                 // the time at the start of the loop(), use for the 'radio' part
 
 void radio_loop() {
-    timeNow = millis(); 
 #if defined(RADIO_ONLY_GZLL) || defined(RADIO_TOGGLE)
   loop_gzll();
 #endif  
@@ -88,32 +97,48 @@ void radio_loop() {
 ////////////////////////////////////////////////////////////////////////////////////////
 // GZLL
 
-
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)
 void setup_gzll() {
 #ifdef GZLL_HOST_ADDRESS  
   RFduinoGZLL.hostBaseAddress = GZLL_HOST_ADDRESS;
 #endif  
-  RFduinoGZLL.begin(HOST);
+  RFduinoGZLL.begin(HOST);    // default 
 }
 
 void loop_gzll() {
   // simulate a GZLL disconnect event
-  if ( gzllConnected && (timeNow  > gzllConnectionTimeout)) {
-    gzllConnected = false;
-    client_disconnected();
+  checkGzllTriggerConnect();
+  
+  if ( gzllConnected && (millis()  > gzllConnectionTimeout)) {
+      gzllConnected = false;
+      client_disconnected();
   }
 }
 
+
 void RFduinoGZLL_onReceive(device_t device, int rssi, char *data, int len) {
+  if (!gzllConnected) {
+    gzllTriggerConnect= true;
+  }
+  
   gzllConnected = true;
-  gzllConnectionTimeout = timeNow + TOGGLE_GZLL_CONNECTION_TIMEOUT;
+  gzllConnectionTimeout = millis() + TOGGLE_GZLL_CONNECTION_TIMEOUT;
   process_message(data, len);
-  if (gzllDebug) {
+
+  if (gzllDebug) { 
     RFduinoGZLL.sendToDevice(device, gzllDebugBuf, strlen(gzllDebugBuf));
     gzllDebug=NULL;   
   } 
 }
 
+void checkGzllTriggerConnect() {
+  if (gzllTriggerConnect) {
+    client_connected();
+    gzllTriggerConnect=false;
+  }
+}
+
+#endif
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE
 
@@ -126,9 +151,11 @@ void setup_ble() {
   snprintf(bleName, BLE_ADVERTISEMENT_DATA_MAX, BOT_NAME);
 #endif  
   RFduinoBLE.txPowerLevel      = BLE_TX_POWER_LEVEL;
+#ifdef BLE_UUID  
   RFduinoBLE.customUUID        = BLE_UUID;
+#endif  
   RFduinoBLE.deviceName        = bleName;
-  RFduinoBLE.advertisementData = bleName;
+  RFduinoBLE.advertisementData = "CB01";
   RFduinoBLE.begin();
   //RFduinoBLE_update_conn_interval(20, 20);
 }
@@ -139,64 +166,102 @@ void RFduinoBLE_onReceive(char *data, int len) {
 }
 
 void RFduinoBLE_onConnect() {
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
   bleConnected = true;
-#endif
-#ifdef DEBUG
-  Serial.println("BLE_ISCON");
+  client_connected();
 #endif
 }
 
 void RFduinoBLE_onDisconnect() {
-#ifdef RADIO_TOGGLE
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_BLE)
   bleConnected = false;
 #endif
   client_disconnected();
 }
 
-void radio_debug(char* msg) {
+void _radio_debug(char* msg) {
+#if defined(RADIO_TOGGLE) || defined(RADIO_ONLY_GZLL)  
     if (!gzllDebug && gzllConnected) {
-     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE-1, msg);
+     snprintf(gzllDebugBuf, GZLL_MAX_MSG_SIZE, msg);
      gzllDebug = gzllDebugBuf;
-    } 
-    
+#if defined(SERIAL_DEBUG)    
+      Serial.print("Will send...");
+      Serial.println(msg);
+#endif   
+    }
+#endif
+
+#if defined(RADIO_ONLY_BLE) || defined(RADIO_TOGGLE)
     if (bleConnected) {
       RFduinoBLE.send(msg, min(BLE_MAX_MSG_SIZE, strlen(msg)));
     }
+#endif    
 }
+
+void radio_debug(char *fmt, ... ){
+        char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
+        va_list args;
+        va_start (args, fmt );
+        vsnprintf(buf, GZLL_MAX_MSG_SIZE+1, fmt, args);
+        va_end (args);
+        _radio_debug(buf);
+}
+
+void radio_send_formatted(char *fmt, ... ){
+        char buf[GZLL_MAX_MSG_SIZE+1]; // resulting string limited to 128 chars
+        va_list args;
+        va_start (args, fmt );
+        vsnprintf(buf, GZLL_MAX_MSG_SIZE+1, fmt, args);
+        va_end (args);
+        _radio_debug(buf);
+}
+
+void radio_send_buffer(char *buf, int len ){
+  if (buf && (len>0) )
+    RFduinoBLE.send(buf,len);
+}
+
+
 
 
 ////////////////////////////////////////////////////////////////////////////////////////
 // BLE/GZLL shared message processing
 
-// Change this if you want todo something custom, don't for get to change the joypad sketch
-// an dany Python code.
-
-// You may just want to add your own data onto the end of the existing 3 bytes if you still
-// wan't to be able to use the smartphone app(s)
-
-// We're expecting messages of 3 bytes in the form:  XYB
+// We're expecting messages of at least 4 bytes in the form:  [SRC] [DST] [COMMMAND] [PARAMETER1]
 // Where:
-// X = unsigned byte for xAxis:          0 .. 255 mapped to -255 .. 255
-// Y = unsigned byte for yAxis:          0 .. 255 mapped to -255 .. 255
-// B = unsigned byte for button pressed: 0 = no, 1 = yes
+// SRC = uint8_t (ignored)
+// DST = uint8_t (ignored)
+// COMMMAND = uint8_t enum { s, f, b, l, r, u, d, a, v }  =>  stop, forward, back, left, right, pen up, pen down, audio(hoot), visual(LED effect) 
+// PARAMETER1 = int16
 
 void process_message(char *data, int len) {
-  if (data && len >= 4) {
-    // map x&y values from 0..255 to -255..255
-    joypad_update(
-      map(data[0], 0, 255, -255, 255),   // x axis
-      map(data[1], 0, 255, -255, 255),   // y axis
-      map(data[3], 0, 255, -255, 255),   // y axis
-      data[2]                            // button(s) - 8 bits can support up to 8 buttons
-    );
-  }
+  if (len > 0) {
+      received_client_data(data, len);
+  } 
 }
+
+void radio_send(char* msg) {
+  _radio_debug(msg);
+}
+
+
+// tidyup helper for when GZLL connection times out or BLE client disconnects
+void client_connected() {
+#if defined(SERIAL_DEBUG)    
+    Serial.println("client_connected()");
+#endif  
+  received_client_connect(); 
+}
+
 
 // tidyup helper for when GZLL connection times out or BLE client disconnects
 void client_disconnected() {
-  joypad_update(0, 0, 0, 0);
+#if defined(SERIAL_DEBUG)    
+    Serial.println("client_disconnected()");
+#endif  
+  received_client_disconnect(); 
 }
+
 
 
 

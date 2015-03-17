@@ -35,6 +35,7 @@
 		B0D61BE519F7E5D100DC4CDA /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = B0D61BE319F7E5D100DC4CDA /* Main.storyboard */; };
 		B0D61BEA19F7E5D100DC4CDA /* LaunchScreen.xib in Resources */ = {isa = PBXBuildFile; fileRef = B0D61BE819F7E5D100DC4CDA /* LaunchScreen.xib */; };
 		B0D61BF619F7E5D100DC4CDA /* BrainDashTests.m in Sources */ = {isa = PBXBuildFile; fileRef = B0D61BF519F7E5D100DC4CDA /* BrainDashTests.m */; };
+		B0F28C771AB6CA9100FA23AA /* BrainDashTuningViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = B0F28C751AB6CA9100FA23AA /* BrainDashTuningViewController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -95,6 +96,8 @@
 		B0D61BEF19F7E5D100DC4CDA /* BrainDashTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = BrainDashTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		B0D61BF419F7E5D100DC4CDA /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		B0D61BF519F7E5D100DC4CDA /* BrainDashTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = BrainDashTests.m; sourceTree = "<group>"; };
+		B0F28C751AB6CA9100FA23AA /* BrainDashTuningViewController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = BrainDashTuningViewController.m; sourceTree = "<group>"; };
+		B0F28C761AB6CA9100FA23AA /* BrainDashTuningViewController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = BrainDashTuningViewController.h; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -207,6 +210,8 @@
 		B09FA51F19FB9FD200CE8466 /* ViewControllers */ = {
 			isa = PBXGroup;
 			children = (
+				B0F28C761AB6CA9100FA23AA /* BrainDashTuningViewController.h */,
+				B0F28C751AB6CA9100FA23AA /* BrainDashTuningViewController.m */,
 				B0D61BDD19F7E5D100DC4CDA /* JoypadViewController.h */,
 				B0D61BDE19F7E5D100DC4CDA /* JoypadViewContrroller.m */,
 				B0D61BE019F7E5D100DC4CDA /* SettingsViewController.h */,
@@ -406,6 +411,7 @@
 				B09D589F19F7EE640023BA29 /* NSObject+performBlockAfterDelay.m in Sources */,
 				B09D58A019F7EE640023BA29 /* NSString+hex.m in Sources */,
 				B0D61BD919F7E5D100DC4CDA /* main.m in Sources */,
+				B0F28C771AB6CA9100FA23AA /* BrainDashTuningViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

@@ -327,8 +327,8 @@
 - (void)didReceive:(NSData *)data
 {
     NSString *hexString = [data hexRepresentationWithSpaces:YES];
-    NSLog(@"RecievedData: %@", hexString);
-    self.message.text = [NSString stringWithUTF8String:[data bytes]];
+    //NSLog(@"RecievedData: %@", hexString);
+    //self.message.text = [NSString stringWithUTF8String:[data bytes]];
 // TODO:     [rfduino disconnect];
 }
 
