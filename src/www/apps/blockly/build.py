@@ -35,7 +35,12 @@
 #   dart_compressed.js: The compressed Dart generator.
 #   msg/js/<LANG>.js for every language <LANG> defined in msg/js/<LANG>.json.
 
-import errno, glob, httplib, json, os, re, subprocess, sys, threading, urllib
+import sys
+if sys.version_info[0] != 2:
+  raise Exception("Blockly build only compatible with Python 2.x.\n"
+                  "You are using: " + sys.version)
+
+import errno, glob, httplib, json, os, re, subprocess, threading, urllib
 
 
 def import_path(fullpath):
@@ -407,7 +412,7 @@ class Gen_langfiles(threading.Thread):
 if __name__ == '__main__':
   try:
     calcdeps = import_path(os.path.join(os.path.pardir,
-          'closure-library', 'closure', 'bin', 'calcdeps.py'))
+        'closure-library', 'closure', 'bin', 'calcdeps.py'))
   except ImportError:
     if os.path.isdir(os.path.join(os.path.pardir, 'closure-library-read-only')):
       # Dir got renamed when Closure moved from Google Code to GitHub in 2014.

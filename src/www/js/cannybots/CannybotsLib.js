@@ -139,11 +139,12 @@ var cannybots = new function() {
         }
     }
 
-    self.receiveBytes = function (bytesArray) {
+    self.receiveBytes = function (bytesArrayBase64) {
         self.okToSend = true;
-        msg = "DEBUG: receiveBytes: " + bytesArray;
+        var decoded = atob(bytesArrayBase64);
+        msg = "DEBUG: receiveBytes: " + decoded;
         self.debug(msg);
-        self.recvDelegate(bytesArray);
+        self.recvDelegate(decoded);
     }
     
     self.sendDebug = function(msg) {
@@ -202,7 +203,7 @@ var cannybots = new function() {
                self.debug('ERROR: The Android JS Handler does not exist yet');
            }
         }
-        console.log("WARN: Android JavaScript native bridge not found.");
+        //console.log("WARN: Android JavaScript native bridge not found.");
 
         // Fallback to WebSocket
         try {
