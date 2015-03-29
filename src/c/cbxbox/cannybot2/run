@@ -1,0 +1,3 @@
+sleep 2
+BT_ADDR=$(head -n 1 /boot/cannybots/cannybot2.txt)
+exec /usr/local/bin/gatttool -t random -I -b $BT_ADDR -j 2
