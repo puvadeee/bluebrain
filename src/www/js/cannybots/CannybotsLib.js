@@ -25,8 +25,8 @@ function cannybotsWebSocket()
         };
         ws.onmessage = function(evt) {
             //console.log("WS.onMessage");
-            var decoded = atob(evt.data);
-            cannybots.receiveBytes(decoded);
+            //var decoded = atob(evt.data);
+            cannybots.receiveBytes(evt.data);
         };
         ws.onclose = function() {
             console.log("WS.onClose");

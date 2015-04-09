@@ -289,7 +289,7 @@
     if (timer)
         [timer invalidate];
     
-    timer = [NSTimer scheduledTimerWithTimeInterval:0.05 target:self selector:@selector(sendJoypadUpdate) userInfo:nil repeats:YES];
+    timer = [NSTimer scheduledTimerWithTimeInterval:0.1 target:self selector:@selector(sendJoypadUpdate) userInfo:nil repeats:YES];
 }
 
 - (void) stopJoypadUpdates {
@@ -316,9 +316,10 @@
 
 - (void) sendJoypadUpdate:(uint8_t)x y:(uint8_t)y z:(uint8_t)z b:(uint8_t)b {
     char msg[5] = {0};
-    snprintf(msg, sizeof(msg), "%c%c%c%c", x, y, b, z);
-    NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
-    //NSLog(@"SendData: %@", data);
+    snprintf(msg, 5, "%c%c%c%c", x, y, b, z);
+    //NSData *data = [NSData dataWithBytesNoCopy:msg length:4 freeWhenDone:NO];
+    NSData *data = [NSData dataWithBytes:msg length:4];
+    NSLog(@"SendData: %@", [data hexRepresentationWithSpaces:true]);
     NSLog(@"SendData: %d\t%d\t%d\t%d", x, y, z, b);
     
     [rfduino send:data];
@@ -326,10 +327,6 @@
 
 - (void)didReceive:(NSData *)data
 {
-    NSString *hexString = [data hexRepresentationWithSpaces:YES];
-    //NSLog(@"RecievedData: %@", hexString);
-    //self.message.text = [NSString stringWithUTF8String:[data bytes]];
-// TODO:     [rfduino disconnect];
 }
 
 @end

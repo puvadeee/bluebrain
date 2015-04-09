@@ -1,7 +1,36 @@
 #CannyBots BlueBrain 
 
+These instructions cover two different versions of the BlueBrain board.
 
-#Installation
+
+
+#BlueBrain (Latest HW version)
+
+If your BlueBrain board does not have a detachable motor driver then you have a new board.
+
+
+
+##1. mbed development
+
+Please see the instructions for setting up mbed and uploading over the air [here](http://forum.cannybots.com/t/programming-over-the-air-using-mbed/40)/
+
+
+##2. Arduino development
+
+Currently working but not yet published.
+
+
+##3. Rasperry Pi Setup
+
+Please see [here](http://forum.cannybots.com/t/raspberry-pi-installation-instructions/47)
+
+
+
+
+
+#BlueBrain (older version)
+
+If your BlueBrain board has a detachable motor driver and a small metal casing on board then you have one of the older boards.
 
 ##1. Versions
 
@@ -52,20 +81,21 @@ overwriting whats there already.
 
 
 
+##3. Using the programmer
 
-##4. iOS and Android Apps
+Install the latest drivers form the www.ftdichip.com website.
+
+
+
+
+
+
+#iOS and Android Apps
 
 The apps are available in source form in this repo and also as released apps on the respective app stores.
 
 Apple users can find the app [here](https://itunes.apple.com/us/app/cannybots/id932910715?mt=8).
 
 Android users can find the app [here](https://play.google.com/store/apps/details?id=com.cannybots.cannybots).
-
-
-##5. Using the programmer
-
-Install the latest drivers form the www.ftdichip.com website.
-
-
 
 

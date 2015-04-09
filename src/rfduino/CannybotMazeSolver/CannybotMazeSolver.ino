@@ -78,8 +78,8 @@ int counterMax = 30;                            // number of samples (loop() cyc
 // so turing left or right lines results in IR2 being on the center of the line, ideally...s
 
 
-#define DEFAULT_CRUISE_SPEED 80                // default speed when line following (calibration speed uses 50% of this)
-#define DEFAULT_TURN_SPEED   80
+#define DEFAULT_CRUISE_SPEED 60                // default speed when line following (calibration speed uses 50% of this)
+#define DEFAULT_TURN_SPEED   60
 #define MOTOR_IDLE_TIME 500                   // time (seconds) to wait to determine if bot is halte (both motors speeds 0) 
 
 

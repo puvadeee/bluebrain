@@ -150,7 +150,7 @@
     NSString *uuid = rfduino.UUID;
     
     int rssi = rfduino.advertisementRSSI.intValue;
-
+    
     NSString *advertising = @"";
     if (rfduino.advertisementData) {
         advertising = [[NSString alloc] initWithData:rfduino.advertisementData encoding:NSUTF8StringEncoding];
@@ -162,7 +162,7 @@
         [detail appendString:@" "];
     //[detail appendFormat:@"Packets: %d\n", rfduino.advertisementPackets];
     //[detail appendFormat:@"Advertising: %@\n", advertising];
-    //[detail appendFormat:@"%@", uuid];
+    [detail appendFormat:@"%@", uuid];
     
     cell.textLabel.text = text;
     cell.detailTextLabel.text = detail;
