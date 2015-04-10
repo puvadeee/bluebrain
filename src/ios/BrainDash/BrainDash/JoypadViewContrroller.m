@@ -27,9 +27,6 @@
 
 @synthesize rfduino;
 
-+ (void)load {
-    customUUID = @"7e400001-b5a3-f393-e0a9-e50e24dcca9e";
-}
 
 
 - (void)viewDidLoad {
@@ -56,7 +53,7 @@
     [super viewWillAppear:animated];
 
     UIImage *minImage = [[UIImage imageNamed:@"slider_minimum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
-    UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
+    //UIImage *maxImage = [[UIImage imageNamed:@"slider_maximum"] resizableImageWithCapInsets:UIEdgeInsetsMake(0, 5, 0, 0)];
     UIImage *thumbImage = [UIImage imageNamed:@"throttleKnob"];
 
     //[[UISlider appearance] setMaximumTrackImage:maxImage forState:UIControlStateNormal];
@@ -73,6 +70,11 @@
     [rfduino setDelegate:self];
     if (self.useTilt)
         [self startUpdateAccelerometer];
+
+    _tiltButton.hidden = !self.useTilt;
+    _tiltLabel.hidden = !self.useTilt;
+    
+    
     zAxisValue=ZAXIS_DEFAULT;
 
     [self startJoypadUpdates];
@@ -319,8 +321,8 @@
     snprintf(msg, 5, "%c%c%c%c", x, y, b, z);
     //NSData *data = [NSData dataWithBytesNoCopy:msg length:4 freeWhenDone:NO];
     NSData *data = [NSData dataWithBytes:msg length:4];
-    NSLog(@"SendData: %@", [data hexRepresentationWithSpaces:true]);
-    NSLog(@"SendData: %d\t%d\t%d\t%d", x, y, z, b);
+    //NSLog(@"SendData: %@", [data hexRepresentationWithSpaces:true]);
+    //NSLog(@"SendData: %d\t%d\t%d\t%d", x, y, z, b);
     
     [rfduino send:data];
 }

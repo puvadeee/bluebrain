@@ -33,6 +33,10 @@
             [userDefaults setInteger:128 forKey:@"XMAX"];
             [userDefaults setInteger:128 forKey:@"YMAX"];
             [userDefaults setInteger:90 forKey:@"ZSENSE"];
+            [userDefaults setInteger:40 forKey:@"PID_P"];
+            [userDefaults setInteger:0 forKey:@"PID_I"];
+            [userDefaults setInteger:450 forKey:@"PID_D"];
+            [userDefaults setInteger:700 forKey:@"IRWHITE"];
             [userDefaults setObject:@"yes" forKey:@"marker"];
             [userDefaults synchronize];
         }

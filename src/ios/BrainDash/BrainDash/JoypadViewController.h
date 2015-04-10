@@ -31,6 +31,8 @@
 
 @property (weak, nonatomic) IBOutlet UISlider *throttleSlider;
 @property (weak, nonatomic) IBOutlet UILabel *message;
+@property (weak, nonatomic) IBOutlet UIButton *tiltButton;
+@property (weak, nonatomic) IBOutlet UIButton *tiltLabel;
 
 @end
 

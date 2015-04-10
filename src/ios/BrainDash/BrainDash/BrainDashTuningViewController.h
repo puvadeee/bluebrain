@@ -22,13 +22,10 @@
 - (IBAction)iStepperValueChanged:(UIStepper*)sender;
 - (IBAction)dStepperValueChanged:(UIStepper *)sender;
 @property (weak, nonatomic) IBOutlet UITextView *debugTextView;
+@property (weak, nonatomic) IBOutlet UILabel *whiteThresholdLable;
 
 @property (strong, nonatomic) RFduino *rfduino;
-- (IBAction)fPressed:(id)sender;
-- (IBAction)lPressed:(id)sender;
-- (IBAction)rPressed:(id)sender;
-- (IBAction)sPressed:(id)sender;
+
 - (IBAction)statsPressed:(id)sender;
-- (IBAction)sendPWMPeriodPressed:(UIButton *)sender;
 
 @end

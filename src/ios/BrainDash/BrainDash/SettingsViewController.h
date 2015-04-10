@@ -19,6 +19,8 @@
 @property (weak, nonatomic) IBOutlet UISwitch *useTilt;
 - (IBAction)valChanged:(id)sender;
 @property (weak, nonatomic) IBOutlet UILabel *whiteThresholdLable;
+@property (weak, nonatomic) IBOutlet UILabel *reverseTiltLable;
+@property (weak, nonatomic) IBOutlet UILabel *tiltSenseLabel;
 
 @end
 

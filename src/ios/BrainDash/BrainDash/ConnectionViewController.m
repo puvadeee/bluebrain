@@ -17,7 +17,13 @@
 }
 @end
 
+
+
 @implementation ConnectionViewController
+
++ (void)load {
+    customUUID = @"7e400001-b5a3-f393-e0a9-e50e24dcca9e";
+}
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -34,6 +40,7 @@
 }
 
 - (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
     [rfduinoManager.connectedRFduino disconnect];
 }
 @end

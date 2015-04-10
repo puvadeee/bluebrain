@@ -147,7 +147,7 @@
     
     NSString *text = [[NSString alloc] initWithFormat:@"%@", rfduino.name];
     
-    NSString *uuid = rfduino.UUID;
+    NSString *uuid = rfduino.peripheral.name;
     
     int rssi = rfduino.advertisementRSSI.intValue;
     

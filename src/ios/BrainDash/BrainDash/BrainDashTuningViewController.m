@@ -9,6 +9,7 @@
 #import "BrainDashTuningViewController.h"
 #import "RFduinoManager.h"
 #import "NSData+hex.h"
+#import "Utilities.h"
 
 @interface BrainDashTuningViewController () {
 }
@@ -35,7 +36,6 @@
     [singleTap setNumberOfTapsRequired:1];
     [singleTap setNumberOfTouchesRequired:1];
     [self.view addGestureRecognizer:singleTap];
-    [self revertPressed:nil];
 
 }
 
@@ -67,41 +67,10 @@
     _iStepper.value = [[_iTextField text] intValue];
     _dStepper.value = [[_dTExtField text] intValue];
     _debugTextView.text = @"";
-}
-
-
-
-
--(void)updateVariable:(NSNotification *)notification {
-    NSString* name    = [notification name];
-    NSData* data      = [notification object];
-    const char *bytes = [data bytes];
     
-    //NSString* hexString = [data hexRepresentationWithSpaces:YES];
-    //NSLog(@"UpVarRcv: %@", hexString);
-    
-    if ([name isEqualToString:@"IRVAL"]) {
-        int ir1= CFSwapInt16BigToHost(( (int16_t*) bytes)[0]);
-        int ir2= CFSwapInt16BigToHost(( (int16_t*) bytes)[1]);
-        int ir3= CFSwapInt16BigToHost(( (int16_t*) bytes)[2]);
-
-        
-    } else if ([name isEqualToString:@"PID"]) {
-        _pTextField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[0]) ];;
-        //_iTextField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[0]) ];;
-        _dTExtField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[1]) ];;
-        _pStepper.value = [[_pTextField text] intValue];
-        _dStepper.value = [[_dTExtField text] intValue];
-
-        
-    } else {
-        NSLog(@"Un recognised variable: %@", name);
-    }
+    [self statsPressed:nil];
 }
 
-- (void) viewWillDisappear:(BOOL)animated {
-
-}
 
 -(IBAction)textFieldReturn:(id)sender
 {
@@ -138,24 +107,13 @@
     _dTExtField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
 
 }
-// LED brightness
-- (IBAction)ledBrightnessValueChanged:(UIStepper *)sender {
-}
-- (IBAction)ledBrightnessTextFieldValueChanged:(id)sender {
-}
-- (IBAction)deviceIdValueChanged:(id)sender {
-}
-- (IBAction)ledColourSelected:(id)sender {
-}
 
 
 - (IBAction)savePressed:(id)sender {
     [self sendPIDUpdate:[_pTextField.text intValue] i:0 d:[_dTExtField.text intValue]];
 
 }
-- (IBAction)revertPressed:(id)sender {
 
-}
 
 #define lowByte(v)   ((unsigned char) (v))
 #define highByte(v)  ((unsigned char) (((unsigned int) (v)) >> 8))
@@ -183,56 +141,38 @@
 {
     NSString *string =[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"Recv: %@", string);
-    _debugTextView.text = [NSString stringWithFormat:@"%@\n%@", _debugTextView.text, string];
-    //_debugTextView.text = string;
-    
-    //CGPoint offsetPoint = CGPointMake(0.0, _debugTextView.contentSize.height - _debugTextView.bounds.size.height);
-    //[_debugTextView setContentOffset:offsetPoint animated:NO];
-    
     NSRange range = NSMakeRange(_debugTextView.text.length - 1, 1);
     [_debugTextView scrollRangeToVisible:range ];
+    _debugTextView.text = [NSString stringWithFormat:@"%@\n%@", _debugTextView.text, string];
+
+    //_debugTextView.text = string;
+    
 }
 
-- (IBAction)fPressed:(id)sender {
-    [self sendString:@"f"];
-}
 
-- (IBAction)lPressed:(id)sender {
-    [self sendString:@"l"];
-}
-
-- (IBAction)rPressed:(id)sender {
-    [self sendString:@"r"];
-}
-
-- (IBAction)sPressed:(id)sender {
-    [self sendString:@"p"];
-}
 
 - (IBAction)statsPressed:(id)sender {
+    _debugTextView.text = @"";
     [self sendString:@"i"];
-
+    
 }
 
-- (IBAction)sendPWMPeriodPressed:(UIButton *)sender {
-    uint32_t val = [_iTextField.text integerValue];
-    
-    char msg[21] = {0};
-    snprintf(msg, sizeof(msg), "PWM:%c%c%c%c",
-             
-             (val & 0xFF000000) >> 24,
-             (val & 0x00FF0000) >> 16,
-             (val & 0x0000FF00) >> 8,
-             (val & 0x000000FF) );
-    NSData *data = [NSData dataWithBytesNoCopy:msg length:8 freeWhenDone:NO];
-    //NSLog(@"SendData: %@", data);
-    NSLog(@"SendData: %@", [data hexRepresentationWithSpaces:YES]);
-    
-    [self.rfduino send:data];
 
-
-
+- (IBAction)whiteThresholdSliderValueChanged:(UISlider *)sender {
+    self.whiteThresholdLable.text=[NSString stringWithFormat:@"%.0f", sender.value];
+    RFduino *rfduino;
+    rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
+    if (rfduino) {
+        uint8_t whiteVal = map(sender.value, 0, 1000, 0,255);
+        char msg[6] = {0};
+        snprintf(msg, sizeof(msg), "%c%c%c%c%c", 0x7F, 0x7F, 0, 0x7F, whiteVal);
+        NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
+        NSLog(@"SendData: %@", data);
+        
+        [rfduino send:data];
+    }
 }
+
 
 
 @end

@@ -30,6 +30,7 @@
 
 - (void) viewDidAppear:(BOOL)animated {
     [super viewDidAppear:animated];
+    
     [self loadDefaults];
 }
 
@@ -51,8 +52,15 @@
         _ySense.value = [userDefaults integerForKey:@"YMAX"];
         _zSense.value = [userDefaults integerForKey:@"ZSENSE"];
     }
+    [self checkHideTiltUI];
 }
 
+- (void) checkHideTiltUI {
+    self.invertZ.hidden=!self.useTilt.on;
+    self.reverseTiltLable.hidden=!self.useTilt.on;
+    self.tiltSenseLabel.hidden=!self.useTilt.on;
+    self.zSense.hidden=!self.useTilt.on;
+}
 
 - (void) saveDefaults {
     NSLog(@"save");
@@ -70,6 +78,8 @@
     } else {
         NSLog(@"no user defaults");
     }
+    [self checkHideTiltUI];
+
 }
 
 - (IBAction)whiteThresholdSliderValueChanged:(UISlider *)sender {
