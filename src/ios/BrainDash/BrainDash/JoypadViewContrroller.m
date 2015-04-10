@@ -34,7 +34,7 @@
     _mManager = [[CMMotionManager alloc] init];
     _referenceAttitude = nil;
     //[self.throttleSlider removeConstraints:self.throttleSlider.constraints];
-    //[self.throttleSlider setTranslatesAutoresizingMaskIntoConstraints:YES];
+    [self.throttleSlider setTranslatesAutoresizingMaskIntoConstraints:YES];
     
     currentUISliderThumbImage = [[UISlider appearance ]currentThumbImage];
     currentUISliderMinImage   = [[UISlider appearance ]currentMinimumTrackImage];
@@ -42,6 +42,14 @@
     
     self.throttleSlider.transform=CGAffineTransformRotate(self.throttleSlider.transform,270.0/180*M_PI);
     self.throttleSlider.value = ZAXIS_DEFAULT;
+    
+    CGRect newFrame =   self.throttleSlider.frame;
+    newFrame.origin.y = 40;
+    newFrame.origin.x    = self.view.frame.size.width  - newFrame.size.width*3;
+    newFrame.size.height = self.view.frame.size.height - 140;
+    self.throttleSlider.frame = newFrame;
+    
+    
     zAxisValue=ZAXIS_DEFAULT;
 }
 

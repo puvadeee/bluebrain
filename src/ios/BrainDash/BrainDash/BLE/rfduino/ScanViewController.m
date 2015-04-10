@@ -147,7 +147,7 @@
     
     NSString *text = [[NSString alloc] initWithFormat:@"%@", rfduino.name];
     
-    NSString *uuid = rfduino.peripheral.name;
+    //NSString *uuid = rfduino.UUID;
     
     int rssi = rfduino.advertisementRSSI.intValue;
     
@@ -162,7 +162,7 @@
         [detail appendString:@" "];
     //[detail appendFormat:@"Packets: %d\n", rfduino.advertisementPackets];
     //[detail appendFormat:@"Advertising: %@\n", advertising];
-    [detail appendFormat:@"%@", uuid];
+    //[detail appendFormat:@"%@", uuid];
     
     cell.textLabel.text = text;
     cell.detailTextLabel.text = detail;
@@ -262,6 +262,7 @@
     RFduino *rfduino = [[rfduinoManager rfduinos] objectAtIndex:[indexPath row]];
 
     if (! rfduino.outOfRange) {
+        [rfduinoManager stopScan];
         [rfduinoManager connectRFduino:rfduino];
     } else {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

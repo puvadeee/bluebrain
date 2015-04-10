@@ -196,12 +196,20 @@ static CBUUID *service_uuid;
         cancelBlock = block;
 
 #if TARGET_OS_IPHONE || TARGET_IPHONE_SIMULATOR
+  
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Lost connection!"
+                                                        message:@"Please try reconnecting using the Connections tab"
+                                                       delegate:self
+                                              cancelButtonTitle:@"OK"
+                                             otherButtonTitles:nil];
         
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Peripheral Disconnected with Error"
+        
+/*        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Peripheral Disconnected with Error"
                                                         message:error.description
                                                        delegate:self
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
+*/
         [alert show];
         
 #endif
@@ -231,9 +239,10 @@ static CBUUID *service_uuid;
     // NSLog(@"didDiscoverPeripheral");
 
     NSString *uuid = NULL;
-    if (peripheral.UUID) {
+    if (peripheral.identifier) {
         // only returned if you have connected to the device before
-        uuid = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, peripheral.UUID);
+        //uuid = (__bridge_transfer NSString *)CFUUIDCreateString(NULL, peripheral.UUID);
+        uuid = [peripheral.identifier UUIDString];
     } else {
         uuid = @"";
     }
@@ -243,16 +252,10 @@ static CBUUID *service_uuid;
     RFduino *rfduino = [self rfduinoForPeripheral:peripheral];
     if (! rfduino) {
         rfduino = [[RFduino alloc] init];
-        
         rfduino.rfduinoManager = self;
-
-        rfduino.name = peripheral.name;
         rfduino.UUID = uuid;
-        
         rfduino.peripheral = peripheral;
-        
         added = true;
-        
         [rfduinos addObject:rfduino];
     }
     
@@ -265,6 +268,15 @@ static CBUUID *service_uuid;
         // skip manufacturer uuid
         NSData *data = [NSData dataWithBytes:bytes+2 length:len-2];
         rfduino.advertisementData = data;
+    }
+    
+    NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
+    NSLog(@"Adv. Local Name: %@", localName);
+    NSLog(@"Peripheral Name: %@", peripheral.name);
+    if (localName && ( ! [localName isEqualToString:@"(null)"])) {
+        rfduino.name = localName;
+    } else {
+        rfduino.name = peripheral.name;
     }
     
     rfduino.advertisementRSSI = RSSI;
