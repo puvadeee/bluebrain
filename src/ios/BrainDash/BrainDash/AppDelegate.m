@@ -30,8 +30,8 @@
             [userDefaults setBool:false forKey:@"YINV"];
             [userDefaults setBool:true forKey:@"ZINV"];
             [userDefaults setBool:false forKey:@"USETILT"];
-            [userDefaults setInteger:128 forKey:@"XMAX"];
-            [userDefaults setInteger:128 forKey:@"YMAX"];
+            [userDefaults setInteger:255 forKey:@"XMAX"];
+            [userDefaults setInteger:255 forKey:@"YMAX"];
             [userDefaults setInteger:90 forKey:@"ZSENSE"];
             [userDefaults setInteger:40 forKey:@"PID_P"];
             [userDefaults setInteger:0 forKey:@"PID_I"];
@@ -46,7 +46,7 @@
 }
 
 - (void)applicationWillResignActive:(UIApplication *)application {
-    NSLog(@"applicationWillResignActive");
+    //NSLog(@"applicationWillResignActive");
     
     // Sent when the application is about to move from active to inactive state. This can occur for certain types of temporary interruptions (such as an incoming phone call or SMS message) or when the user quits the application and it begins the transition to the background state.
     // Use this method to pause ongoing tasks, disable timers, and throttle down OpenGL ES frame rates. Games should use this method to pause the game.
@@ -70,7 +70,7 @@
 }
 
 - (void)applicationDidBecomeActive:(UIApplication *)application {
-    NSLog(@"applicationDidBecomeActive");
+    //NSLog(@"applicationDidBecomeActive");
     if (wasScanning) {
         [rfduinoManager startScan];
         wasScanning = false;

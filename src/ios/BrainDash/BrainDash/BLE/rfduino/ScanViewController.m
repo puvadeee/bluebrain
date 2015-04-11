@@ -262,7 +262,7 @@
     RFduino *rfduino = [[rfduinoManager rfduinos] objectAtIndex:[indexPath row]];
 
     if (! rfduino.outOfRange) {
-        [rfduinoManager stopScan];
+        //[rfduinoManager stopScan];
         [rfduinoManager connectRFduino:rfduino];
     } else {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];

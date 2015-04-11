@@ -33,24 +33,17 @@
     [super viewDidLoad];
     _mManager = [[CMMotionManager alloc] init];
     _referenceAttitude = nil;
-    //[self.throttleSlider removeConstraints:self.throttleSlider.constraints];
-    [self.throttleSlider setTranslatesAutoresizingMaskIntoConstraints:YES];
     
-    currentUISliderThumbImage = [[UISlider appearance ]currentThumbImage];
-    currentUISliderMinImage   = [[UISlider appearance ]currentMinimumTrackImage];
-    currentUISliderMaxImage   = [[UISlider  appearance ] currentMaximumTrackImage];
+    currentUISliderThumbImage = [[UISlider appearance] currentThumbImage];
+    currentUISliderMinImage   = [[UISlider appearance] currentMinimumTrackImage];
+    currentUISliderMaxImage   = [[UISlider appearance] currentMaximumTrackImage];
     
     self.throttleSlider.transform=CGAffineTransformRotate(self.throttleSlider.transform,270.0/180*M_PI);
     self.throttleSlider.value = ZAXIS_DEFAULT;
-    
-    CGRect newFrame =   self.throttleSlider.frame;
-    newFrame.origin.y = 40;
-    newFrame.origin.x    = self.view.frame.size.width  - newFrame.size.width*3;
-    newFrame.size.height = self.view.frame.size.height - 140;
-    self.throttleSlider.frame = newFrame;
-    
-    
+
     zAxisValue=ZAXIS_DEFAULT;
+    
+    [_baseImageView addSubview:_knobImageView];
 }
 
 - (void)didReceiveMemoryWarning {
@@ -68,6 +61,8 @@
     [[UISlider appearance] setMinimumTrackImage:minImage forState:UIControlStateNormal];
     [[UISlider appearance] setThumbImage:thumbImage forState:UIControlStateNormal];
     
+
+
 }
 
 - (void) viewDidAppear:(BOOL)animated {
@@ -112,6 +107,8 @@
         self.yAxisIsInverted   = [userDefaults boolForKey:@"YINV"];
         self.zAxisIsInverted   = [userDefaults boolForKey:@"ZINV"];
         self.useTilt           = [userDefaults boolForKey:@"USETILT"];
+        self.maxX              = (int) [userDefaults integerForKey:@"XMAX"];
+        self.maxY              = (int) [userDefaults integerForKey:@"YMAX"];
         
         int zSense = (int) [userDefaults integerForKey:@"ZSENSE"];
         self.minZ = -(180-zSense);
@@ -119,26 +116,33 @@
     }
 }
 
+
 - (IBAction)handlePan:(UIPanGestureRecognizer *)uigr
 {
-    CGPoint point = [uigr locationInView:self.baseImageView];
-    int baseX = self.baseImageView.frame.origin.x;
-    int baseY = self.baseImageView.frame.origin.y;
     int baseW = self.baseImageView.frame.size.width;
     int baseH = self.baseImageView.frame.size.height;
     
-    if (uigr.state == UIGestureRecognizerStateEnded) {
-        point    = CGPointMake(baseX + baseW/2, baseY+ baseH/2);
-    } else {
-        if (point.x<baseX) return;
-        if (point.x>baseX+baseW) return;
-        if (point.y<baseY) return;
-        if (point.y>baseY+baseH) return;
-    }
-    xAxisValue = (int) map(point.x, baseX, baseX+baseW, -255,255) *  (self.xAxisIsInverted?-1:1);
-    yAxisValue = (int) map(point.y, baseY, baseY+baseH, -255,255) *  (self.yAxisIsInverted?-1:1);
+    CGPoint point = [uigr locationInView:self.baseImageView];
+  
     
+    if (uigr.state == UIGestureRecognizerStateEnded) {
+        point    = CGPointMake(baseW/2, baseH/2);
+        
+    } else {
+        float x = point.x - baseW/2;
+        float y = point.y - baseH/2;
+
+        if ( (x*x) + (y*y) > (100*100) ) {
+            float bearingRadians = atan2f(x, y); // get bearing in radians
+            point.x= ( 100*sin(bearingRadians))+baseW/2;
+            point.y= ( 100*cos(bearingRadians))+baseH/2;
+        }
+    }
+
+    xAxisValue = (int) map(point.x, 0, baseW, -_maxX, _maxX) *  (self.xAxisIsInverted?-1:1);
+    yAxisValue = (int) map(point.y, 0, baseH, -_maxY, _maxY) *  (self.yAxisIsInverted?-1:1);
     [self updateKnobPosition:point];
+
 }
 
 
@@ -230,12 +234,13 @@
     CMAttitudeReferenceFrame refFrame =CMAttitudeReferenceFrameXArbitraryCorrectedZVertical;
     
     if ( ! ([CMMotionManager availableAttitudeReferenceFrames] & refFrame)) {
-        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"CoreMotion Error"
-                                                        message:@"Request reference frame not available."
+        UIAlertView *alert = [[UIAlertView alloc] initWithTitle:@"Tilt Problem"
+                                                        message:@"Unable to use tilting to set the speed on this device."
                                                        delegate:nil
                                               cancelButtonTitle:@"OK"
                                               otherButtonTitles:nil];
         [alert show];
+        _useTilt=NO;
     }
     
     [self.mManager startDeviceMotionUpdatesUsingReferenceFrame:refFrame toQueue:[NSOperationQueue mainQueue] withHandler:^(CMDeviceMotion *devMotion, NSError *error) {

@@ -12,11 +12,14 @@
 
 @interface JoypadViewController : UIViewController<RFduinoDelegate>
 
-@property (weak, nonatomic) IBOutlet UIView *baseImageView;
+@property (weak, nonatomic) IBOutlet UIImageView *baseImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *knobImageView;
 
 @property (nonatomic, strong) CMMotionManager *mManager;
 @property (nonatomic, strong) CMAttitude* referenceAttitude;
+
+@property (nonatomic, assign) int  maxX;
+@property (nonatomic, assign) int  maxY;
 
 @property (nonatomic, assign) int  minZ;
 @property (nonatomic, assign) int  maxZ;
