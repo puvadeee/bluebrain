@@ -71,12 +71,15 @@
     [self loadDefaults];
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [rfduino setDelegate:self];
-    if (self.useTilt)
+
+    if (self.useTilt) {
         [self startUpdateAccelerometer];
+    }
 
     _tiltButton.hidden = !self.useTilt;
     _tiltLabel.hidden = !self.useTilt;
-    
+    self.throttleSlider.hidden=self.useTilt;
+
     
     zAxisValue=ZAXIS_DEFAULT;
 
@@ -91,9 +94,12 @@
     [[UISlider appearance] setMinimumTrackImage:currentUISliderMaxImage forState:UIControlStateNormal];
     [[UISlider appearance] setThumbImage:currentUISliderThumbImage forState:UIControlStateNormal];
     
-    if (self.useTilt)
+    if (self.useTilt) {
         [self stopCoreMotionUpdate];
-    [self stopJoypadUpdates];
+    }
+
+    [self performSelector:@selector(stopJoypadUpdates) withObject:nil afterDelay:1.0 ];
+
 }
 
 
@@ -110,9 +116,9 @@
         self.maxX              = (int) [userDefaults integerForKey:@"XMAX"];
         self.maxY              = (int) [userDefaults integerForKey:@"YMAX"];
         
-        int zSense = (int) [userDefaults integerForKey:@"ZSENSE"];
-        self.minZ = -(180-zSense);
-        self.maxZ = 180-zSense;
+        int sense = 90 - (int)[userDefaults integerForKey:@"ZSENSE"];
+        self.minZ = -sense;
+        self.maxZ = sense;
     }
 }
 
@@ -125,7 +131,7 @@
     CGPoint point = [uigr locationInView:self.baseImageView];
   
     
-    if (uigr.state == UIGestureRecognizerStateEnded) {
+    if ( (UIGestureRecognizerStateEnded == uigr.state )|| (UIGestureRecognizerStateCancelled == uigr.state)) {
         point    = CGPointMake(baseW/2, baseH/2);
         
     } else {
@@ -192,11 +198,9 @@
 
 }
 - (IBAction)throttleSliderValueChanged:(UISlider *)sender {
-    //[self updateRoll:sender.value];
     int throttleVal = sender.value;
-    //if (throttleVal < 0) throttleVal = 0;
-    //if (throttleVal > 255) throttleVal = 255;
-    zAxisValue = throttleVal;
+    if (!self.useTilt)
+        zAxisValue = throttleVal;
 }
 
 - (IBAction)resetButtonPressed:(UIButton *)sender {
@@ -270,9 +274,6 @@
 
 - (void) updateRoll:(float)roll {
     
-    if (roll >=0) {
-        return;
-    }
     // Pitch: A pitch is a rotation around a lateral (X) axis that passes through the device from side to side
     // pitch is rotation about the gfx x axis when in portrait mode
     
@@ -282,20 +283,21 @@
     // Yaw: A yaw is a rotation around an axis (Z) that runs vertically through the device. It is perpendicular to the body of the device, with its origin at the center of gravity and directed toward the bottom of the device
     //NSLog(@"INPUT: roll/throttle=(%.0f)",  roll);
     
+
+    // roll away from body is -ve angles
     
-    if (roll < self.minZ) roll = self.minZ;
-    if (roll > self.maxZ) roll = self.maxZ;
-    //NSLog(@"CLAMP: roll/throttle=(%.0f)",  roll);
-    
-    if (roll !=0.0)
-        roll = map(roll, self.minZ, self.maxZ, -180, 180);
-    //NSLog(@"MAP  : roll/throttle=(%.0f)",  roll);
-    
+    if (roll < self.minZ) {
+        roll=self.minZ;
+    }
+    if (roll > self.maxZ) {
+        roll= self.maxZ;
+    }
+
+    roll = map(roll, self.minZ, self.maxZ, -179, 179);
 
     // Forward/Backward
     if (self.zAxisIsInverted)
         roll = roll * -1;
-    //NSLog(@"INV? : roll/throttle=(%.0f)",  roll);
     zAxisValue = roll;
 
 }

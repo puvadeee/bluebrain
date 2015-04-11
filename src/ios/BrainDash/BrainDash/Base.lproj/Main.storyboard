@@ -20,7 +20,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="oUM-YK-Lak" userLabel="topButton">
-                                <rect key="frame" x="220" y="113" width="86" height="86"/>
+                                <rect key="frame" x="344" y="113" width="86" height="86"/>
                                 <state key="normal" image="button.png">
                                     <color key="titleShadowColor" white="0.5" alpha="1" colorSpace="calibratedWhite"/>
                                 </state>
@@ -30,7 +30,7 @@
                                 </connections>
                             </button>
                             <button opaque="NO" userInteractionEnabled="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="iiP-1e-eaj" userLabel="resetButton">
-                                <rect key="frame" x="209" y="191" width="122" height="40"/>
+                                <rect key="frame" x="333" y="191" width="122" height="40"/>
                                 <constraints>
                                     <constraint firstAttribute="width" constant="122" id="Y3M-69-FwU"/>
                                 </constraints>
@@ -96,7 +96,7 @@
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstItem="geT-kB-bgD" firstAttribute="top" secondItem="Ia1-K6-d13" secondAttribute="bottom" constant="8" id="00T-SV-162"/>
-                            <constraint firstItem="oUM-YK-Lak" firstAttribute="leading" secondItem="ZBc-kh-Ouz" secondAttribute="trailing" constant="4" id="3aK-gg-b3c"/>
+                            <constraint firstItem="oUM-YK-Lak" firstAttribute="leading" secondItem="ZBc-kh-Ouz" secondAttribute="trailing" constant="128" id="3aK-gg-b3c"/>
                             <constraint firstItem="ZBc-kh-Ouz" firstAttribute="leading" secondItem="tsR-hK-woN" secondAttribute="leadingMargin" id="DHY-cd-f5L"/>
                             <constraint firstItem="ZBc-kh-Ouz" firstAttribute="centerY" secondItem="sYV-VB-FtE" secondAttribute="centerY" id="Dmy-Sy-eM3"/>
                             <constraint firstItem="iiP-1e-eaj" firstAttribute="bottom" secondItem="oUM-YK-Lak" secondAttribute="bottom" constant="32" id="JLR-OG-xGW"/>
@@ -132,7 +132,7 @@
                 <panGestureRecognizer minimumNumberOfTouches="1" id="nmF-aJ-I5h">
                     <connections>
                         <action selector="handlePan:" destination="9pv-A4-QxB" id="raP-mS-Nls"/>
-                        <outlet property="delegate" destination="9pv-A4-QxB" id="gp8-fW-qG6"/>
+                        <outlet property="delegate" destination="acW-dT-cKf" id="qzu-iw-uY5"/>
                     </connections>
                 </panGestureRecognizer>
             </objects>
@@ -207,7 +207,7 @@
                                 <color key="textColor" red="0.0" green="0.0" blue="0.0" alpha="1" colorSpace="calibratedRGB"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="80" minValue="0.0" maxValue="160" translatesAutoresizingMaskIntoConstraints="NO" id="R4e-7m-qiF" userLabel="Tilt Sensitivity">
+                            <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="45" minValue="1" maxValue="90" translatesAutoresizingMaskIntoConstraints="NO" id="R4e-7m-qiF" userLabel="Tilt Sensitivity">
                                 <rect key="frame" x="202" y="232" width="384" height="31"/>
                                 <connections>
                                     <action selector="valChanged:" destination="8rJ-Kc-sve" eventType="valueChanged" id="rOv-hk-aJj"/>
@@ -474,7 +474,9 @@
                             <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="750" minValue="0.0" maxValue="1000" translatesAutoresizingMaskIntoConstraints="NO" id="5eb-ip-NE3" userLabel="White Threshold">
                                 <rect key="frame" x="14" y="190" width="242" height="31"/>
                                 <connections>
-                                    <action selector="whiteThresholdSliderValueChanged:" destination="SOv-BH-slT" eventType="valueChanged" id="EWj-h6-RSN"/>
+                                    <action selector="whiteThresholdSlideEditingDidEnd:" destination="SOv-BH-slT" eventType="editingDidEnd" id="KGN-lG-CCJ"/>
+                                    <action selector="whiteThresholdSliderFinishedSliding:" destination="SOv-BH-slT" eventType="touchUpInside" id="BDX-cw-7gM"/>
+                                    <action selector="whiteThresholdSliderValueChanged:" destination="SOv-BH-slT" eventType="valueChanged" id="Sar-rb-Ahj"/>
                                 </connections>
                             </slider>
                             <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="White Threshold" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="nxg-T3-9M1">
@@ -575,6 +577,7 @@
                         <outlet property="pStepper" destination="1VC-Yk-AWP" id="FV5-0H-nyf"/>
                         <outlet property="pTextField" destination="FDa-mm-nR5" id="jmM-Id-ZDq"/>
                         <outlet property="whiteThresholdLable" destination="KVy-75-BZY" id="Co3-Cx-5f4"/>
+                        <outlet property="whiteThresholdSlider" destination="5eb-ip-NE3" id="mDg-wS-H1L"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="Mu0-UW-tjq" userLabel="First Responder" sceneMemberID="firstResponder"/>

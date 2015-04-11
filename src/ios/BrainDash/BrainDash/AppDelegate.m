@@ -26,13 +26,13 @@
     NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
     if (userDefaults) {
         if (![userDefaults objectForKey:@"marker"]) {
-            [userDefaults setBool:false forKey:@"XINV"];
-            [userDefaults setBool:false forKey:@"YINV"];
+            [userDefaults setBool:true forKey:@"XINV"];
+            [userDefaults setBool:true forKey:@"YINV"];
             [userDefaults setBool:true forKey:@"ZINV"];
             [userDefaults setBool:false forKey:@"USETILT"];
             [userDefaults setInteger:255 forKey:@"XMAX"];
             [userDefaults setInteger:255 forKey:@"YMAX"];
-            [userDefaults setInteger:90 forKey:@"ZSENSE"];
+            [userDefaults setInteger:45 forKey:@"ZSENSE"];
             [userDefaults setInteger:40 forKey:@"PID_P"];
             [userDefaults setInteger:0 forKey:@"PID_I"];
             [userDefaults setInteger:450 forKey:@"PID_D"];

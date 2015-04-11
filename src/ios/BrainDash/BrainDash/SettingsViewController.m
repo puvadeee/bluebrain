@@ -82,21 +82,6 @@
 
 }
 
-- (IBAction)whiteThresholdSliderValueChanged:(UISlider *)sender {
-    self.whiteThresholdLable.text=[NSString stringWithFormat:@"%.0f", sender.value];
-    RFduino *rfduino;
-    rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
-    if (rfduino) {
-        uint8_t whiteVal = map(sender.value, 0, 1000, 0,255);
-        char msg[6] = {0};
-        snprintf(msg, sizeof(msg), "%c%c%c%c%c", 0x7F, 0x7F, 0, 0x7F, whiteVal);
-        NSData *data = [NSData dataWithBytesNoCopy:msg length:sizeof(msg)-1 freeWhenDone:NO];
-        NSLog(@"SendData: %@", data);
-    
-        [rfduino send:data];
-    }
-}
-
 - (IBAction)valChanged:(id)sender {
     [self saveDefaults];
 }

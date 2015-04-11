@@ -12,6 +12,8 @@
 #import "Utilities.h"
 
 @interface BrainDashTuningViewController () {
+
+    int16_t pidP, pidD, whiteThreshold;
 }
 
 @property (nonatomic, assign) id currentResponder;
@@ -63,12 +65,13 @@
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [self.rfduino setDelegate:self];
 
-    _pStepper.value = [[_pTextField text] intValue];
-    _iStepper.value = [[_iTextField text] intValue];
-    _dStepper.value = [[_dTExtField text] intValue];
+    [self loadSettings];
+    [self applyTuningParametersToUI];
+
     _debugTextView.text = @"";
     
-    [self statsPressed:nil];
+    [self performSelector:@selector(statsPressed:) withObject:nil afterDelay:1.0 ];
+
 }
 
 
@@ -79,12 +82,14 @@
 
 - (BOOL)textField:(UITextField *)textField shouldChangeCharactersInRange:(NSRange)range replacementString:(NSString *)string {
     if (textField==_pTextField) {
-        _pStepper.value = [[textField text] intValue];
+        pidP = [[textField text] intValue];
+        
     } else if (textField==_iTextField) {
-        _iStepper.value = [[textField text] intValue];
+        //_iStepper.value = [[textField text] intValue];
     } else if (textField==_dTExtField) {
-        _dStepper.value = [[textField text] intValue];
+        pidD = [[textField text] intValue];
     }
+    [self applyTuningParametersToUI];
     return true;
 }
 
@@ -97,26 +102,73 @@
 }
 
 - (IBAction)pStepperValueChanged:(UIStepper *)sender {
-    _pTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
+    //_pTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
+    pidP =(int16_t)sender.value;
+    [self applyTuningParametersToUI];
+
 }
 - (IBAction)iStepperValueChanged:(UIStepper *)sender {
-    _iTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
+    //_iTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
 
 }
 - (IBAction)dStepperValueChanged:(UIStepper *)sender {
-    _dTExtField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
-
+    //_dTExtField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
+    pidD = (int16_t)sender.value;
+    [self applyTuningParametersToUI];
 }
 
 
 - (IBAction)savePressed:(id)sender {
-    [self sendPIDUpdate:[_pTextField.text intValue] i:0 d:[_dTExtField.text intValue]];
+    [self updateTuningParametersFromUI];
+    [self sendPIDUpdate:pidP i:0 d:pidD];
+    [self saveSettings];
 
 }
 
+- (void) applyTuningParametersToUI {
+    _pTextField.text = [NSString stringWithFormat:@"%d", pidP];
+    _dTExtField.text = [NSString stringWithFormat:@"%d", pidD];
+    _pStepper.value = pidP;
+    _dStepper.value = pidD;
+    self.whiteThresholdLable.text=[NSString stringWithFormat:@"%d", whiteThreshold];
+    self.whiteThresholdSlider.value = whiteThreshold;
+}
 
-#define lowByte(v)   ((unsigned char) (v))
-#define highByte(v)  ((unsigned char) (((unsigned int) (v)) >> 8))
+- (void) updateTuningParametersFromUI {
+    pidP= [[_pTextField text] intValue];
+    pidD= [[_dTExtField text] intValue];
+    whiteThreshold = [_whiteThresholdLable.text intValue];
+}
+
+- (void) loadSettings {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    
+    if (userDefaults) {
+        pidP = [userDefaults integerForKey:@"PID_P"];
+        pidD = [userDefaults integerForKey:@"PID_D"];
+        whiteThreshold = [userDefaults integerForKey:@"IRWHITE"];
+    }
+}
+
+
+
+- (void) saveSettings {
+    NSUserDefaults *userDefaults = [NSUserDefaults standardUserDefaults];
+    if (userDefaults) {
+        [userDefaults setInteger:pidP forKey:@"PID_P"];
+        //[userDefaults setInteger:0 forKey:@"PID_I"];
+        [userDefaults setInteger:pidD forKey:@"PID_D"];
+        [userDefaults setInteger:whiteThreshold forKey:@"IRWHITE"];
+        [userDefaults synchronize];
+    } else {
+        NSLog(@"no user defaults");
+    }
+   
+}
+
+
+
+
 
 - (void) sendPIDUpdate:(int)p i:(int)i d:(int)d {
     char msg[21] = {0};
@@ -153,13 +205,26 @@
 
 - (IBAction)statsPressed:(id)sender {
     _debugTextView.text = @"";
-    [self sendString:@"i"];
+    RFduino *rfduino;
+    rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
+    if (rfduino) {
+        [self sendString:@"i"];
+    } else {
+        _debugTextView.text = @"Not connected.";
+    }
     
+}
+- (IBAction)whiteThresholdSliderFinishedSliding:(id)sender {
+    NSLog(@"whiteThresholdSlideEditingDidEnd");
+    [self applyTuningParametersToUI];
+    [self saveSettings];
 }
 
 
 - (IBAction)whiteThresholdSliderValueChanged:(UISlider *)sender {
-    self.whiteThresholdLable.text=[NSString stringWithFormat:@"%.0f", sender.value];
+    whiteThreshold = sender.value;
+    [self applyTuningParametersToUI];
+
     RFduino *rfduino;
     rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     if (rfduino) {

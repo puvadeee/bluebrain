@@ -11,6 +11,9 @@
 #import "NSData+hex.h"
 
 
+#define lowByte(v)   ((unsigned char) (v))
+#define highByte(v)  ((unsigned char) (((unsigned int) (v)) >> 8))
+
 #define radiansToDegrees(x) (180/M_PI)*x
 long map(long x, long in_min, long in_max, long out_min, long out_max);
 

@@ -23,6 +23,7 @@
 - (IBAction)dStepperValueChanged:(UIStepper *)sender;
 @property (weak, nonatomic) IBOutlet UITextView *debugTextView;
 @property (weak, nonatomic) IBOutlet UILabel *whiteThresholdLable;
+@property (weak, nonatomic) IBOutlet UISlider *whiteThresholdSlider;
 
 @property (strong, nonatomic) RFduino *rfduino;
 
