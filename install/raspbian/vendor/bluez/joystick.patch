@@ -105,8 +105,8 @@ index 7911ba5..9298e75 100644
 +        usleep(10000);
 +    }
 +    
-+    char * cmdParams[3] = {"char-write-req", "0x000f", "0100"};
-+    cmd_char_write(3, cmdParams);
++    //char * cmdParams[3] = {"char-write-req", "0x000f", "0100"};
++    //cmd_char_write(3, cmdParams);
 +
 +}
 +
@@ -177,7 +177,7 @@ index 7911ba5..9298e75 100644
 +            nextSend = SDL_GetTicks() + 100;
 +            
 +            snprintf(buf, sizeof(buf), "%02x%02x%02x%02x", xAxis, 255-yAxis, 0, zAxis);
-+            char * cmdParams[3] = {"char-write-cmd", "0x0011", buf};
++            char * cmdParams[3] = {"char-write-cmd", "0x0014", buf};
 +            cmd_char_write(sizeof(cmdParams),cmdParams);
 +            //printf ( "Joypadupdate(%d,%d,%d) = %s\n", xAxis, yAxis, zAxis, buf);
 +

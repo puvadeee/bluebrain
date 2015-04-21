@@ -285,6 +285,26 @@ class BLE:
         bleDevice = BLE_UART(mac=deviceAddress, gattOpts=gattOpts)
         return bleDevice
 
+    def findByAddress(self, addr, gattOpts=""):
+        deviceAddress = ''
+        while not deviceAddress:
+            devices = self.devicesInRange()
+            for mac in devices.keys():
+                print mac + " " + str(devices[mac])
+                try:
+                    if mac == addr:
+                        deviceAddress = mac
+                except Exception:
+                    logging.exception('findByAddress')
+            time.sleep(1)
+
+        print  "CONNECT TO: " + deviceAddress
+        #self.bleManager.stopScanning()
+
+        bleDevice = BLE_UART(mac=deviceAddress, gattOpts=gattOpts)
+        return bleDevice
+
+
 
     def devicesInRange(self):
         return self.bleManager.devices
