@@ -40,9 +40,9 @@ uint8_t button = B00000010;
 
 
 void calculateMockNavData() {
-  ardprintf("frame:%d", frame);
-  Serial.println(DEG2RAD((frame * 4)));
-  Serial.println(sin(DEG2RAD(frame * 4)));
+  //ardprintf("frame:%d", frame);
+  //Serial.println(DEG2RAD((frame * 4)));
+  //Serial.println(sin(DEG2RAD(frame * 4)));
 
   r = abs ( sin(DEG2RAD((float)frame)) * 255);
   g = abs ( sin(DEG2RAD((float)(frame + 30))) * 255);
@@ -106,7 +106,8 @@ void  received_client_disconnect() {
 }
 
 void received_client_data(char *data, int len)  {
-  Serial.println(F("* receviedMessage!"));
+  Serial.print(F("* receviedMessage! len="));
+  Serial.println(len, DEC);
 
 }
 

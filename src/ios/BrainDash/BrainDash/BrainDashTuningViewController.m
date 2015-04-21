@@ -8,7 +8,7 @@
 
 #import "BrainDashTuningViewController.h"
 #import "RFduinoManager.h"
-
+#import "NSData+hex.h"
 
 @interface BrainDashTuningViewController () {
 }
@@ -63,7 +63,10 @@
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [self.rfduino setDelegate:self];
 
-    
+    _pStepper.value = [[_pTextField text] intValue];
+    _iStepper.value = [[_iTextField text] intValue];
+    _dStepper.value = [[_dTExtField text] intValue];
+    _debugTextView.text = @"";
 }
 
 
@@ -85,6 +88,7 @@
         
     } else if ([name isEqualToString:@"PID"]) {
         _pTextField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[0]) ];;
+        //_iTextField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[0]) ];;
         _dTExtField.text = [NSString stringWithFormat:@"%d", CFSwapInt16BigToHost(( (int16_t*) bytes)[1]) ];;
         _pStepper.value = [[_pTextField text] intValue];
         _dStepper.value = [[_dTExtField text] intValue];
@@ -127,6 +131,8 @@
     _pTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
 }
 - (IBAction)iStepperValueChanged:(UIStepper *)sender {
+    _iTextField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
+
 }
 - (IBAction)dStepperValueChanged:(UIStepper *)sender {
     _dTExtField.text = [NSString stringWithFormat:@"%d",(int16_t)sender.value];
@@ -164,14 +170,70 @@
     [self.rfduino send:data];
 }
 
-
+- (void) sendString:(NSString*) str {
+    NSLog(@"SendString: %@", str);
+    NSData* data = [str dataUsingEncoding:NSUTF8StringEncoding];
+    //data = [data subdataWithRange:NSMakeRange(0, [data length] - 1)];
+    
+    [self.rfduino send:data];
+    
+}
 
 - (void)didReceive:(NSData *)data
 {
     NSString *string =[[NSString alloc] initWithData:data encoding:NSUTF8StringEncoding];
     NSLog(@"Recv: %@", string);
+    _debugTextView.text = [NSString stringWithFormat:@"%@\n%@", _debugTextView.text, string];
+    //_debugTextView.text = string;
+    
+    //CGPoint offsetPoint = CGPointMake(0.0, _debugTextView.contentSize.height - _debugTextView.bounds.size.height);
+    //[_debugTextView setContentOffset:offsetPoint animated:NO];
+    
+    NSRange range = NSMakeRange(_debugTextView.text.length - 1, 1);
+    [_debugTextView scrollRangeToVisible:range ];
+}
+
+- (IBAction)fPressed:(id)sender {
+    [self sendString:@"f"];
+}
+
+- (IBAction)lPressed:(id)sender {
+    [self sendString:@"l"];
+}
+
+- (IBAction)rPressed:(id)sender {
+    [self sendString:@"r"];
+}
+
+- (IBAction)sPressed:(id)sender {
+    [self sendString:@"p"];
+}
+
+- (IBAction)statsPressed:(id)sender {
+    [self sendString:@"i"];
 
 }
+
+- (IBAction)sendPWMPeriodPressed:(UIButton *)sender {
+    uint32_t val = [_iTextField.text integerValue];
+    
+    char msg[21] = {0};
+    snprintf(msg, sizeof(msg), "PWM:%c%c%c%c",
+             
+             (val & 0xFF000000) >> 24,
+             (val & 0x00FF0000) >> 16,
+             (val & 0x0000FF00) >> 8,
+             (val & 0x000000FF) );
+    NSData *data = [NSData dataWithBytesNoCopy:msg length:8 freeWhenDone:NO];
+    //NSLog(@"SendData: %@", data);
+    NSLog(@"SendData: %@", [data hexRepresentationWithSpaces:YES]);
+    
+    [self.rfduino send:data];
+
+
+
+}
+
 
 @end
 

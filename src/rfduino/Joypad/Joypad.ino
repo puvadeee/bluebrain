@@ -11,7 +11,7 @@
 //
 //////////////////////////////////////////////////////////////////////////////////////////////////
 
-#define GZLL_HOST_ADDRESS 0x12ACB001           // this needs to match the Bot sketch value
+#define GZLL_HOST_ADDRESS 0x22ACB010           // this needs to match the Bot sketch value
 //#define LOCAL_DEBUG
 #define REMOTE_DEBUG
 
