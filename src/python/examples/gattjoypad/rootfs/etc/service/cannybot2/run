@@ -1,0 +1,7 @@
+#!/bin/sh
+sleep 2
+hciconfig hci0 up
+BT_ADDR=$(head -n 1 /boot/cannybots/cannybot2.txt)
+exec /home/pi/bluebrain/src/python/examples/gattjoypad/joypad.py $BT_ADDR 2
+
+#exec /usr/local/bin/gatttool -t random -I -b $BT_ADDR -j 1
