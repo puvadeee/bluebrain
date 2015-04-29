@@ -164,11 +164,11 @@ function updateJoypad() {
     if (x<-255) x =-255;
     if (y>255) y =255;
     if (y<-255) y = -255;
-    x = map(x, -255, 255, 0, 255);
-    y = map(y, -255, 255, 0, 255);
+    x = -map(x, -255, 255, 0, 255);
+    y = -map(y, -255, 255, 0, 255);
 
     //console.log("x,y=\t" + xAxis + ",\t" + yAxis + "\t=\t" + x + ",\t" +y );
-    cannybots.sendBytes([x & 0xFF, y & 0xFF, 0, 0, 0]);
+    cannybots.sendBytes([x & 0xFF, y & 0xFF, 0, 0]);
 
 }
 
