@@ -3,7 +3,7 @@
 # Cannybots Scratch integration
 # By Wayne Keenan 02/12/2014
 # www.cannybots.com 
-import sys
+import sys	
 from threading import Thread
 import json
 import base64
@@ -114,17 +114,56 @@ def forward(scratch):
     send2turtle('l', turtleAngle)
 
 
+# Mazing
+
+def send2maze(cmd):
+    global ws
+    global wsConnected
+
+    msg = '{"rawBytes":["'+ cmd + '"]}'
+    print "WS send " + str(msg)
+    #msg = base64.b64encode(msg)
+
+    try:
+        if wsConnected:
+            ws.send(msg)
+        else:
+            print "WARN: WS not yet connected"
+    except Exception as e:
+        print "ERROR: ws send failed: " + str(e)
+
+@broadcast('MoveForward')
+def maze_forward(scratch):
+    send2maze('f')
+
+@broadcast('TurnRight')
+def maze_right(scratch):
+    send2maze('r')
+
+@broadcast('TurnLeft')
+def maze_left(scratch):
+    send2maze('l')
+
+@broadcast('Spin')
+def maze_spin(scratch):
+    send2maze('p')
+
+@broadcast('Stop')
+def maze_stop(scratch):
+    send2maze('s')
+
+
 
 # Web Socket
 
 def on_message(ws, message):
     message = base64.b64decode(message)
     print "WS recv: " + str(message)
-    jsonObj = json.loads(message)
+    #jsonObj = json.loads(message)
     #print jsonObj
-    if 'payload' in jsonObj:
-        line = jsonObj.get('payload').rstrip("\r\n")
-        send2scratch(line)
+    #if 'payload' in jsonObj:
+    #    line = jsonObj.get('payload').rstrip("\r\n") 
+    send2scratch(message)
 
 
 def on_error(ws, error):
@@ -143,7 +182,7 @@ def on_open(ws):
 
 
 if __name__ == "__main__":
-    websocket.enableTrace(True)
+    #websocket.enableTrace(True)
     ws = websocket.WebSocketApp("ws://localhost:3141/api/ws/cannybots",
                                 on_message=on_message,
                                 on_error=on_error,

@@ -39,6 +39,6 @@ apt-get install python-rpi.gpio python-dev -y
 
 # Scratch integration
 
-apt-get install python-pip /y
+apt-get install python-pip -y
 sudo pip install websocket-client
 
