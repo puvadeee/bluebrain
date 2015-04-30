@@ -3,7 +3,7 @@
 //  BrainDash
 //
 //  Created by Wayne Keenan on 22/10/2014.
-//  Copyright (c) 2014 Cannybots. All rights reserved.
+//  Copyright (c) 2014 Cannybo ts. All rights reserved.
 //
 
 #import "AppDelegate.h"

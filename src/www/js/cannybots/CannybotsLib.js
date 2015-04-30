@@ -141,8 +141,10 @@ var cannybots = new function() {
 
     self.receiveBytes = function (bytesArrayBase64) {
         self.okToSend = true;
+        msg = "DEBUG: receiveBytes (raw): " + bytesArrayBase64;
+        self.debug(msg);
         var decoded = atob(bytesArrayBase64);
-        msg = "DEBUG: receiveBytes: " + decoded;
+        msg = "DEBUG: receiveBytes (decoded): " + decoded;
         self.debug(msg);
         self.recvDelegate(decoded);
     }
