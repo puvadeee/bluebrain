@@ -155,7 +155,7 @@ var cannybots = new function() {
     }
     self.sendError = function(msg) {
         self.debug("ERROR: " + msg);
-        self.sendNativeMessage({"error":msg});
+        //self.sendNativeMessage({"error":msg});
     }
     
     self.debug = function (msg){

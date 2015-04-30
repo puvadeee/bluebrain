@@ -26,6 +26,10 @@ module.exports = function(RED) {
 		node.status({fill:"red",shape:"ring",text:"disconnected"}); 
 		noble.startScanning([cannybotUARTServiceUUID], true);  
 		
+		node.errorHandler = function(error) {
+			node.error('NOBLE error: ' + error);  
+		
+		}
 		
 		this.on("input", function(msg) {  
 			var node= this;  
@@ -46,17 +50,22 @@ module.exports = function(RED) {
 				if (node.writeCharacteristic) {
 					node.log("writeValue:" + command.data);
 					var data = command.data ? new Buffer(command.data, 'hex') : null;
-					node.writeCharacteristic.write(data,true);
+					node.writeCharacteristic.write(data,false);
 				} else {
-					node.warn("No TX characteristix found");
+					node.warn("No TX characteristic found");
 				}
 			} else if (action === 'writeByteArray') {
 				if (node.writeCharacteristic) {
-					node.log("writeValue:" + command.data);
-					var data = command.data ? new Buffer(command.data) : null;
-					node.writeCharacteristic.write(data,true);
+					node.log("writeValue: '" + command.data + "'");
+					//var data = command.data ? new Buffer(command.data) : null;
+					var data = new Buffer(command.data.length);
+					for (i=0; i< command.data.length; i++)
+						data.write(command.data[i])
+					node.log("writeValue: buffer = '" + data + "'");
+					
+					node.writeCharacteristic.write(data,false); //node.errorHandler);
 				} else {
-					node.warn("No TX characteristix found");
+					node.warn("No TX characteristic found");
 				}
 			}
 				
@@ -76,21 +85,21 @@ module.exports = function(RED) {
 		function sendEvent(event) {
 			node.log('cb -> node.send: ' + JSON.stringify(event));
 			try {
-				node.send(event);
+				node.send({payload:event});
 					
 			} catch (err) {
-				node.error(serr);
+				node.error(err);
 			}
 		}
 		
 
 		function cb_uart_rxNotify(state) {
-			//node.log("Notify State : " +state);			
+			node.log("Notify State : " +state);			
 		}
 
 		function  cb_uart_rxData(data, isNotification) {
-			//node.log("RX : " +data);
-			sendEvent({
+			node.log("RX : " +data);
+			sendEvent({ 
 				type: 'handleRead',
 				string: data.toString(),
 				rawBytes: data,
@@ -147,7 +156,7 @@ module.exports = function(RED) {
 			  node.log('  Service Data      = ' + serviceData);
 			}
 
-			if (localName) {
+			if (serviceUuids) {
 			  node.log('  Service UUIDs     = ' + serviceUuids);
 			}
 
@@ -192,9 +201,9 @@ module.exports = function(RED) {
 				  var serviceInfo = service.uuid;
 
 				  if (service.name) {
-					//serviceInfo += ' (' + service.name + ')';
+					serviceInfo += ' (' + service.name + ')';
 				  }
-				  //node.log(serviceInfo);
+				  node.log(serviceInfo);
 
 				  service.discoverCharacteristics([], function(error, characteristics) {
 					var characteristicIndex = 0;
@@ -211,15 +220,15 @@ module.exports = function(RED) {
 						  //characteristicInfo += ' (' + characteristic.name + ')';
 						}
 						if (characteristic.uuid === "7e400002b5a3f393e0a9e50e24dcca9e") {
-							//node.log("FOUND RX");
+							node.log("FOUND RX");
 							characteristic.notify(true, function(err) { 
-								//node.log ("Notify Error?: "+err);
+								node.log ("Notify Error?: "+err);
 								characteristic.on('notify', cb_uart_rxNotify);
 								characteristic.on('data', cb_uart_rxData);
 
 							});						
 						} else if (characteristic.uuid === "7e400003b5a3f393e0a9e50e24dcca9e") {
-							//node.log("FOUND TX");
+							node.log("FOUND TX");
 							node.writeCharacteristic = characteristic;
 						} 
 
