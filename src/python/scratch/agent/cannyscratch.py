@@ -3,7 +3,8 @@
 # Cannybots Scratch integration
 # By Wayne Keenan 02/12/2014
 # www.cannybots.com 
-import sys	
+import sys
+import os
 from threading import Thread
 import json
 import base64
@@ -168,18 +169,20 @@ def on_message(ws, message):
 
 def on_error(ws, error):
     print "ERROR: ws, " + str(error)
-
+    fatalError()
 
 def on_close(ws):
     print "### closed ###"
-
+    fatalError()
 
 def on_open(ws):
     global wsConnected
     print "### opened ###"
     wsConnected = True
 
-
+def fatalError():
+    os.kill(os.getpid(), signal.SIGINT)
+    #thread.interrupt_main() 
 
 if __name__ == "__main__":
     #websocket.enableTrace(True)
@@ -194,6 +197,8 @@ if __name__ == "__main__":
         ws.run_forever()
         ws.close()
         print "thread terminating..."
+        keepRunning = False
+        fatalError()
 
     #thread.start_new_thread(runWs, ())
     wst = Thread(target=runWs)
