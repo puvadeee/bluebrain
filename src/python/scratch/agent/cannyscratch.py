@@ -19,7 +19,8 @@ import signal
 def signal_handler(signal, frame):
         print('Exit due to Ctrl+C')
         keepRunning=False
-        sys.exit(0)
+        fatalError()
+
 signal.signal(signal.SIGINT, signal_handler)
         
         
@@ -181,7 +182,7 @@ def on_open(ws):
     wsConnected = True
 
 def fatalError():
-    os.kill(os.getpid(), signal.SIGINT)
+    os.kill(os.getpid(), signal.SIGKILL)
     #thread.interrupt_main() 
 
 if __name__ == "__main__":
@@ -194,7 +195,11 @@ if __name__ == "__main__":
 
     def runWs(*args):
         global ws
-        ws.run_forever()
+        try:
+            ws.run_forever()
+        except Exception as e:
+            print "ERROR: ws run failed: " + str(e)
+            
         ws.close()
         print "thread terminating..."
         keepRunning = False

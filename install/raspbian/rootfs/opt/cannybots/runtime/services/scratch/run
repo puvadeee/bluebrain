@@ -1,6 +1,7 @@
 #!/bin/sh
-cd /opt/cannybots/runtime/scratch/
+export PATH=/usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin:/usr/local/games:/usr/games
+cd /opt/cannybots/runtime/scratch/agent
+exec ./cannyscratch.py
 sleep 2
-exec ./start.sh
 
 
