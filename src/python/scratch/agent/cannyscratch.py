@@ -23,10 +23,14 @@ def signal_handler(signal, frame):
 
 signal.signal(signal.SIGINT, signal_handler)
         
-        
+
+host = 'localhost'        
 ws = None
 wsConnected = False
 scratchInterface = None
+
+if (len(sys.argv) > 1):
+	host=sys.argv[1]
 
 
 turtleDistance = 0
@@ -187,7 +191,7 @@ def fatalError():
 
 if __name__ == "__main__":
     #websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://localhost:3141/api/ws/cannybots",
+    ws = websocket.WebSocketApp("ws://"+host+":3141/api/ws/cannybots",
                                 on_message=on_message,
                                 on_error=on_error,
                                 on_close=on_close)
