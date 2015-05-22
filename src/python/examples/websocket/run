@@ -1,0 +1,7 @@
+cd ../../modules
+sudo python setup.py install
+cd -
+cp ../../../nodejs/cannybox/nodered/nodes/CannybotsBLE.js  /opt/cannybots/runtime/nodered/cannybox/nodered/nodes/
+sudo svc -du /etc/service/nodered/
+sleep 15
+sudo  python client.py

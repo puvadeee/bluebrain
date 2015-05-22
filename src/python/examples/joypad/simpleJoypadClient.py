@@ -15,3 +15,4 @@ joypadClient.updateJoypad(-255,-255,0)
 sleep(1)
 
 joypadClient.updateJoypad(0,0,0) 
+sleep(2)

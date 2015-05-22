@@ -30,6 +30,33 @@ import pexpect
 #attr handle = 0x0008, end grp handle = 0x000b uuid: 00001801-0000-1000-8000-00805f9b34fb
 #attr handle = 0x000c, end grp handle = 0xffff uuid: 7e400001-b5a3-f393-e0a9-e50e24dcca9e
 
+# enter:   characteristics
+
+# rfduino
+# RX: handle: 0x000d, char properties: 0x12, char value handle: 0x000e, uuid: 7e400002-b5a3-f393-e0a9-e50e24dcca9e
+# TX: handle: 0x0010, char properties: 0x0c, char value handle: 0x0011, uuid: 7e400003-b5a3-f393-e0a9-e50e24dcca9e
+# DC:handle: 0x0012, char properties: 0x0c, char value handle: 0x0013, uuid: 7e400004-b5a3-f393-e0a9-e50e24dcca9e
+
+
+
+
+# BlueBrain v2 -  with DFU , device service and UART
+# TX: handle: 0x0020, char properties: 0x0c, char value handle: 0x0021, uuid: 7e400003-b5a3-f393-e0a9-e50e24dcca9e
+# RX: handle: 0x0022, char properties: 0x10, char value handle: 0x0023, uuid: 7e400002-b5a3-f393-e0a9-e50e24dcca9e
+# DC: handle: 0x0025, char properties: 0x0c, char value handle: 0x0026, uuid: 7e400004-b5a3-f393-e0a9-e50e24dcca9e
+
+
+# BlueBrain v2 -  with DFU and UART
+# TX: handle: 0x0013, char properties: 0x0c, char value handle: 0x0014, uuid: 7e400003-b5a3-f393-e0a9-e50e24dcca9e
+# RX: handle: 0x0015, char properties: 0x10, char value handle: 0x0016, uuid: 7e400002-b5a3-f393-e0a9-e50e24dcca9e
+# DC: handle: 0x0018, char properties: 0x0c, char value handle: 0x0019, uuid: 7e400004-b5a3-f393-e0a9-e50e24dcca9e
+
+
+# TODO: perfomr the above search as the handle can vary, unlike the UUID
+# this is needed for flexility as the serviceUUID's stay constant but the handles vary depending
+
+txHandle = '0x0014'
+rxHandle = '0x0016'
 
 
 # RX:
@@ -143,10 +170,11 @@ class BLE_UART:
         if i == 0:
             die(self.child, 'gatttool timed out. Here is what gatttool said:')
 
+        time.sleep(2)
         #self.enqueString('connect')
         # Start the RX listener
         #time.sleep(1)
-        #self.enqueString('char-write-req 0x000f 0100')
+        #self.enqueString('char-write-req ' + rxHandle + '  0100')
 
     def closeGattTool(self):
         print "Killing gatttool child"
@@ -156,11 +184,7 @@ class BLE_UART:
             #self.child.terminate()
             print "GATTTOOL TOOL EXIT: " + str(self.child.exitstatus)
 
-    def tx_worker(self):
-        while self.keepRunning:
-            item = self.q.get(True)  # get command or if none are waiting this will block
-            self._send(item)
-            self.q.task_done()
+
 
     def rx_worker(self):
         while self.keepRunning:
@@ -191,18 +215,21 @@ class BLE_UART:
         self.tx = Thread(target=self.tx_worker)
         self.tx.daemon = True
         self.tx.name = name
-        if 0:
+        if 1:
 			self.tx.start()
 
         self.rx = Thread(target=self.rx_worker)
         self.rx.daemon = True
         self.rx.name = name
 
-        self.rx.start()
+        if 0:
+			self.rx.start()
 
 
     def addListener(self, func):
         self.rxListener = func
+
+
 
     def sendBytes(self, bytes):
         byteStr = ''.join(chr(x) for x in bytes)
@@ -210,18 +237,31 @@ class BLE_UART:
 
 
     def sendHexString(self, hexString):
-        cmd = 'char-write-cmd 0x0011 ' + hexString
+        cmd = 'char-write-cmd ' + txHandle + ' ' + hexString
+        print 'BLE q '  + cmd
         self.enqueString(cmd)
 
     def enqueString(self, str):
-        if self.queueLock.locked():
-            return
-        self.queueLock.acquire()
+        #if self.queueLock.locked():
+        #    return
+        #self.queueLock.acquire()
         self.q.put(str)
-        self.queueLock.release()
+        #self.queueLock.release()
+
+
+
+    def tx_worker(self):
+        while self.keepRunning:
+            print "TX: waiting for Q item"
+            item = self.q.get(True)  # get command or if none are waiting this will block
+            self._send(item)
+            self.q.task_done()
+
 
 
     def _send(self, msg):
+        print 'BLE sending '  + msg
+
         self.child.sendline(msg)
         i = self.child.expect([pexpect.TIMEOUT, 'command failed', '\[LE\]>'])
         if i == 0:
