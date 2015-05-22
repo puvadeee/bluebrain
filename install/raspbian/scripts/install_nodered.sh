@@ -12,8 +12,10 @@ sudo dpkg -i $INSTALL_BIN_FILES/node_0.10.36_armhf.deb
 else
 echo Pi v2 install
 #from:  curl -sL https://deb.nodesource.com/setup | sudo bash -
+echo Attempting to remove previous node package
+sudo svc -d /etc/service/nodered
+sudo apt-get remove node
 ./scripts/setup_nodered_pi2.sh 
-apt-get install nodejs
 sudo apt-get install -y build-essential python-dev python-rpi.gpio nodejs
 fi
 
