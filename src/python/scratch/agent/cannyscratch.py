@@ -11,7 +11,7 @@ import base64
 
 #sys.path.insert(0, "../../modules")
 
-import websocket
+import wsclient
 from scratra import *
 
 keepRunning = True
@@ -191,7 +191,7 @@ def fatalError():
 
 if __name__ == "__main__":
     #websocket.enableTrace(True)
-    ws = websocket.WebSocketApp("ws://"+host+":3141/api/ws/cannybots",
+    ws = wsclient.WebSocketApp("ws://"+host+":3141/api/ws/cannybots",
                                 on_message=on_message,
                                 on_error=on_error,
                                 on_close=on_close)
