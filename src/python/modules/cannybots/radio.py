@@ -9,6 +9,9 @@
 # Version:   1.0  -  11.10.2014  -  Inital Version  (wayne@cannybots.com)
 #
 
+# wrapping gatttool like this isn't the way forward...
+
+
 import sys
 import os
 import time
@@ -22,7 +25,7 @@ import pexpect
 
 
 # runs in background:  sudo hcitool lescan --duplicates --passive
-#outputs:     		 FF:C3:F0:EC:C3:D9 CB_1f73956a95eb
+#outputs:            FF:C3:F0:EC:C3:D9 CB_1f73956a95eb
 
 #for each address:
 # gatttool -t random --primary -I -b  FF:C3:F0:EC:C3:D9
@@ -216,14 +219,14 @@ class BLE_UART:
         self.tx.daemon = True
         self.tx.name = name
         if 1:
-			self.tx.start()
+            self.tx.start()
 
         self.rx = Thread(target=self.rx_worker)
         self.rx.daemon = True
         self.rx.name = name
 
         if 0:
-			self.rx.start()
+            self.rx.start()
 
 
     def addListener(self, func):
@@ -351,7 +354,7 @@ class BLE:
 
     def stopScanning(self):
         self.bleManager.stopScanning()
-		
+        
 
 
 

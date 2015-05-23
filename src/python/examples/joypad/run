@@ -1,0 +1,4 @@
+cd ../../modules
+sudo python setup.py install
+cd -
+sudo  python simpleJoypadClient.py
