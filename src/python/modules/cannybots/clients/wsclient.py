@@ -10,6 +10,9 @@ class CannybotClient:
         self.wsConnected = False
         self._initWS(host, port, url)
         self.receiveCallback= None
+        self.errorCallback= None
+        self.closedCallback= None
+        self.openCallback= None
         self.debug = "CANNYBOTS_DEBUG_PYTHON_LIB" in os.environ
 
 
@@ -44,16 +47,24 @@ class CannybotClient:
 
     def _on_error(self, ws, error):
         print "ERROR: ws, " + str(error)
+        self.wsConnected = False
+        if self.errorCallback:
+            self.errorCallback(message)
+
 
     def _on_close(self, ws):
         if self.debug:
             print "### WebSocket closed ###"
+        self.wsConnected = False
+        if self.closedCallback:
+            self.closedCallback(message)
 
     def _on_open(self, ws):
         if self.debug:
             print "### WebSocket opened ###"
         self.wsConnected = True
-
+        if self.openedCallback:
+            self.openedCallback(message)
 
     def send(self, hexBytes):
 
@@ -69,6 +80,17 @@ class CannybotClient:
         except Exception as e:
             print "ERROR: ws send failed: " + str(e)
 
+    def isConnected(self):
+        return self.wsConnected
 
     def registerReceiveCallback(self, callback):
-        self.receiveCallback = callback
+        self.receiveCallback = callback    
+        
+    def registerErrorCallback(self, callback):
+        self.errorCallback = callback    
+        
+    def registerClosedCallback(self, callback):
+        self.closedCallback = callback    
+        
+    def registerOpenedCallback(self, callback):
+        self.openedCallback = callback
