@@ -6,7 +6,7 @@ from cannybots.clients.joypad import JoypadClient
 
 SPEED_DURATION = 2                      # Number of seconds to hold a speed for
 
-cannybot = CannybotClient()             # Connects to the first available Cannybot (using a local WebSocket API)
+cannybot = CannybotClient()             # Connects to the default Cannybot configured in NodeRED (using a local WebSocket API)
 joypad   = JoypadClient(cannybot)       # Creates a Joystick helper that can create and send joystick messages
 
 

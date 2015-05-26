@@ -1,60 +1,66 @@
 module.exports = function(RED) {
+    // NodeJS builtins
     var util = require("util");   
-    var async = require('async');
-    var noble = require('noble');
     var events = require('events');
-    var debug = require('debug')('slave');
- 
+
+    // 3rd Party dep
+    var async = require('async');
+    
  
     var cannybotUARTServiceUUID = "7e400001b5a3f393e0a9e50e24dcca9e";
-    var peripheralUuid = undefined;
-    //var writeCharacteristic = undefined;
  
  
     function CannybotsBLE(n) {  
         RED.nodes.createNode(this,n);  
+        
         var node= this;  
         node.log('Cannybots created');  
 
+        node.noble = require('noble');
+
         node.writeCharacteristic = undefined;
         node.peripheral = undefined;
-        node.peripheralUuid = n.address;  
-        node.localName      = n.name;
+        node.peripheralUuid = undefined;  
+        node.botName="no-name"
+
+        node.status({fill:"red",shape:"ring",text:"disconnected"}); 
+
+        node.targetPeripheralUuid = n.address;  
+        
         node.log("addr = " +JSON.stringify(n.address));
         node.log("name = " +JSON.stringify(n.name));
-         
-        node.status({fill:"red",shape:"ring",text:"disconnected"}); 
-        noble.startScanning([cannybotUARTServiceUUID], true);  
+
+        node.log("Start scanning...");
+
+        node.noble.startScanning([cannybotUARTServiceUUID], true);  
+        
         
         node.errorHandler = function(error) {
-            node.error('NOBLE error: ' + error);  
-        
+            node.error('CannybotsBLEs error: ' + error);          
         }
         
-        this.on("input", function(msg) {  
-            var node= this;  
+        node.on("input", function(msg) {  
 
-            node.log('Cannybots called: ' + JSON.stringify(msg));  
+            node.log('Cannybots Node BLE called: ' + JSON.stringify(msg));  
                   
             var command        = msg.payload;     
             var action         = command.action;
-            var peripheralUuid = command.peripheralUuid;
 
             ///
             /// Action Handler
             ///
             if (action === 'startScanning') {
-                noble.startScanning(serviceUuids, command.allowDuplicates);
+                node.noble.startScanning(serviceUuids, command.allowDuplicates);
 
             } else if (action === 'writeHex') {
                 if (node.writeCharacteristic) {
-                    command.data = String(command.data); 
                     //node.log("writeValue (string):'" + command.data +"'");
-                    var data = new Buffer(command.data, "hex");
-                    //node.log("writeValue (raw hex):" + data.toString("hex"));
+                    var data = new Buffer( String(command.data).toLowerCase(), "hex");
+                    node.log("writeValue (raw hex):" + data.toString("hex"));
+                    //node.log("writeValue (len)    :" + data.length);
                     node.writeCharacteristic.write(data,false);
                 } else {
-                    node.warn("No TX characteristic found");
+                    node.error("No TX characteristic found");
                 }
             } else if (action === 'writeByteArray') {
                 if (node.writeCharacteristic) {
@@ -67,14 +73,14 @@ module.exports = function(RED) {
                     
                     node.writeCharacteristic.write(data,false); //node.errorHandler);
                 } else {
-                    node.warn("No TX characteristic found");
+                    node.error("No TX characteristic found");
                 }
             }
                 
       
          
-         this.on("close", function() {
-             noble.stopScanning();
+         node.on("close", function() {
+            //noble.stopScanning();
             if (node.peripheral) {
                 node.peripheral.disconnect();   
                 node.peripheral = undefined;
@@ -104,38 +110,42 @@ module.exports = function(RED) {
             sendEvent({ 
                 type: 'handleRead',
                 string: data.toString(),
-                rawBytes: data,
-                data: data.toString('hex')
+                //rawBytes: data,
+                hexBytes: data.toString('hex')
             });
             
         }
         
-        noble.on('stateChange', function(state) {
+        node.noble.on('stateChange', function(state) {
             node.log("stateChange : " +state);          
 
             sendEvent({
                 type: 'stateChange',
-                state: noble.state
+                state: node.noble.state
             });
             if (state === 'poweredOn') {
-                noble.startScanning([cannybotUARTServiceUUID], true);    
-            } else {
-                noble.stopScanning();
-            }
+                node.noble.startScanning([cannybotUARTServiceUUID], true);    
+            }// else {
+            //    node.noble.stopScanning();
+            //}
         });
         
         
-        noble.on('discover', function(peripheral) {
-            //node.log("discover : " +peripheral);            
+        node.noble.on('discover', function(peripheral) {
+            node.log("discover : " +peripheral);            
 
-            if (peripheral.uuid === node.peripheralUuid) {
-                noble.stopScanning();
+            if (peripheral.uuid === node.targetPeripheralUuid) {
+                node.noble.stopScanning();
             } else {
+                node.log('Not a match for me, peripheral with UUID ' + peripheral.uuid);
                 return;
             }
-            
-            node.log('peripheral with UUID ' + peripheral.uuid + ' found');
-            
+            if (node.peripheral != undefined) {
+                node.log('Already have handle on peripheral with UUID ' + peripheral.uuid);
+            }
+            else {
+                node.log('Connecting to peripheral with UUID ' + peripheral.uuid);
+            }
             node.peripheral = peripheral;
             var advertisement = peripheral.advertisement;
             var localName = advertisement.localName;
@@ -146,6 +156,7 @@ module.exports = function(RED) {
 
             if (localName) {
               node.log('  Local Name        = ' + localName);
+              node.botName = localName;
             }
 
             if (txPowerLevel) {
@@ -164,7 +175,9 @@ module.exports = function(RED) {
               node.log('  Service UUIDs     = ' + serviceUuids);
             }
 
-            explore(peripheral);
+            explore(node.peripheral);
+            node.noble.startScanning([cannybotUARTServiceUUID], true);  
+
           }); 
           
     
@@ -174,9 +187,10 @@ module.exports = function(RED) {
         peripheral.on('connect', function() {
             sendEvent({
               type: 'connect',
-              peripheralUuid: this.uuid
+              peripheralUuid: peripheral.uuid
             });
-            node.status({fill:"green",shape:"dot",text:"connected"});
+            node.status({fill:"green",shape:"dot",text:"connected to '"+node.botName+"'"});
+            node.noble.startScanning([cannybotUARTServiceUUID], true);  
 
           });
 
@@ -188,7 +202,7 @@ module.exports = function(RED) {
               type: 'disconnect',
               peripheralUuid: peripheral.uuid
             });
-            noble.startScanning([cannybotUARTServiceUUID], true);  
+            node.noble.startScanning([cannybotUARTServiceUUID], true);  
 
           });
 

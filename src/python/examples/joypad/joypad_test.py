@@ -10,7 +10,7 @@ from cannybots.clients.joypad import JoypadClient
 def dataReceived(message):
     print "Received: " + message
 
-cannybot = CannybotClient()             #  Connects to the first available Cannybot
+cannybot = CannybotClient(botId)             #  Connects to the first available Cannybot
 joypad   = JoypadClient(cannybot)
 
 cannybot.registerReceiveCallback(dataReceived)
@@ -18,11 +18,17 @@ cannybot.registerReceiveCallback(dataReceived)
 sleep(2)
 joypad.requestStatus()
 
-joypad.update(-255, 255, 0, 0)
-sleep(1)
+#for speed in range(-255 , 255):
+#    print "Speed: " + str(speed)
+#    joypad.update(speed, speed, 0, 0)
+#    sleep(0.25)
 
-joypad.update(255, -255, 0, 0)
-sleep(1)
+speed1 =200
+speed2 =    speed1
+for i in range(0,2):
+    joypad.update(speed1, speed2, 0, 0)
+    sleep(1)
+
 
 joypad.stop()
 

@@ -5,7 +5,7 @@ import base64
 
 class CannybotClient:
 
-    def __init__(self, botId=1, host="localhost", port="3141", url="/api/ws/cannybots"):
+    def __init__(self, botId=0, host="localhost", port="3141", url="/api/ws/cannybots"):
         self.botId = str(botId)
         self.wsConnected = False
         self._initWS(host, port, url)
@@ -47,11 +47,11 @@ class CannybotClient:
 
     def _on_close(self, ws):
         if self.debug:
-            print "### closed ###"
+            print "### WebSocket closed ###"
 
     def _on_open(self, ws):
         if self.debug:
-            print "### opened ###"
+            print "### WebSocket opened ###"
         self.wsConnected = True
 
 

@@ -31,4 +31,5 @@ cp nodered/flows_default.json nodered/flows_`hostname`.json
 
 chown -R pi $INSTALL_DIR
 chmod -R g+w $INSTALL_DIR
-npm install
+npm install --production
+
