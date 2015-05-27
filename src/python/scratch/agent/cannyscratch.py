@@ -11,11 +11,12 @@ from threading import Thread
 from time import sleep
 import syslog
 
-
 import websocket
 import scratch              #ext. dep: sudo pip install scratchpy
 
 from cannybots.clients.wsclient import CannybotClient
+
+CONNECTION_CHECK_DELAY=10
 
 syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_DAEMON)
 
@@ -28,43 +29,42 @@ class ScratchAgent:
     def __init__(self):
         log( "Cannybots Scratch Agent starting...")
 
-        ScratchAgent.keepRunning = True
-        ScratchAgent.scratchInterface = None
-        ScratchAgent.cannybot = None
+        self.keepRunning = True
+        self.scratchInterface = None
+        self.cannybot = None
     
     def startWebSocketClient(self):
-        ScratchAgent.cannybot = CannybotClient()             #  Connects to the default Cannybot
-        ScratchAgent.cannybot.registerReceiveCallback(self.send2scratch)
+        self.cannybot = CannybotClient()             #  Connects to the default Cannybot
+        self.cannybot.registerReceiveCallback(self.send2scratch)
 
         # If there's any trouble just exit, the service daemon will restart us
-        ScratchAgent.cannybot.registerErrorCallback(ScratchAgent.stop)
-        ScratchAgent.cannybot.registerClosedCallback(ScratchAgent.stop)
+        self.cannybot.registerErrorCallback(self.stop)
+        self.cannybot.registerClosedCallback(self.stop)
 
     def startScratchClient(self):
-        ScratchAgent.scratchInterface = scratch.Scratch()
-        ScratchAgent.scratchInterface.connect()
+        self.scratchInterface = scratch.Scratch()
+        self.scratchInterface.connect()
 
 
     def  send2scratch(self, msg):
         if self.scratchInterface:
             log("sending to scratch: " + str(msg))
             try:
-                ScratchAgent.scratchInterface.broadcast(msg)                
+                self.scratchInterface.broadcast(msg)                
             except scratch.ScratchConnectionError as sce:
                 log( "ERROR: (ScratchConnection) " + sce.message)
-                ScratchAgent.keepRunning = False
+                self.keepRunning = False
             except Exception as err:
                 log( "ERROR: (General, whilst sending to Scatch) " + err.message)
-                ScratchAgent.keepRunning = False
+                self.keepRunning = False
 
             
         else:
             print "WARN: Scratch not yet initialised"
 
 
-    @staticmethod
-    def send2cannybot(message):        
-        ScratchAgent.cannybot.send(format(ord(message),'02X'))
+    def send2cannybot(self, message):        
+        self.cannybot.send(format(ord(message),'02X'))
 
 
 
@@ -79,7 +79,7 @@ class ScratchAgent:
         }
         
         command = message[1]
-        #print "Command: " + command
+        #log( "Command: " + command)
         if command in commands:            
             commands[command](message);
         else:
@@ -91,27 +91,27 @@ class ScratchAgent:
         self.send2cannybot('f')
 
     def maze_right(self, message):
-        ScratchAgent.send2cannybot('r')
+        self.send2cannybot('r')
 
     def maze_left(self, message):
-        ScratchAgent.send2cannybot('l')
+        self.send2cannybot('l')
 
     def maze_spin(self, message):
-        ScratchAgent.send2cannybot('p')
+        self.send2cannybot('p')
 
     def maze_stop(self, message):
-        ScratchAgent.send2cannybot('s')
+        self.send2cannybot('s')
 
 
-    #motor commans
+    #motor commands
     #led and other sensor commands
 
 
-    def connected(self):        
-        wsOK = ScratchAgent.cannybot.isConnected()
-        scratchOK = ScratchAgent.scratchInterface.connected = True
+    def isConnected(self):        
+        wsOK = self.cannybot.isConnected()
+        scratchOK = self.scratchInterface.connected = True
         
-        if (wsOK and scratchOK and ScratchAgent.keepRunning):
+        if (wsOK and scratchOK and self.keepRunning):
             return True
         else:
             if (not scratchOK):
@@ -121,10 +121,12 @@ class ScratchAgent:
             return False
             
     
-    def run(self):
+    def connect(self):
         self.startScratchClient();
         self.startWebSocketClient();
-        
+
+
+    def run(self):
         self.workerThread = Thread(target=self._scratch_message_worker)
         self.workerThread.daemon = True
         self.workerThread.name = 'ScratchMsgWorker'
@@ -132,7 +134,7 @@ class ScratchAgent:
         
     def _scratch_message_worker(self):
         try:
-            while ScratchAgent.keepRunning:
+            while self.keepRunning:
                 for msg in self.listen():
                     if msg[0] == 'broadcast':
                         log( "From scratch (broadcast): " + str(msg))
@@ -140,41 +142,42 @@ class ScratchAgent:
                     elif msg[0] == 'sensor-update':
                         log( "From scratch (sensor): " + str(msg))
         except scratch.ScratchError as se:
-            log( "ERROR: (Scratch) " + se.message)
+            log( "ERROR: MsgWorker (Scratch) " + se.message)
         except StopIteration as si:
-            log( "ERROR: (MsgProc) " + si.message)
+            log( "ERROR: MsgWorker (MsgProc) " + si.message)
         except Exception as err:
-            log( "ERROR: (General) " + err.message)
+            log( "ERROR: MsgWorker (General) " + err.message)
             
-        ScratchAgent.keepRunning = False
+        self.keepRunning = False
 
           
     def listen(self):
         while True:
             try:
-               yield ScratchAgent.scratchInterface.receive()
+               yield self.scratchInterface.receive()
             except scratch.ScratchError:
                raise StopIteration            
 
-    @staticmethod
-    def start():
+    def start(self):
         try:
-            agent = ScratchAgent()
-            agent.run()
+            self.connect()
+            self.run()
             while True:
-                sleep(5)        
-                if not agent.connected():
+                sleep(CONNECTION_CHECK_DELAY)        
+                if not self.isConnected():
                     break
         except scratch.ScratchError as se:
-            log ("ERROR: (Scratch) " + se.message)
+            log ("ERROR: Main (Scratch) " + se.message)
+        except Exception as err:
+            log( "ERROR: Main (General) " + err.message)
         
-    @staticmethod
-    def stop():
+        
+
+    def stop(self):
         log( "Cannybots Scratch Agent exiting...")
-        ScratchAgent.keepRunning=False;
-        #os.kill(os.getpid(), signal.SIGKILL)
-        #thread.interrupt_main() 
+        self.keepRunning=False;
 
 if __name__ == "__main__":
-    ScratchAgent.start()  # will block until error
-    ScratchAgent.stop()
+    agent = ScratchAgent()
+    agent.start()  # will block until error (e.g. connection loss)
+    agent.stop()
