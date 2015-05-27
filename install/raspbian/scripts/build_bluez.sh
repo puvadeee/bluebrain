@@ -1,8 +1,11 @@
 #!/bin/bash
 
 cd vendor/bluez/
-tar xvfJ bluez-5.28.tar.xz
-cd bluez-5.28
+#tar xvfJ bluez-5.28.tar.xz
+#cd bluez-5.28
+
+tar xvfJ bluez-5.30.tar.xz
+cd bluez-5.30
 
 patch -p0 < ../joystick.patch
 
@@ -17,9 +20,10 @@ export LDFLAGS="`sdl-config --libs` -lrt"
   --sysconfdir=/etc \
   --localstatedir=/var \
   --libexecdir=/lib \
-  --enable-experimental \
   --enable-library \
   --disable-systemd $*
+
+#  --enable-experimental \
 
 make
 
