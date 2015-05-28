@@ -6,11 +6,12 @@
     "start": "node ./bin/www"
   },
   "dependencies": {
+    "async": "^0.9.0",
     "debug": "~2.1.1",
     "express": "~4.11.0",
-    "async": "^0.9.0",
+    "noble": "^1.0.1",
+    "noble-device": "^1.0.2",
     "node-red": "^0.10.6",
-    "noble": "^0.3.14",
-    "node-red-contrib-noble": "^0.2.0"
+    "oauth": "^0.9.13"
   }
 }
