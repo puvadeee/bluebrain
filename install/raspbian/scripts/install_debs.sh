@@ -42,3 +42,6 @@ apt-get install python-rpi.gpio python-dev -y
 apt-get install python-pip -y
 sudo pip install websocket-client scratchpy
 
+# Rub (e.g. Sonic Pi) integration support
+
+sudo gem install websocket-client-simple
