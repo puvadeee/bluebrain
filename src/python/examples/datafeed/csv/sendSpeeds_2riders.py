@@ -6,8 +6,8 @@ from cannybots.clients.joypad import JoypadClient
 
 SPEED_DURATION = 2                      # Number of seconds to hold a speed for
 
-cannybot1 = CannybotClient()             # Connects to the default Cannybot configured in NodeRED (using a local WebSocket API)
-cannybot2 = CannybotClient(botId='1')
+cannybot1 = CannybotClient(botId='2')             # Connects to the default Cannybot configured in NodeRED (using a local WebSocket API)
+cannybot2 = CannybotClient(botId='3')
 
 sleep(2)
 
@@ -27,8 +27,8 @@ for row in input_file:
 
     # scale the input speed to between 0 (stop) and 255 (full speed)
     # these values were chosen by hand after inspecting the input data
-    rider1Speed = 50 + inputDataRider1Speed * 10
-    rider2Speed = 50 + inputDataRider2Speed * 10
+    rider1Speed = 255 - (50 + inputDataRider1Speed * 8)
+    rider2Speed = 255 - (50 + inputDataRider2Speed * 8)
 
     print "Input Data speed: {}  => Rider 1 speed: {}".format(inputDataRider1Speed, rider1Speed)
     print "Input Data speed: {}  => Rider 2 speed: {}".format(inputDataRider2Speed, rider2Speed)
