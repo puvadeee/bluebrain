@@ -43,8 +43,10 @@ module.exports = function(RED) {
             node._isAttemptingConnection = false;
             node.status({fill:"red",shape:"ring",text:"disconnected"});   
 
-            verboseLog("We disconnected from the Cannybot with name \"" + node.name + "\" and uuid " + node.device.uuid);
+            verboseLog("We disconnected from the Cannybot node with name \"" + node.name + "\" and uuid " + node.uuid);
+            
             node.emit("disconnected");
+            //beanScanner.startScanning();
             
             if(node.connectiontype == 'constant' &&
                 node.isBeingDestroyed !== true){
@@ -56,16 +58,20 @@ module.exports = function(RED) {
         var _hasConnected = function (){
             node._isConnectedAndSetUp = true;
             node.status({fill:"green",shape:"dot",text:"connected to '"+ node.device._peripheral.advertisement.localName+"'"});
-            verboseLog("We connected to the Cannybot with name \"" + node.name + "\" and uuid " + node.device.uuid);
+            verboseLog("We connected to the Cannybot with node name \"" + node.name + "\" and device uuid " + node.device.uuid);
             node.emit("connected");
 
         }.bind(node);
        
        // This function will attempt to connect to a Bean. 
         var _attemptConnection = function(){
+            if (node._isConnectedAndSetUp === true) {
+                return false;
+            }
             if(node._isAttemptingConnection === true ||
                 node.isBeingDestroyed === true){ 
-                verboseLog("Already in a connection attempt to the Bean with name \"" + node.name + "\"");
+                verboseLog("Already in a connection attempt to the Cannybot with name \"" + node.name + "\"");
+
                 return false; 
             }
 

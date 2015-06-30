@@ -38,7 +38,7 @@
         <span id="node-units">seconds</span>
     </div>
 
-    <div class="form-tips" id="tip-timeout">Tip: the "connnection on event" setting is used when the Bean should only be connected to when a message is sent to it. The Bean will disconnect after "timeout" seconds of innactivity.</div>
+    <!--<div class="form-tips" id="tip-timeout">Tip: the "connnection on event" setting is used when the Bean should only be connected to when a message is sent to it. The Bean will disconnect after "timeout" seconds of innactivity.</div>-->
 
     <script>
         var previous = null;
@@ -65,7 +65,7 @@
         category: 'config',      // the palette category
         defaults: {             // defines the editable properties of the node
             name: {value:"", required:true},   //  along with default values.
-            uuid: {value:"", required:false},
+            uuid: {value:"", required:true},
             connectiontype: {value:"timeout",required:true},
             connectiontimeout: {value:"60",required:true}
         },
@@ -88,7 +88,7 @@
                     $.each(data, function(i, bean){
                         beanNames.push({
                             "label":bean.name,
-                            "value":bean.name,
+                            "value":bean.uuid,
                             "rssi":bean.rssi,
                             "uuid":bean.uuid
                         });
@@ -98,7 +98,6 @@
                         minLength:0,
                         close: function( event, ui ) {
                             $("#node-config-input-name").autocomplete( "destroy" );
-                            $("#node-config-input-name").val("123");
                         }
                     })
                     .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
