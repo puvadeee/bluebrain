@@ -22,14 +22,15 @@ module.exports = function(RED) {
         // Unlimited listeners
         this.setMaxListeners(0);
   
-        node.log("uuid = " +JSON.stringify(n.uuid));
-        node.log("name = " +JSON.stringify(n.name));
 
         node.botName="no-name";
         node.name = n.name;
-        node.uuid = n.uuid;
-        node.device;
+
+        node.uuid = n.uuid.toLowerCase().replace(/:/g, '');
         
+        node.log("name = " +JSON.stringify(node.name));
+        node.log("uuid = " +JSON.stringify(node.uuid));
+
         node.connectiontype = "constant";//n.connectiontype;
 
         node._isAttemptingConnection = false;
