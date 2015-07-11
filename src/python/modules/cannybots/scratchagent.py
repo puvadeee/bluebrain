@@ -3,7 +3,18 @@ import os
 import signal
 from threading import Thread 
 from time import sleep
-import syslog
+
+import platform
+
+hasSyslog = False
+
+hasSyslog = (platform.system() == "Linux")
+
+if hasSyslog:
+	import syslog
+	syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_DAEMON)
+else:
+	print "Syslog not avaialble"
 
 import websocket
 import scratch              #ext. dep: sudo pip install scratchpy
@@ -12,11 +23,12 @@ from cannybots.clients.wsclient import CannybotClient
 
 CONNECTION_CHECK_DELAY=10
 
-syslog.openlog(logoption=syslog.LOG_PID, facility=syslog.LOG_DAEMON)
 
 def log(msg):
+    global hasSyslog
     print msg
-    syslog.syslog(msg)
+    if hasSyslog:
+		syslog.syslog(msg)
 
 class ScratchAgent:
     
