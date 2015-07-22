@@ -80,6 +80,12 @@ class CannybotClient:
         except Exception as e:
             print "ERROR: ws send failed: " + str(e)
 
+    def sendString(self, string):
+		hexBytes = ""
+		for c in string:
+			hexBytes = hexBytes + format(ord(c), '02X')
+		self.send(hexBytes)
+
     def isConnected(self):
         return self.wsConnected
 
