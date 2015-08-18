@@ -61,7 +61,7 @@
     [super viewDidLoad];
 
     // Uncomment the following line to preserve selection between presentations.
-    self.clearsSelectionOnViewWillAppear = NO;
+    self.clearsSelectionOnViewWillAppear = YES;
  
     // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
     // self.navigationItem.rightBarButtonItem = self.editButtonItem;
@@ -262,7 +262,7 @@
     RFduino *rfduino = [[rfduinoManager rfduinos] objectAtIndex:[indexPath row]];
 
     if (! rfduino.outOfRange) {
-        //[rfduinoManager stopScan];
+        [rfduinoManager stopScan];
         [rfduinoManager connectRFduino:rfduino];
     } else {
         [self.tableView deselectRowAtIndexPath:indexPath animated:YES];
@@ -322,4 +322,9 @@
     [self.tableView reloadData];
 }
 
+- (void) viewDidAppear:(BOOL)animated {
+    [super viewDidAppear:animated];
+    //[rfduinoManager startScan];
+
+}
 @end

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="6751" systemVersion="14C1514" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
+<document type="com.apple.InterfaceBuilder3.CocoaTouch.Storyboard.XIB" version="3.0" toolsVersion="7706" systemVersion="14E46" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" initialViewController="49e-Tb-3d3">
     <dependencies>
         <deployment identifier="iOS"/>
-        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="6736"/>
+        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="7703"/>
         <capability name="Aspect ratio constraints" minToolsVersion="5.1"/>
         <capability name="Constraints to layout margins" minToolsVersion="6.0"/>
     </dependencies>
@@ -318,33 +318,17 @@
                         <viewControllerLayoutGuide type="top" id="hyv-Tc-DkD"/>
                         <viewControllerLayoutGuide type="bottom" id="TE0-yS-72K"/>
                     </layoutGuides>
-                    <view key="view" contentMode="scaleToFill" id="gyi-5r-80i">
+                    <view key="view" contentMode="top" placeholderIntrinsicWidth="600" placeholderIntrinsicHeight="600" id="gyi-5r-80i">
                         <rect key="frame" x="0.0" y="0.0" width="600" height="600"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
-                        <subviews>
-                            <imageView userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" image="Cannybots_Logo_2000x446.png" translatesAutoresizingMaskIntoConstraints="NO" id="52e-te-ewc">
-                                <rect key="frame" x="180" y="8" width="240" height="40"/>
-                                <constraints>
-                                    <constraint firstAttribute="width" constant="240" id="GS7-0E-FSz"/>
-                                    <constraint firstAttribute="width" secondItem="52e-te-ewc" secondAttribute="height" multiplier="6:1" id="JyN-dC-XQc"/>
-                                </constraints>
-                            </imageView>
-                            <view contentMode="scaleToFill" fixedFrame="YES" translatesAutoresizingMaskIntoConstraints="NO" id="NHh-fe-Mar">
-                                <rect key="frame" x="0.0" y="71" width="600" height="168"/>
-                                <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
-                            </view>
-                        </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="custom" customColorSpace="calibratedWhite"/>
-                        <constraints>
-                            <constraint firstItem="52e-te-ewc" firstAttribute="top" secondItem="hyv-Tc-DkD" secondAttribute="bottom" constant="8" id="x6z-Sx-e6L"/>
-                            <constraint firstAttribute="centerX" secondItem="52e-te-ewc" secondAttribute="centerX" id="zLF-pk-OZU"/>
-                        </constraints>
+                        <rect key="contentStretch" x="0.0" y="0.0" width="1" height="0.79999999999999982"/>
                     </view>
                     <tabBarItem key="tabBarItem" title="Connection" image="connection.png" id="q04-jq-HMd" userLabel="Connection"/>
                     <nil key="simulatedStatusBarMetrics"/>
                     <simulatedOrientationMetrics key="simulatedOrientationMetrics" orientation="landscapeRight"/>
                     <connections>
-                        <outlet property="selectionView" destination="NHh-fe-Mar" id="08V-sh-lCv"/>
+                        <outlet property="selectionView" destination="gyi-5r-80i" id="MBp-gc-tlW"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="bTJ-Sw-doT" sceneMemberID="firstResponder"/>

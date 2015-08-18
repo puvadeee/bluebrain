@@ -137,13 +137,14 @@ static CBUUID *service_uuid;
 
     rangeTimerCount++;
     if ((rangeTimerCount % 60) == 0) {
-        // NSLog(@"restarting scanning");
+        NSLog(@"restarting scanning");
         
         [central stopScan];
         
         NSDictionary *options = nil;
         options = [NSDictionary dictionaryWithObject:[NSNumber numberWithBool:YES]
                                               forKey:CBCentralManagerScanOptionAllowDuplicatesKey];
+//        options = nil;
         [central scanForPeripheralsWithServices:[NSArray arrayWithObject:service_uuid] options:options];
     }
     
@@ -249,6 +250,13 @@ static CBUUID *service_uuid;
     
     bool added = false;
 
+    
+    id manufacturerData = [advertisementData objectForKey:CBAdvertisementDataManufacturerDataKey];
+    if (!manufacturerData) {
+        return;
+    }
+    
+    
     RFduino *rfduino = [self rfduinoForPeripheral:peripheral];
     if (! rfduino) {
         rfduino = [[RFduino alloc] init];
@@ -260,7 +268,7 @@ static CBUUID *service_uuid;
     }
     
     rfduino.advertisementData = nil;
-    
+   /*
     id manufacturerData = [advertisementData objectForKey:CBAdvertisementDataManufacturerDataKey];
     if (manufacturerData) {
         const uint8_t *bytes = [manufacturerData bytes];
@@ -268,7 +276,8 @@ static CBUUID *service_uuid;
         // skip manufacturer uuid
         NSData *data = [NSData dataWithBytes:bytes+2 length:len-2];
         rfduino.advertisementData = data;
-    }
+        NSLog(@"MANUFAC DATA: %@", data);
+    }*/
     
     NSString *localName = [advertisementData objectForKey:CBAdvertisementDataLocalNameKey];
     NSLog(@"Adv. Local Name: %@", localName);

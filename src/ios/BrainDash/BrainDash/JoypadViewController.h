@@ -8,9 +8,11 @@
 
 #import <UIKit/UIKit.h>
 #import <CoreMotion/CoreMotion.h>
+#import "RfduinoManager.h"
+
 #import "RFduino.h"
 
-@interface JoypadViewController : UIViewController<RFduinoDelegate,  UIGestureRecognizerDelegate>
+@interface JoypadViewController : UIViewController<RFduinoDelegate,  UIGestureRecognizerDelegate, RFduinoManagerDelegate>
 
 @property (weak, nonatomic) IBOutlet UIImageView *baseImageView;
 @property (weak, nonatomic) IBOutlet UIImageView *knobImageView;

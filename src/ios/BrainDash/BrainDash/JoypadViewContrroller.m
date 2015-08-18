@@ -69,6 +69,7 @@
     [super viewDidAppear:animated];
     
     [self loadDefaults];
+    //[RFduinoManager sharedRFduinoManager].delegate =self;
     self.rfduino=[RFduinoManager sharedRFduinoManager].connectedRFduino;
     [rfduino setDelegate:self];
 
@@ -344,6 +345,30 @@
 
 - (void)didReceive:(NSData *)data
 {
+}
+
+
+
+// RFDuino Manager Delegate
+
+- (void)didDiscoverRFduino:(RFduino *)rfduino {
+    
+}
+
+
+- (void)didUpdateDiscoveredRFduino:(RFduino *)rfduino {
+    
+}
+
+- (void)didConnectRFduino:(RFduino *)rfduino {
+    
+}
+- (void)didLoadServiceRFduino:(RFduino *)rfduino {
+    
+}
+- (void)didDisconnectRFduino:(RFduino *)rfduino {
+    
+    
 }
 
 @end

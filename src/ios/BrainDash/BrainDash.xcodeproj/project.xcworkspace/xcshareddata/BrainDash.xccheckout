@@ -7,14 +7,14 @@
 	<key>IDESourceControlProjectIdentifier</key>
 	<string>A0DDBB2A-2D56-410D-AD98-721401169A16</string>
 	<key>IDESourceControlProjectName</key>
-	<string>project</string>
+	<string>BrainDash</string>
 	<key>IDESourceControlProjectOriginsDictionary</key>
 	<dict>
 		<key>6347CF4F008EEF10926D62C6945486FAA26439C0</key>
 		<string>https://github.com/Cannybots/bluebrain.git</string>
 	</dict>
 	<key>IDESourceControlProjectPath</key>
-	<string>src/ios/BrainDash/BrainDash.xcodeproj/project.xcworkspace</string>
+	<string>src/ios/BrainDash/BrainDash.xcodeproj</string>
 	<key>IDESourceControlProjectRelativeInstallPathDictionary</key>
 	<dict>
 		<key>6347CF4F008EEF10926D62C6945486FAA26439C0</key>
