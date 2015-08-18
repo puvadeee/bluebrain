@@ -15,15 +15,16 @@
     <br/>
     <div class="form-row">
         <label for="node-config-input-name"><i class="fa fa-tag"></i> Name</label>
-        <input type="text" id="node-config-input-name" style="width:60%;" placeholder="Name">
-        <a id="node-config-lookup-bean" class="btn"><i id="node-config-lookup-serial-icon" class="fa fa-search"></i></a>
+        <input type="text" id="node-config-input-name"  placeholder="Name">
     </div>
 
     <div class="form-row">
         <label for="node-config-input-uuid"><i class="fa fa-tag"></i> UUID</label>
-        <input type="text" id="node-config-input-uuid" placeholder="UUID">
+        <input type="text" id="node-config-input-uuid" style="width:60%;" placeholder="UUID">
+        <a id="node-config-lookup-bean" class="btn"><i id="node-config-lookup-serial-icon" class="fa fa-search"></i></a>
     </div>
 
+<!--
     <div class="form-row">
         <label for="node-config-input-connectiontype"><i class="fa fa-clock-o"></i> Connection</label>
         <select type="text" id="node-config-input-connectiontype" style="width:77%;">
@@ -38,7 +39,8 @@
         <span id="node-units">seconds</span>
     </div>
 
-    <!--<div class="form-tips" id="tip-timeout">Tip: the "connnection on event" setting is used when the Bean should only be connected to when a message is sent to it. The Bean will disconnect after "timeout" seconds of innactivity.</div>-->
+    <!--<div class="form-tips" id="tip-timeout">Tip: the "connnection on event" setting is used when the Bean should only be connected to when a message is sent to it. The Bean will disconnect after "timeout" seconds of innactivity.</div>
+    -->
 
     <script>
         var previous = null;
@@ -77,7 +79,7 @@
         },
         oneditprepare: function() {
             try {
-                $("#node-config-input-name").autocomplete( "destroy" );
+                $("#node-config-input-uuid").autocomplete( "destroy" );
             } catch(err) {
             }
             $("#node-config-lookup-bean").click(function() {
@@ -93,11 +95,11 @@
                             "uuid":bean.uuid
                         });
                     });
-                    $("#node-config-input-name").autocomplete({
+                    $("#node-config-input-uuid").autocomplete({
                         source:beanNames,
                         minLength:0,
                         close: function( event, ui ) {
-                            $("#node-config-input-name").autocomplete( "destroy" );
+                            $("#node-config-input-uuid").autocomplete( "destroy" );
                         }
                     })
                     .data( "ui-autocomplete" )._renderItem = function( ul, item ) {
@@ -108,7 +110,7 @@
                         + "<span style=\"float:right; color:LightGray;\">RSSI: " + item.rssi + "</span></a>" )
                         .appendTo( ul );
                     };
-                    $("#node-config-input-name").autocomplete("search","");
+                    $("#node-config-input-uuid").autocomplete("search","");
                 });
             });
         }
