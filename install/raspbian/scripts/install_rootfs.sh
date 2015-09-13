@@ -8,7 +8,7 @@ cp -rv  ../../src/python/scratch/agent  /opt/cannybots/runtime/scratch/
 
 SCRATCH_PRJ_DIR=/home/pi/Documents/Scratch\ Projects/Cannybots
 mkdir "$SCRATCH_PRJ_DIR"
-cp -v   ../../src/scratch/PiMazing.sb "$SCRATCH_PRJ_DIR"
+cp -v   ../../src/scratch/* "$SCRATCH_PRJ_DIR"/
 chown -R pi.pi "$SCRATCH_PRJ_DIR"
  
 sudo update-rc.d avahi-daemon defaults
