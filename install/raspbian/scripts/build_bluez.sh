@@ -1,8 +1,6 @@
 #!/bin/bash
 
 cd vendor/bluez/
-#tar xvfJ bluez-5.28.tar.xz
-#cd bluez-5.28
 
 tar xvfJ bluez-5.32.tar.xz
 cd bluez-5.32
