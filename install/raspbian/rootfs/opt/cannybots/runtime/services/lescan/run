@@ -1,5 +1,5 @@
 #!/bin/sh
-sleep 2
+sleep 5
 
-exec hcitool lescan
+exec hcitool lescan --discovery=l
 
